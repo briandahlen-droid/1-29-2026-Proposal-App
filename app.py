@@ -26,6 +26,65 @@ from typing import Dict, Any, Optional, List
 # -----------------------------------------------------------------------------
 st.set_page_config(page_title="Proposal App (Test)", page_icon="📄", layout="wide")
 
+# -----------------------------------------------------------------------------
+# UI Styling
+# -----------------------------------------------------------------------------
+CUSTOM_CSS = """
+<style>
+/* App background */
+html, body, [data-testid="stAppViewContainer"], .stApp {
+    background: rgb(199,199,199) !important;
+}
+
+/* Make labels and text readable */
+label, .stMarkdown, .stText, p, span, div {
+    color: #000 !important;
+}
+
+/* Inputs: text, number, textarea */
+input[type="text"], input[type="number"], textarea {
+    border: 2px solid #000 !important;
+    border-radius: 6px !important;
+    background: #fff !important;
+    color: #000 !important;
+}
+
+/* Selectbox (BaseWeb) */
+div[data-baseweb="select"] > div {
+    border: 2px solid #000 !important;
+    border-radius: 6px !important;
+    background: #fff !important;
+    color: #000 !important;
+}
+
+/* Multiselect / dropdown menu background */
+div[data-baseweb="popover"] {
+    color: #000 !important;
+}
+
+/* Checkboxes: increase contrast */
+div[data-baseweb="checkbox"] svg {
+    color: #000 !important;           /* tick color */
+    fill: #000 !important;
+}
+div[data-baseweb="checkbox"] > div {
+    border-color: #000 !important;    /* box border */
+}
+
+/* Buttons */
+button[kind="primary"], button, .stButton>button {
+    border: 2px solid #000 !important;
+}
+
+/* Expand sidebar/background if present */
+section[data-testid="stSidebar"] {
+    background: rgb(199,199,199) !important;
+}
+</style>
+"""
+st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
+
+
 BASE_DIR = pathlib.Path(__file__).parent
 CITY_LOOKUP_PATH = BASE_DIR / "data" / "pinellas_county_cities_lookup.json"
 
@@ -332,7 +391,7 @@ TAB4_TASKS_108_110 = [
 # UI renderers
 # -----------------------------------------------------------------------------
 def render_tab1():
-    st.subheader("Tab 1 — Intake (Lookup)")
+    st.subheader("Project Info — Intake (Lookup)")
     left, right = st.columns([1, 1])
 
     intake = st.session_state.proposal["intake"]
@@ -433,7 +492,7 @@ def render_tab1():
         client["entity_address"] = st.text_area("Entity Address", value=client.get("entity_address", ""), height=90)
 
 def render_tab2():
-    st.subheader("Tab 2 — Project Understanding")
+    st.subheader("Project Understanding")
 
     proj = st.session_state.proposal["project"]
     intake = st.session_state.proposal["intake"]
@@ -483,7 +542,7 @@ def render_tab2():
         st.write(proj.get("project_description_short","").strip())
 
 def render_tab3():
-    st.subheader("Tab 3 — Scope of Services (Tasks)")
+    st.subheader("Scope of Services")
 
     scope = st.session_state.proposal["scope"]
     selected = scope.setdefault("task_ids", {})
@@ -504,7 +563,7 @@ def render_tab3():
     )
 
 def render_tab4():
-    st.subheader("Tab 4 — Tasks 107–110")
+    st.subheader("Permitting & Construction Administration")
 
     # Task 107: Permitting is not a checkbox; permit list is checkbox set
     st.markdown("### Task 107 — Permitting")
@@ -583,7 +642,7 @@ def render_preview():
 def main():
     init_proposal_state()
 
-    tabs = st.tabs(["Tab 1", "Tab 2", "Tab 3", "Tab 4", "Preview"])
+    tabs = st.tabs(["Project Info", "Project Understanding", "Scope of Services", "Permitting & CA", "Preview"])
 
     with tabs[0]:
         render_tab1()
