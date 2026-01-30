@@ -76,6 +76,17 @@ input[type="text"], input[type="number"], textarea {
     color: var(--ink) !important;
     box-shadow: 0 2px 6px rgba(11,31,58,0.06) !important;
 }
+/* BaseWeb input wrapper consistency */
+div[data-baseweb="input"] > div {
+    border: var(--field-border-width) solid var(--field-border) !important;
+    border-radius: var(--field-radius) !important;
+    background: var(--panel) !important;
+    box-shadow: 0 2px 6px rgba(11,31,58,0.06) !important;
+}
+div[data-baseweb="input"] input {
+    border: none !important;
+    box-shadow: none !important;
+}
 input[disabled], textarea[disabled] {
     color: var(--ink) !important;
     -webkit-text-fill-color: var(--ink) !important;
@@ -113,6 +124,9 @@ div[data-baseweb="checkbox"] > div {
     border-width: 2px !important;
     border-radius: 4px !important;
 }
+div[data-baseweb="checkbox"][aria-checked="true"] > div {
+    background: #ffffff !important;
+}
 
 /* Buttons */
 button[kind="primary"], button, .stButton>button {
@@ -132,6 +146,21 @@ button:disabled, .stButton>button:disabled {
     color: var(--btn-text) !important;
     box-shadow: none !important;
     opacity: 1 !important;
+}
+
+/* Link buttons should match regular buttons */
+div[data-testid="stLinkButton"] > a,
+div[data-testid="stLinkButton"] > a > button {
+    border: 2px solid var(--navy) !important;
+    background: var(--btn-bg) !important;
+    color: var(--btn-text) !important;
+    border-radius: var(--field-radius) !important;
+    box-shadow: 0 6px 14px rgba(11,31,58,0.12) !important;
+    height: 46px !important;
+}
+div[data-testid="stLinkButton"] > a:hover,
+div[data-testid="stLinkButton"] > a:hover > button {
+    background: #e4ebf7 !important;
 }
 
 /* Help tooltip icon */
@@ -511,7 +540,6 @@ def render_tab1():
                 "Parcel ID",
                 value=intake.get("parcel_id", ""),
                 placeholder="e.g. 19-31-17-73166-001-0010",
-                help="Parcel ID with dashes",
             )
         with county_col:
             county_options = ["Pinellas", "Hillsborough", "Pasco"]
@@ -589,7 +617,7 @@ def render_tab1():
         st.markdown("**Project (Tokens)**")
         project["project_name"] = st.text_input("Project Name", value=project.get("project_name", ""))
         project["project_location"] = st.text_input("Project Location / Address", key=proj_loc_key)
-        project["proposal_date"] = st.text_input("Proposal Date (optional)", value=project.get("proposal_date", ""), help="Leave blank to auto-use today's date.")
+        project["proposal_date"] = st.text_input("Proposal Date (optional)", value=project.get("proposal_date", ""))
 
         st.markdown("**Client / Entity (Tokens)**")
         client["client_name"] = st.text_input("Client Name", value=client.get("client_name", ""))
@@ -655,8 +683,9 @@ def render_tab3():
 
     for item in TAB3_TASKS:
         key = f"tab3_{item['id']}"
+        section_label = re.sub(r"^[A-Z]\s*â€”\s*", "", item["section"]).strip()
         selected[item["id"]] = st.checkbox(
-            f"{item['section']}",
+            f"{section_label}",
             value=bool(selected.get(item["id"], False)),
             key=key,
         )
