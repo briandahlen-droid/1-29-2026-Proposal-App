@@ -39,6 +39,8 @@ CUSTOM_CSS = """
     --paper: #f7f8fb;
     --panel: #ffffff;
     --border: #c9d3e1;
+    --field-border: #0b1f3a;
+    --field-border-width: 2px;
     --tab-bg: #e9eef6;
     --tab-bg-active: #ffffff;
     --tab-border: #0b1f3a;
@@ -59,7 +61,7 @@ label, .stMarkdown, .stText, p, span, div {
 
 /* Inputs: text, number, textarea */
 input[type="text"], input[type="number"], textarea {
-    border: 1px solid var(--border) !important;
+    border: var(--field-border-width) solid var(--field-border) !important;
     border-radius: 10px !important;
     background: var(--panel) !important;
     color: var(--ink) !important;
@@ -68,7 +70,7 @@ input[type="text"], input[type="number"], textarea {
 
 /* Selectbox (BaseWeb) */
 div[data-baseweb="select"] > div {
-    border: 1px solid var(--border) !important;
+    border: var(--field-border-width) solid var(--field-border) !important;
     border-radius: 10px !important;
     background: var(--panel) !important;
     color: var(--ink) !important;
@@ -87,6 +89,7 @@ div[data-baseweb="checkbox"] svg {
 }
 div[data-baseweb="checkbox"] > div {
     border-color: var(--navy) !important;    /* box border */
+    background: #ffffff !important;
 }
 
 /* Buttons */
@@ -96,6 +99,10 @@ button[kind="primary"], button, .stButton>button {
     color: #fff !important;
     border-radius: 10px !important;
     box-shadow: 0 6px 14px rgba(11,31,58,0.18) !important;
+    height: 46px !important;
+}
+button:hover, .stButton>button:hover {
+    background: var(--navy-2) !important;
 }
 
 /* Tabs */
@@ -600,7 +607,7 @@ def render_tab3():
     for item in TAB3_TASKS:
         key = f"tab3_{item['id']}"
         selected[item["id"]] = st.checkbox(
-            f"{item['section']}: {item['label']}",
+            f"{item['section']}",
             value=bool(selected.get(item["id"], False)),
             key=key,
         )
