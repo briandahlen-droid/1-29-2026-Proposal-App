@@ -116,7 +116,7 @@ div[data-baseweb="popover"] {
 /* Checkboxes: increase contrast */
 div[data-baseweb="checkbox"] svg {
     color: var(--navy) !important;           /* tick color */
-    fill: var(--navy) !important;
+    fill: none !important;
 }
 div[data-baseweb="checkbox"] > div {
     border-color: var(--navy) !important;    /* box border */
@@ -126,6 +126,10 @@ div[data-baseweb="checkbox"] > div {
 }
 div[data-baseweb="checkbox"][aria-checked="true"] > div {
     background: #ffffff !important;
+}
+div[data-baseweb="checkbox"] svg path {
+    stroke: var(--navy) !important;
+    fill: none !important;
 }
 
 /* Buttons */
@@ -683,7 +687,7 @@ def render_tab3():
 
     for item in TAB3_TASKS:
         key = f"tab3_{item['id']}"
-        section_label = re.sub(r"^[A-Z]\s*â€”\s*", "", item["section"]).strip()
+        section_label = re.sub(r"^[A-Z]\s*[-—]\s*", "", item["section"]).strip()
         selected[item["id"]] = st.checkbox(
             f"{section_label}",
             value=bool(selected.get(item["id"], False)),
