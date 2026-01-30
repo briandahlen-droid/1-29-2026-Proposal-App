@@ -118,13 +118,15 @@ div[data-baseweb="checkbox"] svg {
     color: var(--navy) !important;           /* tick color */
     fill: none !important;
 }
-div[data-baseweb="checkbox"] > div {
+div[data-baseweb="checkbox"] > div,
+div[data-baseweb="checkbox"] div[role="checkbox"] {
     border-color: var(--navy) !important;    /* box border */
     background: #ffffff !important;
     border-width: 2px !important;
     border-radius: 4px !important;
 }
-div[data-baseweb="checkbox"][aria-checked="true"] > div {
+div[data-baseweb="checkbox"][aria-checked="true"] > div,
+div[data-baseweb="checkbox"] div[role="checkbox"][aria-checked="true"] {
     background: #ffffff !important;
 }
 div[data-baseweb="checkbox"] svg path {
