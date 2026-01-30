@@ -41,6 +41,9 @@ CUSTOM_CSS = """
     --border: #c9d3e1;
     --field-border: #0b1f3a;
     --field-border-width: 2px;
+    --field-radius: 12px;
+    --btn-bg: #eef3fb;
+    --btn-text: #0b1f3a;
     --tab-bg: #e9eef6;
     --tab-bg-active: #ffffff;
     --tab-border: #0b1f3a;
@@ -59,22 +62,39 @@ label, .stMarkdown, .stText, p, span, div {
     color: var(--ink) !important;
 }
 
+/* Force readable input text (including disabled) */
+input[type="text"], input[type="number"], textarea, input::placeholder, textarea::placeholder {
+    color: var(--ink) !important;
+    -webkit-text-fill-color: var(--ink) !important;
+}
+
 /* Inputs: text, number, textarea */
 input[type="text"], input[type="number"], textarea {
     border: var(--field-border-width) solid var(--field-border) !important;
-    border-radius: 10px !important;
+    border-radius: var(--field-radius) !important;
     background: var(--panel) !important;
     color: var(--ink) !important;
     box-shadow: 0 2px 6px rgba(11,31,58,0.06) !important;
+}
+input[disabled], textarea[disabled] {
+    color: var(--ink) !important;
+    -webkit-text-fill-color: var(--ink) !important;
+    opacity: 1 !important;
+    background: #ffffff !important;
 }
 
 /* Selectbox (BaseWeb) */
 div[data-baseweb="select"] > div {
     border: var(--field-border-width) solid var(--field-border) !important;
-    border-radius: 10px !important;
+    border-radius: var(--field-radius) !important;
     background: var(--panel) !important;
     color: var(--ink) !important;
     box-shadow: 0 2px 6px rgba(11,31,58,0.06) !important;
+}
+div[data-baseweb="select"] [aria-disabled="true"] {
+    color: var(--ink) !important;
+    -webkit-text-fill-color: var(--ink) !important;
+    opacity: 1 !important;
 }
 
 /* Multiselect / dropdown menu background */
@@ -90,19 +110,21 @@ div[data-baseweb="checkbox"] svg {
 div[data-baseweb="checkbox"] > div {
     border-color: var(--navy) !important;    /* box border */
     background: #ffffff !important;
+    border-width: 2px !important;
+    border-radius: 4px !important;
 }
 
 /* Buttons */
 button[kind="primary"], button, .stButton>button {
     border: 2px solid var(--navy) !important;
-    background: var(--navy) !important;
-    color: #fff !important;
-    border-radius: 10px !important;
-    box-shadow: 0 6px 14px rgba(11,31,58,0.18) !important;
+    background: var(--btn-bg) !important;
+    color: var(--btn-text) !important;
+    border-radius: var(--field-radius) !important;
+    box-shadow: 0 6px 14px rgba(11,31,58,0.12) !important;
     height: 46px !important;
 }
 button:hover, .stButton>button:hover {
-    background: var(--navy-2) !important;
+    background: #e4ebf7 !important;
 }
 
 /* Tabs */
@@ -143,7 +165,7 @@ st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
 
 
 BASE_DIR = pathlib.Path(__file__).parent
-CITY_LOOKUP_PATH = BASE_DIR / "data" / "pinellas_county_cities_lookup.json"
+CITY_LOOKUP_PATH = BASE_DIR / "Data" / "pinellas_county_cities_lookup.json"
 
 # -----------------------------------------------------------------------------
 # City lookup + map button helpers (from your Tab 1 code)
