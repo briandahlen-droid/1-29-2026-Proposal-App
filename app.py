@@ -31,54 +31,104 @@ st.set_page_config(page_title="Proposal App (Test)", page_icon="📄", layout="w
 # -----------------------------------------------------------------------------
 CUSTOM_CSS = """
 <style>
+/* Design tokens */
+:root {
+    --navy: #0b1f3a;
+    --navy-2: #122c54;
+    --ink: #101820;
+    --paper: #f7f8fb;
+    --panel: #ffffff;
+    --border: #c9d3e1;
+    --tab-bg: #e9eef6;
+    --tab-bg-active: #ffffff;
+    --tab-border: #0b1f3a;
+    --tab-text: #0b1f3a;
+    --tab-text-active: #0b1f3a;
+    --tab-shadow: 0 6px 14px rgba(11,31,58,0.12);
+}
+
 /* App background */
 html, body, [data-testid="stAppViewContainer"], .stApp {
-    background: rgb(199,199,199) !important;
+    background: var(--paper) !important;
 }
 
 /* Make labels and text readable */
 label, .stMarkdown, .stText, p, span, div {
-    color: #000 !important;
+    color: var(--ink) !important;
 }
 
 /* Inputs: text, number, textarea */
 input[type="text"], input[type="number"], textarea {
-    border: 2px solid #000 !important;
-    border-radius: 6px !important;
-    background: #fff !important;
-    color: #000 !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 10px !important;
+    background: var(--panel) !important;
+    color: var(--ink) !important;
+    box-shadow: 0 2px 6px rgba(11,31,58,0.06) !important;
 }
 
 /* Selectbox (BaseWeb) */
 div[data-baseweb="select"] > div {
-    border: 2px solid #000 !important;
-    border-radius: 6px !important;
-    background: #fff !important;
-    color: #000 !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 10px !important;
+    background: var(--panel) !important;
+    color: var(--ink) !important;
+    box-shadow: 0 2px 6px rgba(11,31,58,0.06) !important;
 }
 
 /* Multiselect / dropdown menu background */
 div[data-baseweb="popover"] {
-    color: #000 !important;
+    color: var(--ink) !important;
 }
 
 /* Checkboxes: increase contrast */
 div[data-baseweb="checkbox"] svg {
-    color: #000 !important;           /* tick color */
-    fill: #000 !important;
+    color: var(--navy) !important;           /* tick color */
+    fill: var(--navy) !important;
 }
 div[data-baseweb="checkbox"] > div {
-    border-color: #000 !important;    /* box border */
+    border-color: var(--navy) !important;    /* box border */
 }
 
 /* Buttons */
 button[kind="primary"], button, .stButton>button {
-    border: 2px solid #000 !important;
+    border: 2px solid var(--navy) !important;
+    background: var(--navy) !important;
+    color: #fff !important;
+    border-radius: 10px !important;
+    box-shadow: 0 6px 14px rgba(11,31,58,0.18) !important;
+}
+
+/* Tabs */
+div[data-testid="stTabs"] {
+    margin-top: 6px;
+}
+div[data-testid="stTabs"] button[role="tab"] {
+    background: var(--tab-bg) !important;
+    color: var(--tab-text) !important;
+    border: 1px solid var(--tab-border) !important;
+    border-bottom: 0 !important;
+    border-radius: 12px 12px 0 0 !important;
+    padding: 10px 18px !important;
+    margin-right: 8px !important;
+    box-shadow: var(--tab-shadow) !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.2px !important;
+}
+div[data-testid="stTabs"] button[role="tab"][aria-selected="true"] {
+    background: var(--tab-bg-active) !important;
+    color: var(--tab-text-active) !important;
+    border-bottom-color: transparent !important;
+    box-shadow: none !important;
+}
+div[data-testid="stTabs"] div[role="tablist"] {
+    gap: 6px !important;
+    border-bottom: 1px solid var(--border) !important;
+    padding-bottom: 4px !important;
 }
 
 /* Expand sidebar/background if present */
 section[data-testid="stSidebar"] {
-    background: rgb(199,199,199) !important;
+    background: var(--paper) !important;
 }
 </style>
 """
