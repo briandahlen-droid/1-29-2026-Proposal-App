@@ -41,7 +41,7 @@ CUSTOM_CSS = """
     --border: #c9d3e1;
     --field-border: #0b1f3a;
     --field-border-width: 1px;
-    --field-radius: 12px;
+    --field-radius: 8px;
     --btn-bg: #eef3fb;
     --btn-text: #0b1f3a;
     --tab-bg: #e9eef6;
@@ -718,9 +718,19 @@ def render_tab2():
 
     if parts:
         paragraph = ". ".join(parts).strip() + "."
-        st.write(paragraph)
+        st.text_area(
+            "Project Understanding (auto-generated)",
+            value=paragraph,
+            height=110,
+            disabled=True,
+        )
     else:
-        st.write("Enter project details in Tab 1 and the short description above to generate this paragraph.")
+        st.text_area(
+            "Project Understanding (auto-generated)",
+            value="Enter project details in Tab 1 and the short description above to generate this paragraph.",
+            height=110,
+            disabled=True,
+        )
 
     # Simple preview of what will be inserted
     st.divider()
