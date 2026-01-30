@@ -115,35 +115,38 @@ div[data-baseweb="popover"] {
 
 /* Checkboxes: increase contrast */
 div[data-baseweb="checkbox"] svg {
-    color: var(--navy) !important;           /* tick color */
+    color: var(--navy) !important;
     fill: none !important;
 }
 div[data-baseweb="checkbox"] > div,
 div[data-baseweb="checkbox"] div[role="checkbox"] {
-    border-color: var(--navy) !important;    /* box border */
+    border-color: var(--navy) !important;
     background: #ffffff !important;
     border-width: 2px !important;
     border-radius: 4px !important;
+    box-shadow: inset 0 0 0 2px var(--navy) !important;
 }
-div[data-baseweb="checkbox"][aria-checked="true"] > div,
 div[data-baseweb="checkbox"] div[role="checkbox"][aria-checked="true"] {
     background: #ffffff !important;
 }
-div[data-baseweb="checkbox"] svg path {
-    stroke: var(--navy) !important;
+div[data-baseweb="checkbox"] div[role="checkbox"] > div {
+    background: #ffffff !important;
+}
+div[data-baseweb="checkbox"] div[role="checkbox"] svg {
     fill: none !important;
 }
-div[data-baseweb="checkbox"] svg rect {
+div[data-baseweb="checkbox"] div[role="checkbox"] svg rect {
     fill: #ffffff !important;
     stroke: var(--navy) !important;
     stroke-width: 2px !important;
 }
+div[data-baseweb="checkbox"] div[role="checkbox"] svg path {
+    stroke: var(--navy) !important;
+    fill: none !important;
+}
 div[data-baseweb="checkbox"] div[role="checkbox"]::before,
 div[data-baseweb="checkbox"] div[role="checkbox"]::after {
     background: #ffffff !important;
-}
-div[data-baseweb="checkbox"] div[role="checkbox"] {
-    box-shadow: inset 0 0 0 2px var(--navy) !important;
 }
 
 /* Buttons */
@@ -749,14 +752,16 @@ def render_tab3():
     scope = st.session_state.proposal["scope"]
     selected = scope.setdefault("task_ids", {})
 
-    for item in TAB3_TASKS:
+    cols = st.columns(2)
+    for idx, item in enumerate(TAB3_TASKS):
         key = f"tab3_{item['id']}"
         section_label = re.sub(r"^[A-Z]\s*[-—]\s*", "", item["section"]).strip()
-        selected[item["id"]] = st.checkbox(
-            f"{section_label}",
-            value=bool(selected.get(item["id"], False)),
-            key=key,
-        )
+        with cols[idx % 2]:
+            selected[item["id"]] = st.checkbox(
+                f"{section_label}",
+                value=bool(selected.get(item["id"], False)),
+                key=key,
+            )
 
     scope["scope_other"] = st.text_area(
         "Additional scope items (optional)",
