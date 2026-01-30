@@ -40,7 +40,7 @@ CUSTOM_CSS = """
     --panel: #ffffff;
     --border: #c9d3e1;
     --field-border: #0b1f3a;
-    --field-border-width: 2px;
+    --field-border-width: 1px;
     --field-radius: 12px;
     --btn-bg: #eef3fb;
     --btn-text: #0b1f3a;
@@ -70,11 +70,11 @@ input[type="text"], input[type="number"], textarea, input::placeholder, textarea
 
 /* Inputs: text, number, textarea */
 input[type="text"], input[type="number"], textarea {
-    border: var(--field-border-width) solid var(--field-border) !important;
+    border: 0 !important;
     border-radius: var(--field-radius) !important;
     background: var(--panel) !important;
     color: var(--ink) !important;
-    box-shadow: 0 2px 6px rgba(11,31,58,0.06) !important;
+    box-shadow: none !important;
 }
 /* BaseWeb input wrapper consistency */
 div[data-baseweb="input"] > div {
@@ -141,6 +141,9 @@ div[data-baseweb="checkbox"] svg rect {
 div[data-baseweb="checkbox"] div[role="checkbox"]::before,
 div[data-baseweb="checkbox"] div[role="checkbox"]::after {
     background: #ffffff !important;
+}
+div[data-baseweb="checkbox"] div[role="checkbox"] {
+    box-shadow: inset 0 0 0 2px var(--navy) !important;
 }
 
 /* Buttons */
@@ -598,7 +601,7 @@ def render_tab1():
         intake["county"] = county_input
         city = expand_city_name(intake.get("city", "") or "")
         map_url = _get_city_map_url(city)
-        button_label = f"Open {city} Zoning / Future Land Use Map" if city else "Open Zoning / Future Land Use Map"
+        button_label = f"Open {city} Zoning and Land Use Map" if city else "Open Zoning and Land Use Map"
         if map_url:
             st.link_button(button_label, map_url, use_container_width=True)
         else:
@@ -678,6 +681,46 @@ def render_tab2():
         height=100,
         placeholder="Enter any additional assumptions, exclusions, phasing notes, etc.",
     )
+
+    st.markdown("### Project Understanding (auto-generated)")
+    parts = []
+    desc = proj.get("project_description_short", "").strip()
+    if desc:
+        parts.append(desc.rstrip("."))
+    parcel_id = intake.get("parcel_id", "")
+    address = intake.get("address", "")
+    city = intake.get("city", "")
+    county = intake.get("county", "")
+    land_use = intake.get("land_use", "")
+    acres = intake.get("site_area_acres", "")
+    zoning = intake.get("zoning", "")
+    flu = intake.get("future_land_use", "")
+
+    loc_bits = []
+    if address:
+        loc_bits.append(address)
+    if city:
+        loc_bits.append(city)
+    if county:
+        loc_bits.append(f"{county} County")
+    if loc_bits:
+        parts.append(f"The site is located at {', '.join(loc_bits)}")
+    if parcel_id:
+        parts.append(f"Parcel ID {parcel_id}")
+    if land_use:
+        parts.append(f"Current land use is {land_use}")
+    if acres:
+        parts.append(f"Site area is {acres} acres")
+    if zoning:
+        parts.append(f"Zoning: {zoning}")
+    if flu:
+        parts.append(f"Future Land Use: {flu}")
+
+    if parts:
+        paragraph = ". ".join(parts).strip() + "."
+        st.write(paragraph)
+    else:
+        st.write("Enter project details in Tab 1 and the short description above to generate this paragraph.")
 
     # Simple preview of what will be inserted
     st.divider()
