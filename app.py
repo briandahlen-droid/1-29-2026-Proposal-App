@@ -126,6 +126,33 @@ button[kind="primary"], button, .stButton>button {
 button:hover, .stButton>button:hover {
     background: #e4ebf7 !important;
 }
+button:disabled, .stButton>button:disabled {
+    border: 2px solid var(--navy) !important;
+    background: var(--btn-bg) !important;
+    color: var(--btn-text) !important;
+    box-shadow: none !important;
+    opacity: 1 !important;
+}
+
+/* Help tooltip icon */
+[data-testid="stTooltipIcon"] {
+    width: 22px !important;
+    height: 22px !important;
+    min-width: 22px !important;
+    min-height: 22px !important;
+    border-radius: 50% !important;
+    background: var(--paper) !important;
+    border: 2px solid var(--navy) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+[data-testid="stTooltipIcon"] svg {
+    width: 12px !important;
+    height: 12px !important;
+    color: var(--navy) !important;
+    fill: var(--navy) !important;
+}
 
 /* Tabs */
 div[data-testid="stTabs"] {
