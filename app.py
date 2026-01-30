@@ -133,6 +133,15 @@ div[data-baseweb="checkbox"] svg path {
     stroke: var(--navy) !important;
     fill: none !important;
 }
+div[data-baseweb="checkbox"] svg rect {
+    fill: #ffffff !important;
+    stroke: var(--navy) !important;
+    stroke-width: 2px !important;
+}
+div[data-baseweb="checkbox"] div[role="checkbox"]::before,
+div[data-baseweb="checkbox"] div[role="checkbox"]::after {
+    background: #ffffff !important;
+}
 
 /* Buttons */
 button[kind="primary"], button, .stButton>button {
