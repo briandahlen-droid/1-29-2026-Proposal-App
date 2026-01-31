@@ -87,6 +87,14 @@ div[data-baseweb="input"] [aria-label="Decrement"] {
 div[data-baseweb="input"] > div > div:last-child {
     display: none !important;
 }
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none !important;
+    margin: 0 !important;
+}
+input[type="number"] {
+    -moz-appearance: textfield !important;
+}
 
 /* Additional Services: wrap long labels tighter */
 .additional-services label {
@@ -99,7 +107,7 @@ div[data-baseweb="input"] > div > div:last-child {
 }
 .additional-services div[data-baseweb="input"] {
     max-width: 260px;
-    margin-left: 26px;
+    margin-left: 0;
 }
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
