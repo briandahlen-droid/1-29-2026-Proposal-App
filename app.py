@@ -424,7 +424,7 @@ def scrape_pinellas_property(parcel_id: str) -> Dict[str, Any]:
                 strap = normalized_parcel.replace("-", "")
 
             detail_url = (
-                f"https://www.pcpao.gov/property-details?"
+                f"https://www.pcpao.gov/property-detailsx"
                 f"s={strap}&input={normalized_parcel}&search_option=parcel_number"
             )
             html = session.get(detail_url, timeout=30).text
@@ -494,55 +494,167 @@ def init_proposal_state() -> None:
                 "assumptions_other": "",
             },
             "scope": {
-                # Tab 3 selections (ids)
-                "task_ids": {},              # id -> bool
-                "scope_other": "",
+                # Tab 3 selections (tasks + fees)
+                "selected_tasks": {},        # task_num -> dict
             },
             "permits": {
-                # Tab 4 permit selections
-                "permit_ids": {},            # id -> bool
-                "permit_other": "",
+                # Tab 4 permit + additional services selections
+                "permit_flags": {},          # key -> bool
+                "included_additional_services": [],
+                "included_additional_services_with_fees": {},
+                "excluded_additional_services": [],
             },
-            "tab4_tasks": {
-                # Tab 4 tasks 108-110 selections
-                "task_ids": {},              # id -> bool
-            }
+            "invoice": {
+                # Tab 5 invoice/billing info
+                "invoice_email": "",
+                "invoice_cc_email": "",
+                "kh_signer_name": "",
+                "kh_signer_title": "",
+                "use_retainer": False,
+                "retainer_amount": 0,
+            },
         }
 
 # -----------------------------------------------------------------------------
-# Tab 3/4 libraries (placeholders for now - wire your final text blocks later)
+# Tab 3/4/5 data (from New-Proposal-App)
 # -----------------------------------------------------------------------------
-TAB3_TASKS = [
-    # Keep only tasks that belong on Tab 3 (NOT 107-110, which live on Tab 4)
-    {"id": "task_due_diligence_site_review", "section": "B — Due Diligence", "label": "Due-Diligence and Site Review", "output": "TODO: full block"},
-    {"id": "task_city_site_plan_approval", "section": "C — City approvals", "label": "City of St. Petersburg Site Plan Approval Process", "output": "TODO: full block"},
-    {"id": "task_landscape_drc_concept", "section": "D — Landscape concepts", "label": "Landscape DRC Concept Plan", "output": "TODO: full block"},
-    {"id": "task_civil_construction_documents", "section": "F — Civil design", "label": "Civil Construction Documents", "output": "TODO: full block"},
-    {"id": "task_fdot_driveway_access", "section": "Permitting/FDOT", "label": "FDOT Driveway Access Plans", "output": "TODO: full block"},
-    {"id": "task_stormwater_design", "section": "G — Stormwater", "label": "Stormwater Design", "output": "TODO: full block"},
-    {"id": "task_code_min_landscape", "section": "H — Landscape", "label": "Code Minimum Landscape Architecture", "output": "TODO: full block"},
-    # Task 106 (include full block in your final build)
-    {"id": "task_106_landscape_architecture", "section": "H — Landscape", "label": "Landscape Architecture (Task 106) — Streetscape + Elevated Amenity Deck", "output": "TODO: paste full Task 106 block"},
-    # Optional extras
-    {"id": "task_platting_assistance", "section": "N — Platting", "label": "Platting Assistance", "output": "TODO: full block"},
-    {"id": "task_faa_permitting", "section": "O — FAA", "label": "FAA Permitting", "output": "TODO: full block"},
+DEFAULT_FEES = {
+    "110": {"name": "Civil Engineering Design", "amount": 40000, "type": "Hourly, Not-to-Exceed"},
+    "120": {"name": "Civil Schematic Design", "amount": 35000, "type": "Hourly, Not-to-Exceed"},
+    "130": {"name": "Civil Design Development", "amount": 45000, "type": "Hourly, Not-to-Exceed"},
+    "140": {"name": "Civil Construction Documents", "amount": 50000, "type": "Hourly, Not-to-Exceed"},
+    "150": {"name": "Civil Permitting", "amount": 40000, "type": "Hourly, Not-to-Exceed"},
+    "210": {"name": "Meetings and Coordination", "amount": 20000, "type": "Hourly, Not-to-Exceed"},
+    "310": {"name": "Civil Construction Phase Services", "amount": 35000, "type": "Lump Sum"},
+}
+
+TASK_DESCRIPTIONS = {
+    "110": [
+        "Kimley-Horn will prepare an onsite drainage report with supporting calculations showing the proposed development plan is consistent with the Southwest Florida Water Management District Basis of Review. This design will account for the stormwater design to support the development of the project site. The drainage report will include limited stormwater modeling to demonstrate that the Lot A site development will maintain the existing discharge rate and provide the required stormwater attenuation.",
+        "The onsite drainage report will include calculations for 25-year 24-hour and 100-year 24-hour design storm conditions in accordance with Southwest Florida Water Management District Guidelines. A base stormwater design will be provided for the project site showing reasonable locations for stormwater conveyance features and stormwater management pond sizing.",
+    ],
+    "120": [
+        "Kimley-Horn will prepare Civil Schematic Design deliverables in accordance with the Client's Design Project Deliverables Checklist. For the Civil Schematic Design task, the deliverables that Kimley-Horn will provide consist of Civil Site Plan, Establish Finish Floor Elevations, Utility Will Serve Letters and Points of Service, Utility Routing and Easement Requirements.",
+    ],
+    "130": [
+        "Upon Client approval of the Schematic Design task, Kimley-Horn will prepare Design Development Plans of the civil design in accordance with the Client's Design Project Deliverables Checklist for Civil Design Development Deliverables. These documents will be approximately 50% complete and will include detail for City code review and preliminary pricing but will not include enough detail for construction bidding.",
+    ],
+    "140": [
+        "Based on the approved Development Plan, Kimley-Horn will provide engineering and design services for the preparation of site construction plans for on-site improvements.",
+        "Cover Sheet",
+        "The cover sheet includes plan contents, vicinity map, legal description and team identification.",
+        "General Notes",
+        "These sheets will provide general notes for the construction of the project.",
+        "Existing Conditions / Demolition Plan",
+        "Consisting of the boundary, topographic, and tree survey provided by others. This sheet will include and identify the required demolition of the existing items on the project site and facilities improvements prior to construction of the proposed site and facilities improvements.",
+        "Stormwater Pollution Prevention Plan",
+        "This sheet will include and identify stormwater best management practices for the construction of the proposed site including erosion control and stormwater management areas; applicable details, and specifications. This sheet may also be combined with the Existing Conditions/Demolition Plan sheets depending on the scope of the work.",
+        "Site Plan (Horizontal Control & Signing and Marking Plan)",
+        "Kimley-Horn shall prepare a Site Plan, as indicated above, with associated parking and infrastructure. Site Plan shall consist of the following: site geometry, building setbacks; roadway and parking dimensions including handicap spaces; landscape island locations and dimensions; storm water detention area locations and dimensions; boundary dimensions; dimensions and locations of pedestrian walks; signing and marking design. Signing and Marking within the structured parking as well as loading areas and compactors (if applicable) to be designed by the Architect.",
+        "Paving, Grading, and Drainage Plan",
+        "Kimley-Horn shall design and prepare a plan for the site paving, grading and drainage systems in accordance with the City, the FDOT, and the Water Management District (SWFWMD) to consist of: flood routing; pipe materials and sizing; grate and invert elevations; surface parking including pavement structural section (as provided by owner's geotechnical report); subgrade treatment; curbs; horizontal control; sidewalks; driveway connections; spot elevations and elevation contours; and construction details and specifications, and erosion and sedimentation control measures.",
+        "**NOTE:**Any structural retaining walls are not included with this scope and shall be designed and permitted by others. Hardscape areas shall be designed by others, therefore paving, grading and drainage of these areas is not included. Stub-out connections for the hardscape drainage areas will be shown per direction from the Hardscape designer.",
+        "Detailed grading and drainage design for any proposed pool deck or amenity area is to be designed and coordinated by the Architect and the MEP. Kimley-Horn can provide these services if requested by the client as additional services.",
+        "Utility Plans",
+        "Kimley-Horn shall prepare a plan for the site water distribution and sanitary sewer collection systems consisting of: sewer main locations; pipe sizing; manhole locations; rim and invert elevations; sewer lateral locations and size; existing sewer main connection; main location; materials and sizing; fire hydrant locations; water service locations; fire service locations and sizes; pipe materials; meter locations; sample points; existing water main connections; and construction details and specifications. Kimley-Horn will design the sanitary sewer to discharge to the adjacent development collection system. No upgrades to the off-site infrastructure. Should this be required during design and permitting, this will be submitted as an additional service.",
+        "**NOTE:**Kimley-Horn's contract does not include the design of the fire lines from the designated point of service (P.O.S.) up to 1' above the building finished floor as those lines will need to be sized and designed by a licensed fire sprinkler engineer and permitted separately.",
+        "Kimley-Horn has assumed utilities are available and have adequate capacity to accommodate the proposed development. Kimley-Horn assumes the utilities are located at the project boundary and will not require off-site utility extensions. If off-site extensions are needed, they will be provided as additional services. Lift station, force main, and pump design and permitting, if needed, is not included but can be provided as an Additional Service if needed.",
+        "It is assumed a private lift station will not be required to serve this development, therefore lift station design is not included in this scope.",
+        "Kimley-Horn shall show any existing utility locations on the utility plans as provided by the surveyor, and research applicable utility records for locations in accordance with best available information.",
+        "Dedicated Fire Lines and Combination Domestic Water / Fire Lines, if needed, shall be designed and permitted by a licensed Fire Contractor Class I, II or V per NFPA 24 and is not included in this scope of services. Those lines will be shown on the Civil plans for permitting and reference only.",
+        "Routing of proposed dry utilities such as gas, electric, telephone or cable service connections is not included in this scope of services and should be provided by others. Kimley-Horn will meet with the project team to incorporate dry utility routing as provided to us into our utility plans for coordination purposes.",
+        "Street lighting design, photometrics and site electrical plans will be provided by the Client's Architect or Architect's MEP. Overhead electrical lines and transformers will be designed and located by the site electrical designer or local provider but will be placed on the Construction plans for coordination.",
+        "Civil Details and Construction Specifications",
+        "Kimley-Horn shall prepare construction details for site work improvements and erosion and sediment control measures. Typically, these details will correspond with City standard details. Standard FDOT details will not be provided but will be referenced throughout the plans.",
+        "**NOTE:**A specifications package is not included in this scope of services as specifications are per authority having jurisdiction (AHJ). Preparation of detailed specifications to be supplied with the architect's specifications can be provided, per request, as additional services.",
+    ],
+    "150": [
+        "Prepare and submit on the Client's behalf the following permitting packages for review/approval of construction documents, and attend meetings required to obtain the following Agency approvals:",
+        "Southwest Florida Water Management District Environmental Resource Permit xxx Minor Modification",
+        "City of Tampa Water Department Commitment / Construction Plan Approval",
+        "Hillsborough County Environmental Protection Commission",
+        "Kimley-Horn will coordinate with the City of Tampa Development Review and coordination with the Florida Department of Transportation and the Hillsborough County departments as needed to obtain the necessary regulatory and utility approval of the site plans and associated drainage facilities. We will assist the Client with meetings necessary to gain site plan approval.",
+        "This scope does not anticipate a Geotechnical or Environmental Assessment Report, Survey, Topographic Survey, or Arborist Report be required for this permit application.",
+        "It is assumed Client will provide the needed information regarding the development program and requirements. Kimley-Horn will work with the Owner and their team to integrate the necessary design requirements into the Civil design to support entitlement, platting, and development approvals.",
+        "These permit applications will be submitted using the electronic permitting submittal system (web-based system) for the respective jurisdictions where applicable.",
+    ],
+    "210": [
+        "Kimley-Horn will be available to provide miscellaneous project support at the direction of the Client. This task may include design meetings, additional permit support, permit research, or other miscellaneous tasks associated with the initial and future development of the project site. This task will also cover tasks such as design coordination meetings, scheduling, coordination with other client consultants, responses to additional rounds of agency comments.",
+    ],
+    "310": [
+        "Engineering construction phase services will be performed in connection with site improvements designed by Kimley-Horn. The scope of this task assumes construction phase services will be performed concurrent and in coordination with one General Contractor for the entire project. This task does not include constructing the project in multiple phases. Kimley-Horn construction phase services will include the following:",
+        "Provide for review of shop drawings and submittals required for the site improvements controlled by our design documents. Kimley-Horn has included up to {shop_drawing_hours} hours for review of shop drawings and samples.",
+        "Review and reply to Contractor's request(s) for information during construction phase. Kimley-Horn has included up to {rfi_hours} hours for response to RFI's.",
+        "Attendance at up to {oac_meetings} one-hour each Owner-Architect-Contractor (OAC) virtual meetings.",
+        "Kimley-Horn will visit the construction site during the duration of construction for an estimated total of up to {site_visits} site visits at two-hours each to observe the progress of the civil components of work completed.",
+        "Provide up to two (2) reviews of 'as-built' documents, submitted by General Contractor's registered land surveyor.",
+        "Kimley-Horn will prepare Record Drawings for potable water and sanitary sewer only. Kimley-Horn has included up to {record_drawing_hours} hours for record drawing preparation.",
+        "Kimley-Horn will submit FDEP water and sewer clearance submittals based on as-built information provided by the Contractor.",
+        "Kimley-Horn shall submit a Letter of General Compliance for the civil related components of construction to the AHJ.",
+        "Submit Certification of Completion to the Water Management District (WMD).",
+        "The above hours allocated to the respective construction phase services may be interchangeable amongst the construction phase services outlined in this task, however the total number of hours included within the entirety of the task is up to {total_hours} hours.",
+    ],
+}
+
+PERMIT_MAPPING = {
+    "Pinellas": {
+        "ahj_name": "Pinellas County",
+        "wmd": "Southwest Florida Water Management District",
+        "wmd_short": "SWFWMD",
+        "default_permits": ["ahj", "wmd_erp", "sewer", "water"],
+    },
+    "Hillsborough": {
+        "ahj_name": "Hillsborough County",
+        "wmd": "Southwest Florida Water Management District",
+        "wmd_short": "SWFWMD",
+        "default_permits": ["ahj", "wmd_erp", "sewer", "water"],
+    },
+    "Pasco": {
+        "ahj_name": "Pasco County",
+        "wmd": "Southwest Florida Water Management District",
+        "wmd_short": "SWFWMD",
+        "default_permits": ["ahj", "wmd_erp", "sewer", "water"],
+    },
+}
+
+ADDITIONAL_SERVICES_LIST = [
+    ("offsite_roadway", "Off-site roadway, traffic signal design or utility improvements", False, 25000),
+    ("offsite_utility", "Off-site utility capacity analysis and extensions", False, 15000),
+    ("utility_relocation", "Utility relocation design and plans", False, 12000),
+    ("cost_opinions", "Preparation of opinions of probable construction costs", False, 5000),
+    ("dewatering", "Dewatering permitting (to be provided by Contractor)", False, 3000),
+    ("site_lighting", "Site lighting, photometric, and site electrical plan", False, 8000),
+    ("dry_utility", "Dry utility coordination and design", False, 10000),
+    ("landscape", "Landscape, irrigation, hardscape design and tree mitigation", False, 20000),
+    ("fire_line", "Fire line design", False, 6000),
+    ("row_permitting", "Right-of-way permitting", False, 8000),
+    ("concurrency", "Concurrency application assistance", False, 5000),
+    ("3d_modeling", "3D modeling and graphic/presentations", False, 8000),
+    ("leed", "LEED certification and review", False, 20000),
+    ("schematic_dd", "Schematic and design development plans", False, 15000),
+    ("extra_meetings", "Meetings other than those described in the tasks above", False, 5000),
+    ("surveying", "Boundary, topographic and tree surveying, platting and subsurface utility exploration", False, 25000),
+    ("platting", "Platting or easement assistance", False, 8000),
+    ("traffic_studies", "Traffic studies, analysis, property share agreement", False, 30000),
+    ("mot_plans", "Maintenance of traffic plans", False, 12000),
+    ("structural", "Structural engineering (including retaining walls)", False, 35000),
+    ("signage", "Signage design", False, 4000),
+    ("extra_design", "Design elements beyond those outlined in the above project understanding", False, 10000),
+    ("peer_review", "Responding to comments from third-party peer review", False, 8000),
 ]
 
-PERMITS = [
-    {"id": "permit_cosp_civil", "label": "City of St. Petersburg Commercial Plan Site Civil Permit"},
-    {"id": "permit_cosp_row", "label": "City of St. Petersburg Right-of-Way Permit – Site Work (no offsite extensions)"},
-    {"id": "permit_swfwmd_erp_exemption", "label": "SWFWMD ERP Exemption"},
-    {"id": "permit_fdep_water_sewer_exemption", "label": "FDEP Water and Sewer Exemption"},
-    {"id": "permit_fdep_npdes", "label": "FDEP NPDES Permit"},
-    # Add any other permit checkbox bullets here
+TASK_310_SERVICES = [
+    ("shop_drawings", "Shop Drawing Review", 30, 165, 4950),
+    ("rfi", "RFI Response", 50, 165, 8250),
+    ("oac", "OAC Meetings", 24, 0, 3000),
+    ("site_visits", "Site Visits (2 hrs each)", 4, 0, 1000),
+    ("asbuilt", "As-Built Reviews", 2, 0, 500),
+    ("inspection_tv", "Inspection & TV Reports", 0, 165, 0),
+    ("record_drawings", "Record Drawings (Water/Sewer)", 40, 165, 6600),
+    ("fdep", "FDEP Clearance Submittals", 0, 0, 0),
+    ("compliance", "Letter of General Compliance", 0, 0, 0),
+    ("wmd", "WMD Certification", 0, 0, 0),
 ]
-
-TAB4_TASKS_108_110 = [
-    {"id": "task_108_franchised_utility_coordination", "label": "Task 108 — Franchised Utility Coordination", "output": "TODO: full block"},
-    {"id": "task_109_meetings", "label": "Task 109 — Meetings", "output": "TODO: full block"},
-    {"id": "task_110_construction_phase_services", "label": "Task 110 — Construction Phase Services", "output": "TODO: full block"},
-]
-
 # -----------------------------------------------------------------------------
 # UI renderers
 # -----------------------------------------------------------------------------
@@ -748,101 +860,399 @@ def render_tab2():
 
 def render_tab3():
     st.subheader("Scope of Services")
+    st.markdown("Select the tasks to include, enter the fee, and choose the fee type for each task.")
 
     scope = st.session_state.proposal["scope"]
-    selected = scope.setdefault("task_ids", {})
+    selected_tasks = scope.setdefault("selected_tasks", {})
 
-    cols = st.columns(2)
-    for idx, item in enumerate(TAB3_TASKS):
-        key = f"tab3_{item['id']}"
-        section_label = re.sub(r"^[A-Z]\s*[-—]\s*", "", item["section"]).strip()
-        with cols[idx % 2]:
-            selected[item["id"]] = st.checkbox(
-                f"{section_label}",
-                value=bool(selected.get(item["id"], False)),
-                key=key,
+    for task_num in sorted(DEFAULT_FEES.keys()):
+        task = DEFAULT_FEES[task_num]
+        existing = selected_tasks.get(task_num, {})
+
+        col_check, col_name, col_fee, col_type = st.columns([0.5, 3, 1.5, 1.5])
+
+        with col_check:
+            task_selected = st.checkbox(
+                f"{task_num}",
+                value=bool(existing) or task_num == "310",
+                key=f"check_{task_num}",
+                label_visibility="collapsed",
             )
 
-    scope["scope_other"] = st.text_area(
-        "Additional scope items (optional)",
-        value=scope.get("scope_other", ""),
-        height=120,
-        placeholder="Add any scope items not covered by the checkboxes.",
-    )
+        with col_name:
+            if task_num == "310":
+                st.markdown(f"**Task {task_num}: {task['name']}** *(uncheck if not needed)*")
+            else:
+                st.markdown(f"**Task {task_num}: {task['name']}**")
+
+        with col_fee:
+            fee_amount = st.number_input(
+                "Fee ($)",
+                min_value=0,
+                value=existing.get("fee") if existing else None,
+                placeholder=f"{task['amount']:,}",
+                key=f"fee_{task_num}",
+                disabled=not task_selected,
+                label_visibility="collapsed",
+            )
+
+        with col_type:
+            type_options = ["Hourly, Not-to-Exceed", "Hourly", "Lump Sum"]
+            existing_type = existing.get("type", task.get("type", "Hourly, Not-to-Exceed"))
+            type_index = type_options.index(existing_type) if existing_type in type_options else 0
+            fee_type_selection = st.selectbox(
+                "Type",
+                options=type_options,
+                index=type_index,
+                key=f"type_{task_num}",
+                disabled=not task_selected,
+                label_visibility="collapsed",
+            )
+
+        if task_selected:
+            final_fee = fee_amount if fee_amount is not None else task["amount"]
+            selected_tasks[task_num] = {
+                "name": task["name"],
+                "fee": final_fee,
+                "type": fee_type_selection,
+            }
+        else:
+            selected_tasks.pop(task_num, None)
+
+        if task_selected and task_num == "310":
+            st.markdown("**Construction Phase Services:**")
+            st.caption("Select services, enter hours/count, rate, and cost")
+
+            col_h1, col_h2, col_h3, col_h4, col_h5 = st.columns([0.5, 3, 1.5, 1.5, 1.5])
+            with col_h2:
+                st.markdown("**Service**")
+            with col_h3:
+                st.markdown("**Hrs/Count**")
+            with col_h4:
+                st.markdown("**$/hr**")
+            with col_h5:
+                st.markdown("**Cost ($)**")
+
+            service_data = {}
+            for svc_key, svc_name, default_hrs, default_rate, default_cost in TASK_310_SERVICES:
+                col_chk, col_nm, col_hrs, col_rate, col_cost = st.columns([0.5, 3, 1.5, 1.5, 1.5])
+
+                with col_chk:
+                    is_selected = st.checkbox(
+                        "x",
+                        value=svc_key in ["shop_drawings", "rfi", "oac", "site_visits", "asbuilt", "fdep", "compliance", "wmd"],
+                        key=f"svc310_{svc_key}",
+                        label_visibility="collapsed",
+                    )
+
+                with col_nm:
+                    st.markdown(f"{svc_name}")
+
+                with col_hrs:
+                    if default_hrs > 0 or svc_key in ["inspection_tv", "record_drawings"]:
+                        hrs_value = st.number_input(
+                            "Hrs",
+                            min_value=0,
+                            value=default_hrs,
+                            key=f"hrs310_{svc_key}",
+                            disabled=not is_selected,
+                            label_visibility="collapsed",
+                        )
+                    else:
+                        hrs_value = 0
+                        st.write("x")
+
+                with col_rate:
+                    if default_rate > 0 or svc_key in ["inspection_tv", "record_drawings"]:
+                        rate_value = st.number_input(
+                            "Rate",
+                            min_value=0,
+                            value=default_rate,
+                            key=f"rate310_{svc_key}",
+                            disabled=not is_selected,
+                            label_visibility="collapsed",
+                        )
+                    else:
+                        rate_value = 0
+                        st.write("x")
+
+                with col_cost:
+                    if is_selected:
+                        cost_value = st.number_input(
+                            "Cost",
+                            min_value=0,
+                            value=default_cost,
+                            key=f"cost310_{svc_key}",
+                            disabled=not is_selected,
+                            label_visibility="collapsed",
+                        )
+                    else:
+                        cost_value = 0
+                        st.write("x")
+
+                service_data[svc_key] = {
+                    "included": is_selected,
+                    "name": svc_name,
+                    "hours": hrs_value if is_selected else 0,
+                    "rate": rate_value if is_selected else 0,
+                    "cost": cost_value if is_selected else 0,
+                }
+
+            st.markdown("---")
+            total_hrs = st.number_input(
+                "**Total Task 310 Hours**",
+                min_value=0,
+                value=selected_tasks.get("310", {}).get("total_hours", 180),
+                key="total_construction_hours",
+            )
+
+            selected_tasks["310"]["services"] = service_data
+            selected_tasks["310"]["total_hours"] = total_hrs
+            selected_tasks["310"]["hours"] = {
+                "shop_drawing": service_data["shop_drawings"]["hours"],
+                "rfi": service_data["rfi"]["hours"],
+                "oac_meetings": service_data["oac"]["hours"],
+                "site_visits": service_data["site_visits"]["hours"],
+                "record_drawing": service_data["record_drawings"]["hours"],
+                "total": total_hrs,
+            }
+
 
 def render_tab4():
-    st.subheader("Permitting & Construction Administration")
+    st.subheader("Permitting Requirements")
+    st.markdown("Select the permits/approvals required for this project (applies to Task 150 - Civil Permitting):")
 
-    # Task 107: Permitting is not a checkbox; permit list is checkbox set
-    st.markdown("### Task 107 — Permitting")
-    permits = st.session_state.proposal["permits"]
-    psel = permits.setdefault("permit_ids", {})
-
-    for p in PERMITS:
-        psel[p["id"]] = st.checkbox(
-            p["label"],
-            value=bool(psel.get(p["id"], False)),
-            key=f"tab4_{p['id']}",
-        )
-
-    permits["permit_other"] = st.text_area(
-        "Additional permits (optional)",
-        value=permits.get("permit_other", ""),
-        height=100,
-        placeholder="List any additional permits/approvals required (one per line if possible).",
-    )
-
-    st.divider()
-
-    st.markdown("### Tasks 108–110")
-    tsel = st.session_state.proposal["tab4_tasks"].setdefault("task_ids", {})
-    for t in TAB4_TASKS_108_110:
-        tsel[t["id"]] = st.checkbox(t["label"], value=bool(tsel.get(t["id"], False)), key=f"tab4_{t['id']}")
-
-def render_preview():
-    st.subheader("Preview Output (test)")
-
-    proj = st.session_state.proposal["project"]
     intake = st.session_state.proposal["intake"]
+    permits = st.session_state.proposal["permits"]
+    scope = st.session_state.proposal["scope"]
+    selected_tasks = scope.get("selected_tasks", {})
+
+    permit_flags = permits.setdefault("permit_flags", {})
+    permit_config = PERMIT_MAPPING.get(intake.get("county", ""), {})
+    default_permits = permit_config.get("default_permits", [])
+    ahj_name = permit_config.get("ahj_name", "Authority Having Jurisdiction")
+    wmd_name = permit_config.get("wmd_short", "Water Management District")
+
+    col_permit1, col_permit2, col_permit3 = st.columns(3)
+
+    with col_permit1:
+        permit_ahj = st.checkbox(f"{ahj_name}", value=permit_flags.get("permit_ahj", "ahj" in default_permits), key="permit_ahj")
+        permit_sewer = st.checkbox("Sewer Provider", value=permit_flags.get("permit_sewer", "sewer" in default_permits), key="permit_sewer")
+        permit_water = st.checkbox("Water Provider", value=permit_flags.get("permit_water", "water" in default_permits), key="permit_water")
+
+    with col_permit2:
+        permit_wmd_erp = st.checkbox(f"{wmd_name} ERP", value=permit_flags.get("permit_wmd_erp", "wmd_erp" in default_permits), key="permit_wmd_erp")
+        permit_fdep = st.checkbox("FDEP Potable Water/Wastewater", value=permit_flags.get("permit_fdep", False), key="permit_fdep")
+        permit_fdot_drainage = st.checkbox("FDOT Drainage Connection", value=permit_flags.get("permit_fdot_drainage", False), key="permit_fdot_drainage")
+
+    with col_permit3:
+        permit_fdot_driveway = st.checkbox("FDOT Driveway Connection", value=permit_flags.get("permit_fdot_driveway", False), key="permit_fdot_driveway")
+        permit_fdot_utility = st.checkbox("FDOT Utility Connection", value=permit_flags.get("permit_fdot_utility", False), key="permit_fdot_utility")
+        permit_fema = st.checkbox("FEMA", value=permit_flags.get("permit_fema", False), key="permit_fema")
+
+    permit_flags.update({
+        "permit_ahj": permit_ahj,
+        "permit_sewer": permit_sewer,
+        "permit_water": permit_water,
+        "permit_wmd_erp": permit_wmd_erp,
+        "permit_fdep": permit_fdep,
+        "permit_fdot_drainage": permit_fdot_drainage,
+        "permit_fdot_driveway": permit_fdot_driveway,
+        "permit_fdot_utility": permit_fdot_utility,
+        "permit_fema": permit_fema,
+    })
+
+    st.markdown("---")
+    st.subheader("Additional Services")
+    st.markdown("**Check the services you ARE providing** in this proposal and enter the fee. Unchecked services will be listed as 'Additional Services' (not included).")
+    st.caption("Tip: Check services you ARE including and enter fees. Unchecked items appear in 'Additional Services (Not Included)' section.")
+
+    included_additional_services = []
+    excluded_additional_services = []
+    included_additional_services_with_fees = {}
+
+    for key, service_name, default_checked, default_fee in ADDITIONAL_SERVICES_LIST:
+        col_service, col_fee = st.columns([3, 1])
+
+        with col_service:
+            is_checked = st.checkbox(
+                service_name,
+                value=bool(permits.get("included_additional_services_with_fees", {}).get(service_name)) if service_name in permits.get("included_additional_services_with_fees", {}) else default_checked,
+                key=f"addl_svc_{key}",
+            )
+
+        with col_fee:
+            prev_fee = permits.get("included_additional_services_with_fees", {}).get(service_name)
+            fee_amount = st.number_input(
+                "Fee ($)",
+                min_value=0,
+                value=prev_fee,
+                placeholder=f"{default_fee:,}",
+                key=f"addl_fee_{key}",
+                disabled=not is_checked,
+                label_visibility="collapsed",
+            )
+
+        if is_checked:
+            final_fee = fee_amount if fee_amount is not None else default_fee
+            included_additional_services.append(service_name)
+            included_additional_services_with_fees[service_name] = final_fee
+        else:
+            excluded_additional_services.append(service_name)
+
+    permits["included_additional_services"] = included_additional_services
+    permits["included_additional_services_with_fees"] = included_additional_services_with_fees
+    permits["excluded_additional_services"] = excluded_additional_services
+
+    st.markdown("---")
+    st.subheader("Selected Tasks Summary")
+    if selected_tasks or included_additional_services_with_fees:
+        total_fee = 0
+
+        for task_num in sorted(selected_tasks.keys()):
+            task = selected_tasks[task_num]
+            st.write(f"- Task {task_num}: {task['name']} - **${task['fee']:,}**")
+            total_fee += task["fee"]
+
+        if included_additional_services_with_fees:
+            st.markdown("**Additional Services Included:**")
+            for service_name, service_fee in included_additional_services_with_fees.items():
+                st.write(f"- {service_name} - **${service_fee:,}**")
+                total_fee += service_fee
+
+        st.markdown("---")
+        st.markdown(f"### **Total Fee: ${total_fee:,}**")
+    else:
+        st.info("Select at least one task in the Scope of Services tab")
+
+
+def render_tab5():
+    st.subheader("Invoice & Billing Information")
+
+    invoice = st.session_state.proposal["invoice"]
     scope = st.session_state.proposal["scope"]
     permits = st.session_state.proposal["permits"]
-    tab4 = st.session_state.proposal["tab4_tasks"]
+    intake = st.session_state.proposal["intake"]
 
-    st.markdown("## PROJECT UNDERSTANDING")
-    st.write(proj.get("project_description_short", "").strip())
+    col_inv1, col_inv2 = st.columns(2)
 
-    st.markdown("## PROJECT ASSUMPTIONS")
-    checked = proj.get("assumptions_checked", {})
-    for aid, val in checked.items():
-        if val:
-            st.write(f"- {aid}")
-    if proj.get("assumptions_other", "").strip():
-        st.write(proj["assumptions_other"].strip())
+    with col_inv1:
+        invoice["invoice_email"] = st.text_input(
+            "Invoice Email Address",
+            value=invoice.get("invoice_email", ""),
+            placeholder="e.g., accounting@company.com",
+            help="Primary email for invoices",
+        )
+        invoice["kh_signer_name"] = st.text_input(
+            "Kimley-Horn Signer Name",
+            value=invoice.get("kh_signer_name", ""),
+            placeholder="e.g., John Smith, PE",
+        )
+        invoice["use_retainer"] = st.checkbox(
+            "Require Retainer",
+            value=bool(invoice.get("use_retainer", False)),
+            help="Check if this proposal requires an upfront retainer fee",
+        )
 
-    st.markdown("## SCOPE OF SERVICES (selected)")
-    for item in TAB3_TASKS:
-        if scope.get("task_ids", {}).get(item["id"], False):
-            st.markdown(f"### {item['label']}")
-            st.write(item["output"])
+    with col_inv2:
+        invoice["invoice_cc_email"] = st.text_input(
+            "CC Email (optional)",
+            value=invoice.get("invoice_cc_email", ""),
+            placeholder="e.g., manager@company.com",
+            help="Additional recipient for invoices",
+        )
+        invoice["kh_signer_title"] = st.text_input(
+            "Kimley-Horn Signer Title",
+            value=invoice.get("kh_signer_title", ""),
+            placeholder="e.g., Senior Project Manager",
+        )
+        invoice["retainer_amount"] = st.number_input(
+            "Retainer Amount ($)",
+            min_value=0,
+            value=int(invoice.get("retainer_amount", 0)),
+            disabled=not invoice.get("use_retainer", False),
+            help="Upfront retainer fee required before work begins",
+        )
 
-    if scope.get("scope_other", "").strip():
-        st.markdown("### Additional scope items")
-        st.write(scope["scope_other"].strip())
+    st.markdown("---")
+    st.subheader("Preview Output (test)")
 
-    st.markdown("## TASK 107 — PERMITTING (selected)")
-    for p in PERMITS:
-        if permits.get("permit_ids", {}).get(p["id"], False):
-            st.write(f"- {p['label']}")
-    extra = permits.get("permit_other", "").strip()
-    if extra:
-        for line in [ln.strip() for ln in extra.splitlines() if ln.strip()]:
-            st.write(f"- {line}")
+    selected_tasks = scope.get("selected_tasks", {})
+    if selected_tasks:
+        st.markdown("## Scope of Services (selected)")
+        for task_num in sorted(selected_tasks.keys()):
+            task = selected_tasks[task_num]
+            st.markdown(f"### Task {task_num}: {task['name']} - ${task['fee']:,} ({task['type']})")
+            descs = TASK_DESCRIPTIONS.get(task_num, [])
+            if task_num == "310":
+                hours = task.get("hours", {})
+                fmt = {
+                    "shop_drawing_hours": hours.get("shop_drawing", 0),
+                    "rfi_hours": hours.get("rfi", 0),
+                    "oac_meetings": hours.get("oac_meetings", 0),
+                    "site_visits": hours.get("site_visits", 0),
+                    "record_drawing_hours": hours.get("record_drawing", 0),
+                    "total_hours": task.get("total_hours", 0),
+                }
+                descs = [d.format(**fmt) for d in descs]
+            for line in descs:
+                st.write(f"- {line}")
+    else:
+        st.info("Select tasks in Tab 3 to see the generated scope output.")
 
-    st.markdown("## TASKS 108–110 (selected)")
-    for t in TAB4_TASKS_108_110:
-        if tab4.get("task_ids", {}).get(t["id"], False):
-            st.markdown(f"### {t['label']}")
-            st.write(t["output"])
+    permit_config = PERMIT_MAPPING.get(intake.get("county", ""), {})
+    ahj_name = permit_config.get("ahj_name", "Authority Having Jurisdiction")
+    wmd_name = permit_config.get("wmd_short", "Water Management District")
+
+    permit_flags = permits.get("permit_flags", {})
+    permit_list = []
+    if permit_flags.get("permit_ahj"):
+        permit_list.append(ahj_name)
+    if permit_flags.get("permit_sewer"):
+        permit_list.append("Sewer Provider")
+    if permit_flags.get("permit_water"):
+        permit_list.append("Water Provider")
+    if permit_flags.get("permit_wmd_erp"):
+        permit_list.append(f"{wmd_name} ERP")
+    if permit_flags.get("permit_fdep"):
+        permit_list.append("FDEP Potable Water/Wastewater")
+    if permit_flags.get("permit_fdot_drainage"):
+        permit_list.append("FDOT Drainage Connection")
+    if permit_flags.get("permit_fdot_driveway"):
+        permit_list.append("FDOT Driveway Connection")
+    if permit_flags.get("permit_fdot_utility"):
+        permit_list.append("FDOT Utility Connection")
+    if permit_flags.get("permit_fema"):
+        permit_list.append("FEMA")
+
+    if permit_list:
+        st.markdown("## Permitting Requirements (selected)")
+        for p in permit_list:
+            st.write(f"- {p}")
+
+    included = permits.get("included_additional_services_with_fees", {})
+    excluded = permits.get("excluded_additional_services", [])
+
+    if included:
+        st.markdown("## Additional Services Included")
+        for svc, fee in included.items():
+            st.write(f"- {svc} - ${fee:,}")
+
+    if excluded:
+        st.markdown("## Additional Services (Not Included)")
+        for svc in excluded:
+            st.write(f"- {svc}")
+
+    st.markdown("## Invoice & Billing")
+    st.write(f"Invoice Email: {invoice.get('invoice_email', '')}")
+    if invoice.get("invoice_cc_email"):
+        st.write(f"CC Email: {invoice.get('invoice_cc_email')}")
+    st.write(f"Signer: {invoice.get('kh_signer_name', '')} - {invoice.get('kh_signer_title', '')}")
+    if invoice.get("use_retainer"):
+        st.write(f"Retainer: ${invoice.get('retainer_amount', 0):,}")
+    else:
+        st.write("Retainer: Not required")
+
 
 # -----------------------------------------------------------------------------
 # Main
@@ -850,7 +1260,7 @@ def render_preview():
 def main():
     init_proposal_state()
 
-    tabs = st.tabs(["Project Info", "Project Understanding", "Scope of Services", "Permitting & CA", "Preview"])
+    tabs = st.tabs(["Project Info", "Project Understanding", "Scope of Services", "Permitting & Summary", "Invoice & Billing"])
 
     with tabs[0]:
         render_tab1()
@@ -861,7 +1271,7 @@ def main():
     with tabs[3]:
         render_tab4()
     with tabs[4]:
-        render_preview()
+        render_tab5()
 
 if __name__ == "__main__":
     main()
