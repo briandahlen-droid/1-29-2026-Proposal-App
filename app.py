@@ -1117,14 +1117,18 @@ def render_tab4():
                 with content_col:
                     st.markdown(service_name)
                     prev_fee = permits.get("included_additional_services_with_fees", {}).get(service_name)
-                    fee_text = st.text_input(
-                        "Fee ($)",
-                        value=f"{prev_fee:,}" if isinstance(prev_fee, (int, float)) else (prev_fee or ""),
-                        placeholder=f"{default_fee:,}",
-                        key=f"addl_fee_{key}",
-                        disabled=not is_checked,
-                        label_visibility="collapsed",
-                    )
+                    spacer_col, field_col = st.columns([0.1, 0.9])
+                    with spacer_col:
+                        st.write("")
+                    with field_col:
+                        fee_text = st.text_input(
+                            "Fee ($)",
+                            value=f"{prev_fee:,}" if isinstance(prev_fee, (int, float)) else (prev_fee or ""),
+                            placeholder=f"{default_fee:,}",
+                            key=f"addl_fee_{key}",
+                            disabled=not is_checked,
+                            label_visibility="collapsed",
+                        )
 
                 if is_checked:
                     cleaned = re.sub(r"[^\d.]", "", str(fee_text or "")).strip()
