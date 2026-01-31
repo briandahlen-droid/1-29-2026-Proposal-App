@@ -1168,7 +1168,6 @@ def render_tab5():
             "Invoice Email Address",
             value=invoice.get("invoice_email", ""),
             placeholder="e.g., accounting@company.com",
-            help="Primary email for invoices",
         )
         invoice["kh_signer_name"] = st.text_input(
             "Kimley-Horn Signer Name",
@@ -1178,7 +1177,6 @@ def render_tab5():
         invoice["use_retainer"] = st.checkbox(
             "Require Retainer",
             value=bool(invoice.get("use_retainer", False)),
-            help="Check if this proposal requires an upfront retainer fee",
         )
 
     with col_inv2:
@@ -1186,7 +1184,6 @@ def render_tab5():
             "CC Email (optional)",
             value=invoice.get("invoice_cc_email", ""),
             placeholder="e.g., manager@company.com",
-            help="Additional recipient for invoices",
         )
         invoice["kh_signer_title"] = st.text_input(
             "Kimley-Horn Signer Title",
@@ -1198,7 +1195,6 @@ def render_tab5():
             min_value=0,
             value=int(invoice.get("retainer_amount", 0)),
             disabled=not invoice.get("use_retainer", False),
-            help="Upfront retainer fee required before work begins",
         )
 
     st.markdown("---")
