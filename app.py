@@ -107,7 +107,7 @@ input[type="number"] {
 }
 .additional-services div[data-baseweb="input"] {
     max-width: 260px;
-    margin-left: 0;
+    margin-left: 10px;
 }
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
