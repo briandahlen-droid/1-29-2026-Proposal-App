@@ -860,7 +860,7 @@ def render_tab2():
 
 def render_tab3():
     st.subheader("Scope of Services")
-    st.markdown("Select the tasks to include, enter the fee, and choose the fee type for each task.")
+    st.markdown("Select the tasks to include and enter the fee for each task.")
 
     scope = st.session_state.proposal["scope"]
     selected_tasks = scope.setdefault("selected_tasks", {})
@@ -869,7 +869,7 @@ def render_tab3():
         task = DEFAULT_FEES[task_num]
         existing = selected_tasks.get(task_num, {})
 
-        col_check, col_name, col_fee, col_type = st.columns([0.5, 3, 1.5, 1.5])
+        col_check, col_name, col_fee = st.columns([0.5, 3, 2])
 
         with col_check:
             task_selected = st.checkbox(
@@ -896,25 +896,12 @@ def render_tab3():
                 label_visibility="collapsed",
             )
 
-        with col_type:
-            type_options = ["Hourly, Not-to-Exceed", "Hourly", "Lump Sum"]
-            existing_type = existing.get("type", task.get("type", "Hourly, Not-to-Exceed"))
-            type_index = type_options.index(existing_type) if existing_type in type_options else 0
-            fee_type_selection = st.selectbox(
-                "Type",
-                options=type_options,
-                index=type_index,
-                key=f"type_{task_num}",
-                disabled=not task_selected,
-                label_visibility="collapsed",
-            )
-
+        
         if task_selected:
             final_fee = fee_amount if fee_amount is not None else task["amount"]
             selected_tasks[task_num] = {
                 "name": task["name"],
                 "fee": final_fee,
-                "type": fee_type_selection,
             }
         else:
             selected_tasks.pop(task_num, None)
@@ -939,7 +926,7 @@ def render_tab3():
 
                 with col_chk:
                     is_selected = st.checkbox(
-                        "x",
+                        "",
                         value=svc_key in ["shop_drawings", "rfi", "oac", "site_visits", "asbuilt", "fdep", "compliance", "wmd"],
                         key=f"svc310_{svc_key}",
                         label_visibility="collapsed",
@@ -960,7 +947,7 @@ def render_tab3():
                         )
                     else:
                         hrs_value = 0
-                        st.write("x")
+                        st.write("-")
 
                 with col_rate:
                     if default_rate > 0 or svc_key in ["inspection_tv", "record_drawings"]:
@@ -974,7 +961,7 @@ def render_tab3():
                         )
                     else:
                         rate_value = 0
-                        st.write("x")
+                        st.write("-")
 
                 with col_cost:
                     if is_selected:
@@ -988,7 +975,7 @@ def render_tab3():
                         )
                     else:
                         cost_value = 0
-                        st.write("x")
+                        st.write("-")
 
                 service_data[svc_key] = {
                     "included": is_selected,
@@ -1071,34 +1058,33 @@ def render_tab4():
     excluded_additional_services = []
     included_additional_services_with_fees = {}
 
-    for key, service_name, default_checked, default_fee in ADDITIONAL_SERVICES_LIST:
-        col_service, col_fee = st.columns([3, 1])
+    for i in range(0, len(ADDITIONAL_SERVICES_LIST), 2):
+        cols = st.columns(2)
+        pair = ADDITIONAL_SERVICES_LIST[i:i + 2]
+        for j, (key, service_name, default_checked, default_fee) in enumerate(pair):
+            with cols[j]:
+                is_checked = st.checkbox(
+                    service_name,
+                    value=bool(permits.get("included_additional_services_with_fees", {}).get(service_name)) if service_name in permits.get("included_additional_services_with_fees", {}) else default_checked,
+                    key=f"addl_svc_{key}",
+                )
+                prev_fee = permits.get("included_additional_services_with_fees", {}).get(service_name)
+                fee_amount = st.number_input(
+                    "Fee ($)",
+                    min_value=0,
+                    value=prev_fee,
+                    placeholder=f"{default_fee:,}",
+                    key=f"addl_fee_{key}",
+                    disabled=not is_checked,
+                    label_visibility="collapsed",
+                )
 
-        with col_service:
-            is_checked = st.checkbox(
-                service_name,
-                value=bool(permits.get("included_additional_services_with_fees", {}).get(service_name)) if service_name in permits.get("included_additional_services_with_fees", {}) else default_checked,
-                key=f"addl_svc_{key}",
-            )
-
-        with col_fee:
-            prev_fee = permits.get("included_additional_services_with_fees", {}).get(service_name)
-            fee_amount = st.number_input(
-                "Fee ($)",
-                min_value=0,
-                value=prev_fee,
-                placeholder=f"{default_fee:,}",
-                key=f"addl_fee_{key}",
-                disabled=not is_checked,
-                label_visibility="collapsed",
-            )
-
-        if is_checked:
-            final_fee = fee_amount if fee_amount is not None else default_fee
-            included_additional_services.append(service_name)
-            included_additional_services_with_fees[service_name] = final_fee
-        else:
-            excluded_additional_services.append(service_name)
+                if is_checked:
+                    final_fee = fee_amount if fee_amount is not None else default_fee
+                    included_additional_services.append(service_name)
+                    included_additional_services_with_fees[service_name] = final_fee
+                else:
+                    excluded_additional_services.append(service_name)
 
     permits["included_additional_services"] = included_additional_services
     permits["included_additional_services_with_fees"] = included_additional_services_with_fees
@@ -1182,7 +1168,7 @@ def render_tab5():
         st.markdown("## Scope of Services (selected)")
         for task_num in sorted(selected_tasks.keys()):
             task = selected_tasks[task_num]
-            st.markdown(f"### Task {task_num}: {task['name']} - ${task['fee']:,} ({task['type']})")
+            st.markdown(f"### Task {task_num}: {task['name']} - ${task['fee']:,}")
             descs = TASK_DESCRIPTIONS.get(task_num, [])
             if task_num == "310":
                 hours = task.get("hours", {})
