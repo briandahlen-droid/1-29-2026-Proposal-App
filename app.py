@@ -77,7 +77,9 @@ input[type="text"], input[type="number"], textarea {
     box-shadow: none !important;
 }
 /* Number input steppers: hide right-side buttons */
-div[data-baseweb="input"] button {
+div[data-baseweb="input"] button,
+div[data-baseweb="input"] [data-baseweb="button"],
+div[data-baseweb="input"] [role="button"] {
     display: none !important;
 }
 div[data-baseweb="input"] [aria-label="Increment"],
@@ -85,6 +87,9 @@ div[data-baseweb="input"] [aria-label="Decrement"] {
     display: none !important;
 }
 div[data-baseweb="input"] > div > div:last-child {
+    display: none !important;
+}
+div[data-baseweb="input"] > div > div:last-child > div {
     display: none !important;
 }
 input[type="number"]::-webkit-inner-spin-button,
@@ -107,7 +112,7 @@ input[type="number"] {
 }
 .additional-services div[data-baseweb="input"] {
     max-width: 260px;
-    margin-left: 10px;
+    margin-left: 24px;
 }
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
