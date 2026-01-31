@@ -1106,7 +1106,7 @@ def render_tab4():
         pair = ADDITIONAL_SERVICES_LIST[i:i + 2]
         for j, (key, service_name, default_checked, default_fee) in enumerate(pair):
             with cols[j]:
-                cb_col, content_col = st.columns([0.08, 0.5])
+                cb_col, content_col = st.columns([0.08, 1])
                 with cb_col:
                     is_checked = st.checkbox(
                         "",
@@ -1117,18 +1117,14 @@ def render_tab4():
                 with content_col:
                     st.markdown(service_name)
                     prev_fee = permits.get("included_additional_services_with_fees", {}).get(service_name)
-                    spacer_col, field_col = st.columns([0.1, 0.9])
-                    with spacer_col:
-                        st.write("")
-                    with field_col:
-                        fee_text = st.text_input(
-                            "Fee ($)",
-                            value=f"{prev_fee:,}" if isinstance(prev_fee, (int, float)) else (prev_fee or ""),
-                            placeholder=f"{default_fee:,}",
-                            key=f"addl_fee_{key}",
-                            disabled=not is_checked,
-                            label_visibility="collapsed",
-                        )
+                    fee_text = st.text_input(
+                        "Fee ($)",
+                        value=f"{prev_fee:,}" if isinstance(prev_fee, (int, float)) else (prev_fee or ""),
+                        placeholder=f"{default_fee:,}",
+                        key=f"addl_fee_{key}",
+                        disabled=not is_checked,
+                        label_visibility="collapsed",
+                    )
 
                 if is_checked:
                     cleaned = re.sub(r"[^\d.]", "", str(fee_text or "")).strip()
