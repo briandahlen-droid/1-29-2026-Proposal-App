@@ -76,15 +76,9 @@ input[type="text"], input[type="number"], textarea {
     color: var(--ink) !important;
     box-shadow: none !important;
 }
-/* Number input steppers: show + / - clearly */
+/* Number input steppers: hide right-side buttons */
 div[data-baseweb="input"] button {
-    background: var(--btn-bg) !important;
-    border-left: var(--field-border-width) solid var(--navy) !important;
-    color: var(--navy) !important;
-}
-div[data-baseweb="input"] button svg {
-    color: var(--navy) !important;
-    fill: var(--navy) !important;
+    display: none !important;
 }
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
@@ -1083,15 +1077,17 @@ def render_tab4():
                     key=f"addl_svc_{key}",
                 )
                 prev_fee = permits.get("included_additional_services_with_fees", {}).get(service_name)
-                fee_amount = st.number_input(
-                    "Fee ($)",
-                    min_value=0,
-                    value=prev_fee,
-                    placeholder=f"{default_fee:,}",
-                    key=f"addl_fee_{key}",
-                    disabled=not is_checked,
-                    label_visibility="collapsed",
-                )
+                fee_col, _ = st.columns([1, 2])
+                with fee_col:
+                    fee_amount = st.number_input(
+                        "Fee ($)",
+                        min_value=0,
+                        value=prev_fee,
+                        placeholder=f"{default_fee:,}",
+                        key=f"addl_fee_{key}",
+                        disabled=not is_checked,
+                        label_visibility="collapsed",
+                    )
 
                 if is_checked:
                     final_fee = fee_amount if fee_amount is not None else default_fee
