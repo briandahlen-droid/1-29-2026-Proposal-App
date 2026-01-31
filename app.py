@@ -76,6 +76,20 @@ input[type="text"], input[type="number"], textarea {
     color: var(--ink) !important;
     box-shadow: none !important;
 }
+/* Number input steppers: show + / - clearly */
+div[data-baseweb="input"] button {
+    background: var(--btn-bg) !important;
+    border-left: var(--field-border-width) solid var(--navy) !important;
+    color: var(--navy) !important;
+}
+div[data-baseweb="input"] button svg {
+    color: var(--navy) !important;
+    fill: var(--navy) !important;
+}
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    opacity: 1 !important;
+}
 /* BaseWeb input wrapper consistency */
 div[data-baseweb="input"] > div {
     border: var(--field-border-width) solid var(--field-border) !important;
@@ -1058,10 +1072,10 @@ def render_tab4():
     excluded_additional_services = []
     included_additional_services_with_fees = {}
 
-    for i in range(0, len(ADDITIONAL_SERVICES_LIST), 2):
-        cols = st.columns(2)
-        pair = ADDITIONAL_SERVICES_LIST[i:i + 2]
-        for j, (key, service_name, default_checked, default_fee) in enumerate(pair):
+    for i in range(0, len(ADDITIONAL_SERVICES_LIST), 3):
+        cols = st.columns(3)
+        trio = ADDITIONAL_SERVICES_LIST[i:i + 3]
+        for j, (key, service_name, default_checked, default_fee) in enumerate(trio):
             with cols[j]:
                 is_checked = st.checkbox(
                     service_name,
