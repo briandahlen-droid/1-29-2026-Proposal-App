@@ -1106,7 +1106,7 @@ def render_tab4():
         pair = ADDITIONAL_SERVICES_LIST[i:i + 2]
         for j, (key, service_name, default_checked, default_fee) in enumerate(pair):
             with cols[j]:
-                cb_col, content_col = st.columns([0.15, 1])
+                cb_col, content_col = st.columns([0.08, 0.5])
                 with cb_col:
                     is_checked = st.checkbox(
                         "",
