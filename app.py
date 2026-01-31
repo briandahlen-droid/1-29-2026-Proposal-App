@@ -80,6 +80,20 @@ input[type="text"], input[type="number"], textarea {
 div[data-baseweb="input"] button {
     display: none !important;
 }
+div[data-baseweb="input"] [aria-label="Increment"],
+div[data-baseweb="input"] [aria-label="Decrement"] {
+    display: none !important;
+}
+div[data-baseweb="input"] > div > div:last-child {
+    display: none !important;
+}
+
+/* Additional Services: wrap long labels tighter */
+.additional-services label {
+    max-width: 260px;
+    display: inline-block;
+    white-space: normal;
+}
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
     opacity: 1 !important;
@@ -1066,6 +1080,7 @@ def render_tab4():
     excluded_additional_services = []
     included_additional_services_with_fees = {}
 
+    st.markdown('<div class="additional-services">', unsafe_allow_html=True)
     for i in range(0, len(ADDITIONAL_SERVICES_LIST), 3):
         cols = st.columns(3)
         trio = ADDITIONAL_SERVICES_LIST[i:i + 3]
@@ -1095,6 +1110,7 @@ def render_tab4():
                     included_additional_services_with_fees[service_name] = final_fee
                 else:
                     excluded_additional_services.append(service_name)
+    st.markdown("</div>", unsafe_allow_html=True)
 
     permits["included_additional_services"] = included_additional_services
     permits["included_additional_services_with_fees"] = included_additional_services_with_fees
