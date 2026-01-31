@@ -1101,19 +1101,22 @@ def render_tab4():
     included_additional_services_with_fees = {}
 
     st.markdown('<div class="additional-services">', unsafe_allow_html=True)
-    for i in range(0, len(ADDITIONAL_SERVICES_LIST), 3):
-        cols = st.columns(3)
-        trio = ADDITIONAL_SERVICES_LIST[i:i + 3]
-        for j, (key, service_name, default_checked, default_fee) in enumerate(trio):
+    for i in range(0, len(ADDITIONAL_SERVICES_LIST), 2):
+        cols = st.columns(2)
+        pair = ADDITIONAL_SERVICES_LIST[i:i + 2]
+        for j, (key, service_name, default_checked, default_fee) in enumerate(pair):
             with cols[j]:
-                is_checked = st.checkbox(
-                    service_name,
-                    value=bool(permits.get("included_additional_services_with_fees", {}).get(service_name)) if service_name in permits.get("included_additional_services_with_fees", {}) else default_checked,
-                    key=f"addl_svc_{key}",
-                )
-                prev_fee = permits.get("included_additional_services_with_fees", {}).get(service_name)
-                fee_col, _ = st.columns([1, 2])
-                with fee_col:
+                cb_col, content_col = st.columns([0.15, 1])
+                with cb_col:
+                    is_checked = st.checkbox(
+                        "",
+                        value=bool(permits.get("included_additional_services_with_fees", {}).get(service_name)) if service_name in permits.get("included_additional_services_with_fees", {}) else default_checked,
+                        key=f"addl_svc_{key}",
+                        label_visibility="collapsed",
+                    )
+                with content_col:
+                    st.markdown(service_name)
+                    prev_fee = permits.get("included_additional_services_with_fees", {}).get(service_name)
                     fee_text = st.text_input(
                         "Fee ($)",
                         value=f"{prev_fee:,}" if isinstance(prev_fee, (int, float)) else (prev_fee or ""),
