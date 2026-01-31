@@ -94,6 +94,13 @@ div[data-baseweb="input"] > div > div:last-child {
     display: inline-block;
     white-space: normal;
 }
+.additional-services div[data-baseweb="checkbox"] {
+    max-width: 260px;
+}
+.additional-services div[data-baseweb="input"] {
+    max-width: 260px;
+    margin-left: 26px;
+}
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
     opacity: 1 !important;
