@@ -108,11 +108,15 @@ input[type="number"] {
     white-space: normal;
 }
 .tab3-scope .task-label {
-    margin-top: 6px;
+    margin-top: 10px;
     line-height: 1.2;
 }
 .tab3-scope div[data-baseweb="checkbox"] {
     margin-top: 0;
+}
+.additional-services .svc-label {
+    margin-top: 10px;
+    line-height: 1.2;
 }
 .tab3-scope div[data-baseweb="input"] {
     margin-top: 0;
@@ -1134,7 +1138,7 @@ def render_tab4():
                 label_visibility="collapsed",
             )
         with cols[1]:
-            st.markdown(service_name)
+            st.markdown(f'<div class="svc-label">{service_name}</div>', unsafe_allow_html=True)
             prev_fee = permits.get("included_additional_services_with_fees", {}).get(service_name)
             fee_text = st.text_input(
                 "Fee ($)",
@@ -1164,7 +1168,7 @@ def render_tab4():
                     label_visibility="collapsed",
                 )
             with cols[3]:
-                st.markdown(service_name)
+                st.markdown(f'<div class="svc-label">{service_name}</div>', unsafe_allow_html=True)
                 prev_fee = permits.get("included_additional_services_with_fees", {}).get(service_name)
                 fee_text = st.text_input(
                     "Fee ($)",
@@ -1182,14 +1186,6 @@ def render_tab4():
                 included_additional_services_with_fees[service_name] = final_fee
             else:
                 excluded_additional_services.append(service_name)
-
-                if is_checked:
-                    cleaned = re.sub(r"[^\d.]", "", str(fee_text or "")).strip()
-                    final_fee = int(float(cleaned)) if cleaned else default_fee
-                    included_additional_services.append(service_name)
-                    included_additional_services_with_fees[service_name] = final_fee
-                else:
-                    excluded_additional_services.append(service_name)
     st.markdown("</div>", unsafe_allow_html=True)
 
     permits["included_additional_services"] = included_additional_services
