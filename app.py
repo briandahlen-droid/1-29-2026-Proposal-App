@@ -950,10 +950,9 @@ def render_tab3():
                 )
 
         with col_fee:
-            fee_amount = st.number_input(
+            fee_text = st.text_input(
                 "Fee ($)",
-                min_value=0,
-                value=existing.get("fee") if existing else None,
+                value=f"{existing.get('fee', ''):,}" if existing.get("fee") is not None else "",
                 placeholder=f"{task['amount']:,}",
                 key=f"fee_{task_num}",
                 disabled=not task_selected,
@@ -962,7 +961,8 @@ def render_tab3():
 
         
         if task_selected:
-            final_fee = fee_amount if fee_amount is not None else task["amount"]
+            cleaned = re.sub(r"[^\d.]", "", str(fee_text or "")).strip()
+            final_fee = int(float(cleaned)) if cleaned else task["amount"]
             selected_tasks[task_num] = {
                 "name": task["name"],
                 "fee": final_fee,
@@ -1001,42 +1001,45 @@ def render_tab3():
 
                 with col_hrs:
                     if default_hrs > 0 or svc_key in ["inspection_tv", "record_drawings"]:
-                        hrs_value = st.number_input(
+                        hrs_text = st.text_input(
                             "Hrs",
-                            min_value=0,
-                            value=default_hrs,
+                            value=str(default_hrs),
                             key=f"hrs310_{svc_key}",
                             disabled=not is_selected,
                             label_visibility="collapsed",
                         )
+                        cleaned = re.sub(r"[^\d.]", "", str(hrs_text or "")).strip()
+                        hrs_value = int(float(cleaned)) if cleaned else 0
                     else:
                         hrs_value = 0
                         st.write("-")
 
                 with col_rate:
                     if default_rate > 0 or svc_key in ["inspection_tv", "record_drawings"]:
-                        rate_value = st.number_input(
+                        rate_text = st.text_input(
                             "Rate",
-                            min_value=0,
-                            value=default_rate,
+                            value=str(default_rate),
                             key=f"rate310_{svc_key}",
                             disabled=not is_selected,
                             label_visibility="collapsed",
                         )
+                        cleaned = re.sub(r"[^\d.]", "", str(rate_text or "")).strip()
+                        rate_value = int(float(cleaned)) if cleaned else 0
                     else:
                         rate_value = 0
                         st.write("-")
 
                 with col_cost:
                     if is_selected:
-                        cost_value = st.number_input(
+                        cost_text = st.text_input(
                             "Cost",
-                            min_value=0,
-                            value=default_cost,
+                            value=str(default_cost),
                             key=f"cost310_{svc_key}",
                             disabled=not is_selected,
                             label_visibility="collapsed",
                         )
+                        cleaned = re.sub(r"[^\d.]", "", str(cost_text or "")).strip()
+                        cost_value = int(float(cleaned)) if cleaned else 0
                     else:
                         cost_value = 0
                         st.write("-")
@@ -1050,12 +1053,13 @@ def render_tab3():
                 }
 
             st.markdown("---")
-            total_hrs = st.number_input(
+            total_hrs_text = st.text_input(
                 "**Total Task 310 Hours**",
-                min_value=0,
-                value=selected_tasks.get("310", {}).get("total_hours", 180),
+                value=str(selected_tasks.get("310", {}).get("total_hours", 180)),
                 key="total_construction_hours",
             )
+            cleaned = re.sub(r"[^\d.]", "", str(total_hrs_text or "")).strip()
+            total_hrs = int(float(cleaned)) if cleaned else 0
 
             selected_tasks["310"]["services"] = service_data
             selected_tasks["310"]["total_hours"] = total_hrs
