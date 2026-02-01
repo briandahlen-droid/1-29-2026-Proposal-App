@@ -122,6 +122,7 @@ input[type="number"] {
 }
 .tab3-scope .svc-name-input input {
     padding: 0 !important;
+    padding-top: 4px !important;
     height: 46px !important;
     background: transparent !important;
     color: var(--ink) !important;
