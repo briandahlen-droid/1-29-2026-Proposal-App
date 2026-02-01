@@ -107,6 +107,12 @@ input[type="number"] {
     display: inline-block;
     white-space: normal;
 }
+.tab3-scope .task-label {
+    margin-top: 6px;
+}
+.tab3-scope div[data-baseweb="checkbox"] {
+    margin-top: 6px;
+}
 .additional-services div[data-baseweb="checkbox"] {
     max-width: 260px;
 }
@@ -907,6 +913,7 @@ def render_tab3():
     scope = st.session_state.proposal["scope"]
     selected_tasks = scope.setdefault("selected_tasks", {})
 
+    st.markdown('<div class="tab3-scope">', unsafe_allow_html=True)
     for task_num in sorted(DEFAULT_FEES.keys()):
         task = DEFAULT_FEES[task_num]
         existing = selected_tasks.get(task_num, {})
@@ -923,9 +930,15 @@ def render_tab3():
 
         with col_name:
             if task_num == "310":
-                st.markdown(f"**Task {task_num}: {task['name']}** *(uncheck if not needed)*")
+                st.markdown(
+                    f'<div class="task-label"><strong>Task {task_num}: {task["name"]}</strong> <em>(uncheck if not needed)</em></div>',
+                    unsafe_allow_html=True,
+                )
             else:
-                st.markdown(f"**Task {task_num}: {task['name']}**")
+                st.markdown(
+                    f'<div class="task-label"><strong>Task {task_num}: {task["name"]}</strong></div>',
+                    unsafe_allow_html=True,
+                )
 
         with col_fee:
             fee_amount = st.number_input(
@@ -1045,6 +1058,7 @@ def render_tab3():
                 "record_drawing": service_data["record_drawings"]["hours"],
                 "total": total_hrs,
             }
+    st.markdown("</div>", unsafe_allow_html=True)
 
 
 def render_tab4():
@@ -1102,29 +1116,67 @@ def render_tab4():
 
     st.markdown('<div class="additional-services">', unsafe_allow_html=True)
     for i in range(0, len(ADDITIONAL_SERVICES_LIST), 2):
-        cols = st.columns(2)
+        cols = st.columns([0.08, 1, 0.08, 1])
         pair = ADDITIONAL_SERVICES_LIST[i:i + 2]
-        for j, (key, service_name, default_checked, default_fee) in enumerate(pair):
-            with cols[j]:
-                cb_col, content_col = st.columns([0.08, 1])
-                with cb_col:
-                    is_checked = st.checkbox(
-                        "",
-                        value=bool(permits.get("included_additional_services_with_fees", {}).get(service_name)) if service_name in permits.get("included_additional_services_with_fees", {}) else default_checked,
-                        key=f"addl_svc_{key}",
-                        label_visibility="collapsed",
-                    )
-                with content_col:
-                    st.markdown(service_name)
-                    prev_fee = permits.get("included_additional_services_with_fees", {}).get(service_name)
-                    fee_text = st.text_input(
-                        "Fee ($)",
-                        value=f"{prev_fee:,}" if isinstance(prev_fee, (int, float)) else (prev_fee or ""),
-                        placeholder=f"{default_fee:,}",
-                        key=f"addl_fee_{key}",
-                        disabled=not is_checked,
-                        label_visibility="collapsed",
-                    )
+
+        # Left item
+        key, service_name, default_checked, default_fee = pair[0]
+        with cols[0]:
+            is_checked_left = st.checkbox(
+                "",
+                value=bool(permits.get("included_additional_services_with_fees", {}).get(service_name)) if service_name in permits.get("included_additional_services_with_fees", {}) else default_checked,
+                key=f"addl_svc_{key}",
+                label_visibility="collapsed",
+            )
+        with cols[1]:
+            st.markdown(service_name)
+            prev_fee = permits.get("included_additional_services_with_fees", {}).get(service_name)
+            fee_text = st.text_input(
+                "Fee ($)",
+                value=f"{prev_fee:,}" if isinstance(prev_fee, (int, float)) else (prev_fee or ""),
+                placeholder=f"{default_fee:,}",
+                key=f"addl_fee_{key}",
+                disabled=not is_checked_left,
+                label_visibility="collapsed",
+            )
+
+        if is_checked_left:
+            cleaned = re.sub(r"[^\d.]", "", str(fee_text or "")).strip()
+            final_fee = int(float(cleaned)) if cleaned else default_fee
+            included_additional_services.append(service_name)
+            included_additional_services_with_fees[service_name] = final_fee
+        else:
+            excluded_additional_services.append(service_name)
+
+        # Right item (if present)
+        if len(pair) > 1:
+            key, service_name, default_checked, default_fee = pair[1]
+            with cols[2]:
+                is_checked_right = st.checkbox(
+                    "",
+                    value=bool(permits.get("included_additional_services_with_fees", {}).get(service_name)) if service_name in permits.get("included_additional_services_with_fees", {}) else default_checked,
+                    key=f"addl_svc_{key}",
+                    label_visibility="collapsed",
+                )
+            with cols[3]:
+                st.markdown(service_name)
+                prev_fee = permits.get("included_additional_services_with_fees", {}).get(service_name)
+                fee_text = st.text_input(
+                    "Fee ($)",
+                    value=f"{prev_fee:,}" if isinstance(prev_fee, (int, float)) else (prev_fee or ""),
+                    placeholder=f"{default_fee:,}",
+                    key=f"addl_fee_{key}",
+                    disabled=not is_checked_right,
+                    label_visibility="collapsed",
+                )
+
+            if is_checked_right:
+                cleaned = re.sub(r"[^\d.]", "", str(fee_text or "")).strip()
+                final_fee = int(float(cleaned)) if cleaned else default_fee
+                included_additional_services.append(service_name)
+                included_additional_services_with_fees[service_name] = final_fee
+            else:
+                excluded_additional_services.append(service_name)
 
                 if is_checked:
                     cleaned = re.sub(r"[^\d.]", "", str(fee_text or "")).strip()
