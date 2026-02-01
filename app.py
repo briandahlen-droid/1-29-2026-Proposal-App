@@ -167,6 +167,12 @@ div[data-baseweb="select"] [aria-disabled="true"] {
     -webkit-text-fill-color: var(--ink) !important;
     opacity: 1 !important;
 }
+div[data-baseweb="select"] * {
+    color: var(--ink) !important;
+}
+div[data-baseweb="select"] [data-baseweb="select"] {
+    background: var(--panel) !important;
+}
 
 /* Multiselect / dropdown menu background */
 div[data-baseweb="popover"] {
