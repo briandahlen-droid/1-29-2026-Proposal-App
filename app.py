@@ -115,9 +115,15 @@ input[type="number"] {
     margin-top: 0;
 }
 .tab3-scope .svc-name {
+    display: block;
+    margin: 0;
+}
+.service-grid [data-testid="column"] {
     display: flex;
     align-items: center;
-    height: 46px;
+}
+.service-grid [data-testid="column"] > div {
+    width: 100%;
 }
 .additional-services .svc-label {
     margin-top: 10px;
@@ -1008,6 +1014,7 @@ def render_tab3():
             with col_h5:
                 st.markdown("**Cost ($)**")
 
+            st.markdown('<div class="service-grid">', unsafe_allow_html=True)
             service_data = {}
             for svc_key, svc_name, default_hrs, default_rate, default_cost in TASK_310_SERVICES:
                 col_chk, col_nm, col_hrs, col_rate, col_cost = st.columns([0.5, 3, 1.5, 1.5, 1.5])
@@ -1075,6 +1082,7 @@ def render_tab3():
                     "rate": rate_value if is_selected else 0,
                     "cost": cost_value if is_selected else 0,
                 }
+            st.markdown("</div>", unsafe_allow_html=True)
 
             st.markdown("---")
             total_hrs_text = st.text_input(
