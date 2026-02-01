@@ -115,9 +115,8 @@ input[type="number"] {
     margin-top: 0;
 }
 .tab3-scope .svc-name {
-    display: flex;
-    align-items: center;
-    height: 46px;
+    display: inline-block;
+    transform: translateY(8px);
 }
 .additional-services .svc-label {
     margin-top: 10px;
