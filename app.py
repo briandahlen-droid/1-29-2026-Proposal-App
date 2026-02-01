@@ -114,6 +114,10 @@ input[type="number"] {
 .tab3-scope div[data-baseweb="checkbox"] {
     margin-top: 0;
 }
+.tab3-scope .svc-name {
+    display: inline-block;
+    transform: translateY(8px);
+}
 .additional-services .svc-label {
     margin-top: 10px;
     line-height: 1.2;
@@ -999,7 +1003,7 @@ def render_tab3():
                     )
 
                 with col_nm:
-                    st.markdown(f"{svc_name}")
+                    st.markdown(f'<span class="svc-name">{svc_name}</span>', unsafe_allow_html=True)
 
                 with col_hrs:
                     if default_hrs > 0 or svc_key in ["inspection_tv", "record_drawings"]:
