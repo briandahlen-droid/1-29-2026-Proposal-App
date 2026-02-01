@@ -109,9 +109,13 @@ input[type="number"] {
 }
 .tab3-scope .task-label {
     margin-top: 6px;
+    line-height: 1.2;
 }
 .tab3-scope div[data-baseweb="checkbox"] {
-    margin-top: 6px;
+    margin-top: 0;
+}
+.tab3-scope div[data-baseweb="input"] {
+    margin-top: 0;
 }
 .additional-services div[data-baseweb="checkbox"] {
     max-width: 260px;
@@ -170,6 +174,7 @@ div[data-baseweb="checkbox"] > div,
 div[data-baseweb="checkbox"] div[role="checkbox"] {
     border-color: var(--navy) !important;
     background: #edf2f9 !important;
+    opacity: 0.8 !important;
     border-width: 2px !important;
     border-radius: 4px !important;
     box-shadow: inset 0 0 0 2px var(--navy) !important;
