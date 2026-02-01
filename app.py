@@ -114,19 +114,18 @@ input[type="number"] {
 .tab3-scope div[data-baseweb="checkbox"] {
     margin-top: 0;
 }
-.tab3-scope .svc-name {
-    display: block;
-    margin: 0;
+.tab3-scope .svc-name-input [data-baseweb="input"] > div {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    height: 46px !important;
 }
-.service-grid [data-testid="column"] {
-    display: flex;
-    align-items: center;
-}
-.service-grid [data-testid="column"] > div {
-    width: 100%;
-}
-.service-grid .svc-name {
-    padding-top: 6px;
+.tab3-scope .svc-name-input input {
+    padding: 0 !important;
+    height: 46px !important;
+    background: transparent !important;
+    color: var(--ink) !important;
+    pointer-events: none !important;
 }
 .additional-services .svc-label {
     margin-top: 10px;
@@ -1017,7 +1016,6 @@ def render_tab3():
             with col_h5:
                 st.markdown("**Cost ($)**")
 
-            st.markdown('<div class="service-grid">', unsafe_allow_html=True)
             service_data = {}
             for svc_key, svc_name, default_hrs, default_rate, default_cost in TASK_310_SERVICES:
                 col_chk, col_nm, col_hrs, col_rate, col_cost = st.columns([0.5, 3, 1.5, 1.5, 1.5])
@@ -1031,7 +1029,15 @@ def render_tab3():
                     )
 
                 with col_nm:
-                    st.markdown(f'<div class="svc-name">{svc_name}</div>', unsafe_allow_html=True)
+                    st.markdown('<div class="svc-name-input">', unsafe_allow_html=True)
+                    st.text_input(
+                        "Service",
+                        value=svc_name,
+                        disabled=True,
+                        key=f"svc_name_{svc_key}",
+                        label_visibility="collapsed",
+                    )
+                    st.markdown("</div>", unsafe_allow_html=True)
 
                 with col_hrs:
                     if default_hrs > 0 or svc_key in ["inspection_tv", "record_drawings"]:
@@ -1085,7 +1091,6 @@ def render_tab3():
                     "rate": rate_value if is_selected else 0,
                     "cost": cost_value if is_selected else 0,
                 }
-            st.markdown("</div>", unsafe_allow_html=True)
 
             st.markdown("---")
             total_hrs_text = st.text_input(
