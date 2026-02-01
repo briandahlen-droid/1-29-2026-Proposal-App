@@ -1279,12 +1279,13 @@ def render_tab5():
             value=invoice.get("kh_signer_title", ""),
             placeholder="e.g., Senior Project Manager",
         )
-        invoice["retainer_amount"] = st.number_input(
+        retainer_text = st.text_input(
             "Retainer Amount ($)",
-            min_value=0,
-            value=int(invoice.get("retainer_amount", 0)),
+            value=str(invoice.get("retainer_amount", 0)),
             disabled=not invoice.get("use_retainer", False),
         )
+        cleaned = re.sub(r"[^\d.]", "", str(retainer_text or "")).strip()
+        invoice["retainer_amount"] = int(float(cleaned)) if cleaned else 0
 
     st.markdown("---")
     st.subheader("Preview Output (test)")
