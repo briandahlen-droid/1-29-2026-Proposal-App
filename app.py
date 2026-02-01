@@ -122,11 +122,14 @@ input[type="number"] {
 }
 .tab3-scope .svc-name-input input {
     padding: 0 !important;
-    padding-top: 4px !important;
+    padding-top: 0 !important;
     height: 46px !important;
     background: transparent !important;
     color: var(--ink) !important;
     pointer-events: none !important;
+}
+.tab3-scope .svc-name-input {
+    margin-top: -10px;
 }
 .additional-services .svc-label {
     margin-top: 10px;
