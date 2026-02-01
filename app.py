@@ -176,15 +176,15 @@ div[data-baseweb="checkbox"] svg {
 }
 div[data-baseweb="checkbox"] > div,
 div[data-baseweb="checkbox"] div[role="checkbox"] {
-    border-color: var(--navy) !important;
+    border-color: #b9c6db !important;
     background: #edf2f9 !important;
     opacity: 0.8 !important;
-    border-width: 2px !important;
+    border-width: 1px !important;
     border-radius: 4px !important;
-    box-shadow: inset 0 0 0 2px var(--navy) !important;
+    box-shadow: inset 0 0 0 1px #b9c6db !important;
 }
 div[data-baseweb="checkbox"] div[role="checkbox"][aria-checked="true"] {
-    background: #dfe8f6 !important;
+    background: #edf2f9 !important;
 }
 div[data-baseweb="checkbox"] div[role="checkbox"] > div {
     background: #edf2f9 !important;
@@ -194,8 +194,8 @@ div[data-baseweb="checkbox"] div[role="checkbox"] svg {
 }
 div[data-baseweb="checkbox"] div[role="checkbox"] svg rect {
     fill: #edf2f9 !important;
-    stroke: var(--navy) !important;
-    stroke-width: 2px !important;
+    stroke: #b9c6db !important;
+    stroke-width: 1px !important;
 }
 div[data-baseweb="checkbox"] div[role="checkbox"] svg path {
     stroke: var(--navy) !important;
