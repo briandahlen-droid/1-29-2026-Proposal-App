@@ -178,6 +178,17 @@ div[data-baseweb="select"] [data-baseweb="select"] {
 div[data-baseweb="popover"] {
     color: var(--ink) !important;
 }
+ul[role="listbox"] {
+    background: var(--panel) !important;
+}
+li[role="option"] {
+    background: var(--panel) !important;
+    color: var(--ink) !important;
+}
+li[role="option"][aria-selected="true"] {
+    background: #eef3fb !important;
+    color: var(--ink) !important;
+}
 
 /* Checkboxes: increase contrast */
 div[data-baseweb="checkbox"] svg {
