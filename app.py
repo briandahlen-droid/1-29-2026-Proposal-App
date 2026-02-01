@@ -115,8 +115,9 @@ input[type="number"] {
     margin-top: 0;
 }
 .tab3-scope .svc-name {
-    display: inline-block;
-    transform: translateY(8px);
+    display: flex;
+    align-items: center;
+    height: 46px;
 }
 .additional-services .svc-label {
     margin-top: 10px;
@@ -1020,7 +1021,7 @@ def render_tab3():
                     )
 
                 with col_nm:
-                    st.markdown(f'<span class="svc-name">{svc_name}</span>', unsafe_allow_html=True)
+                    st.markdown(f'<div class="svc-name">{svc_name}</div>', unsafe_allow_html=True)
 
                 with col_hrs:
                     if default_hrs > 0 or svc_key in ["inspection_tv", "record_drawings"]:
