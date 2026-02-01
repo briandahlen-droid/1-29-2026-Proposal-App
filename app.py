@@ -125,6 +125,9 @@ input[type="number"] {
 .service-grid [data-testid="column"] > div {
     width: 100%;
 }
+.service-grid .svc-name {
+    padding-top: 6px;
+}
 .additional-services .svc-label {
     margin-top: 10px;
     line-height: 1.2;
