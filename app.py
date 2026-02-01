@@ -119,6 +119,17 @@ input[type="number"] {
     align-items: center;
     height: 46px;
 }
+.tab3-scope .svc-name-input div[data-baseweb="input"] > div {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
+.tab3-scope .svc-name-input input {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    background: transparent !important;
+    color: var(--ink) !important;
+}
 .additional-services .svc-label {
     margin-top: 10px;
     line-height: 1.2;
@@ -1021,7 +1032,15 @@ def render_tab3():
                     )
 
                 with col_nm:
-                    st.markdown(f'<div class="svc-name">{svc_name}</div>', unsafe_allow_html=True)
+                    st.markdown('<div class="svc-name-input">', unsafe_allow_html=True)
+                    st.text_input(
+                        "Service",
+                        value=svc_name,
+                        disabled=True,
+                        key=f"svc_name_{svc_key}",
+                        label_visibility="collapsed",
+                    )
+                    st.markdown("</div>", unsafe_allow_html=True)
 
                 with col_hrs:
                     if default_hrs > 0 or svc_key in ["inspection_tv", "record_drawings"]:
