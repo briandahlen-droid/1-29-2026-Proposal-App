@@ -940,12 +940,12 @@ def render_tab3():
         with col_name:
             if task_num == "310":
                 st.markdown(
-                    f'<div class="task-label"><strong>Task {task_num}: {task["name"]}</strong> <em>(uncheck if not needed)</em></div>',
+                    f'<div class="task-label" style="display:inline-block; transform: translateY(8px);"><strong>Task {task_num}: {task["name"]}</strong> <em>(uncheck if not needed)</em></div>',
                     unsafe_allow_html=True,
                 )
             else:
                 st.markdown(
-                    f'<div class="task-label"><strong>Task {task_num}: {task["name"]}</strong></div>',
+                    f'<div class="task-label" style="display:inline-block; transform: translateY(8px);"><strong>Task {task_num}: {task["name"]}</strong></div>',
                     unsafe_allow_html=True,
                 )
 
