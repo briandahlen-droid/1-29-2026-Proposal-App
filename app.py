@@ -183,9 +183,9 @@ div[data-baseweb="checkbox"] div[role="checkbox"] {
     border-color: #b9c6db !important;
     background: #edf2f9 !important;
     opacity: 0.8 !important;
-    border-width: 1px !important;
+    border-width: 0.2px !important;
     border-radius: 4px !important;
-    box-shadow: inset 0 0 0 1px #b9c6db !important;
+    box-shadow: inset 0 0 0 0.2px #b9c6db !important;
 }
 div[data-baseweb="checkbox"] div[role="checkbox"][aria-checked="true"] {
     background: #edf2f9 !important;
@@ -201,7 +201,7 @@ div[data-baseweb="checkbox"] div[role="checkbox"] svg {
 div[data-baseweb="checkbox"] div[role="checkbox"] svg rect {
     fill: #edf2f9 !important;
     stroke: #b9c6db !important;
-    stroke-width: 1px !important;
+    stroke-width: 0.2px !important;
 }
 div[data-baseweb="checkbox"] div[role="checkbox"] svg path {
     stroke: #6b7a99 !important;
