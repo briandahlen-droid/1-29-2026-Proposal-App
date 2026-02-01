@@ -185,6 +185,8 @@ div[data-baseweb="checkbox"] div[role="checkbox"] {
 }
 div[data-baseweb="checkbox"] div[role="checkbox"][aria-checked="true"] {
     background: #edf2f9 !important;
+    border-color: #b9c6db !important;
+    box-shadow: inset 0 0 0 1px #b9c6db !important;
 }
 div[data-baseweb="checkbox"] div[role="checkbox"] > div {
     background: #edf2f9 !important;
@@ -198,7 +200,7 @@ div[data-baseweb="checkbox"] div[role="checkbox"] svg rect {
     stroke-width: 1px !important;
 }
 div[data-baseweb="checkbox"] div[role="checkbox"] svg path {
-    stroke: var(--navy) !important;
+    stroke: #6b7a99 !important;
     fill: none !important;
 }
 div[data-baseweb="checkbox"] div[role="checkbox"]::before,
