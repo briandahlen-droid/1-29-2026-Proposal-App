@@ -1209,6 +1209,13 @@ def render_tab4():
     col_permit1, col_permit2, col_permit3 = st.columns(3)
 
     with col_permit1:
+        st.markdown("**Local / Utilities**")
+    with col_permit2:
+        st.markdown("**State / Regional**")
+    with col_permit3:
+        st.markdown("**FDOT**")
+
+    with col_permit1:
         permit_ahj = st.checkbox(f"{ahj_name}", value=permit_flags.get("permit_ahj", "ahj" in default_permits), key="permit_ahj")
         permit_sewer = st.checkbox("Sewer Provider", value=permit_flags.get("permit_sewer", "sewer" in default_permits), key="permit_sewer")
         permit_water = st.checkbox("Water Provider", value=permit_flags.get("permit_water", "water" in default_permits), key="permit_water")
@@ -1223,8 +1230,6 @@ def render_tab4():
         permit_fdot_utility = st.checkbox("FDOT Utility Connection", value=permit_flags.get("permit_fdot_utility", False), key="permit_fdot_utility")
         permit_fdot_general_use = st.checkbox("FDOT General Use Permit", value=permit_flags.get("permit_fdot_general_use", False), key="permit_fdot_general_use")
         permit_fdot_construction = st.checkbox("FDOT Construction Agreement", value=permit_flags.get("permit_fdot_construction", False), key="permit_fdot_construction")
-        permit_fdot_landscape = st.checkbox("FDOT Landscape Permit", value=permit_flags.get("permit_fdot_landscape", False), key="permit_fdot_landscape")
-        permit_fdot_signage = st.checkbox("FDOT Signage Permit", value=permit_flags.get("permit_fdot_signage", False), key="permit_fdot_signage")
         permit_fema = st.checkbox("FEMA", value=permit_flags.get("permit_fema", False), key="permit_fema")
 
     permit_flags.update({
@@ -1238,8 +1243,6 @@ def render_tab4():
         "permit_fdot_utility": permit_fdot_utility,
         "permit_fdot_general_use": permit_fdot_general_use,
         "permit_fdot_construction": permit_fdot_construction,
-        "permit_fdot_landscape": permit_fdot_landscape,
-        "permit_fdot_signage": permit_fdot_signage,
         "permit_fema": permit_fema,
     })
 
@@ -1438,10 +1441,6 @@ def render_tab5():
         permit_list.append("FDOT General Use Permit")
     if permit_flags.get("permit_fdot_construction"):
         permit_list.append("FDOT Construction Agreement")
-    if permit_flags.get("permit_fdot_landscape"):
-        permit_list.append("FDOT Landscape Permit")
-    if permit_flags.get("permit_fdot_signage"):
-        permit_list.append("FDOT Signage Permit")
     if permit_flags.get("permit_fema"):
         permit_list.append("FEMA")
 
