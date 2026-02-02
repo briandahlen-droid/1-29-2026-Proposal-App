@@ -841,6 +841,8 @@ def render_tab1():
             st.link_button(button_label, map_url, use_container_width=True)
             if city.strip().lower() == "pinellas park":
                 st.caption("Pinellas Park map opens with a confirmation prompt—check the box to continue.")
+            if city.strip().lower() == "largo":
+                st.caption("Largo map opens with a prompt—select a screen to continue.")
         else:
             st.button(button_label, use_container_width=True, disabled=True)
             st.info("No city map link found for this municipality.")
