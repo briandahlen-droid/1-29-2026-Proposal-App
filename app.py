@@ -604,11 +604,17 @@ def init_proposal_state() -> None:
                 "client_name": "",
                 "client_contact_name": "",
                 "entity_name": "",
-                "entity_address": "",
+                "entity_address_name": "",
+                "entity_address_line1": "",
+                "entity_address_line2": "",
+                "entity_address_city_state_zip": "",
             },
             "project": {
                 "project_name": "",
-                "project_location": "",
+                "property_name": "",
+                "property_address_line1": "",
+                "property_address_line2": "",
+                "property_address_city_state_zip": "",
                 "proposal_date": "",
                 # Tab 2 additions:
                 "project_description_short": "",
@@ -872,23 +878,41 @@ def render_tab1():
 
         current_addr = intake.get("address", "") or ""
         prev_addr = st.session_state.get("last_intake_address", "")
-        proj_loc_key = "project_location_input"
-        if proj_loc_key not in st.session_state:
-            st.session_state[proj_loc_key] = project.get("project_location", "") or current_addr
-        if current_addr and (not st.session_state[proj_loc_key] or st.session_state[proj_loc_key] == prev_addr):
-            st.session_state[proj_loc_key] = current_addr
+        prop_addr_key = "property_address_line1_input"
+        prop_csz_key = "property_address_city_state_zip_input"
+        if prop_addr_key not in st.session_state:
+            st.session_state[prop_addr_key] = project.get("property_address_line1", "") or current_addr
+        if current_addr and (not st.session_state[prop_addr_key] or st.session_state[prop_addr_key] == prev_addr):
+            st.session_state[prop_addr_key] = current_addr
+        if prop_csz_key not in st.session_state:
+            st.session_state[prop_csz_key] = project.get("property_address_city_state_zip", "")
+        if intake.get("city") or intake.get("zip"):
+            city = intake.get("city", "")
+            zip_code = intake.get("zip", "")
+            csz = f"{city}, FL {zip_code}".strip().replace("  ", " ").strip(", ")
+            if csz and (not st.session_state[prop_csz_key] or st.session_state[prop_csz_key] == st.session_state.get("last_intake_csz", "")):
+                st.session_state[prop_csz_key] = csz
+            st.session_state["last_intake_csz"] = csz
         st.session_state["last_intake_address"] = current_addr
 
         st.markdown("**Project (Tokens)**")
         project["project_name"] = st.text_input("Project Name", value=project.get("project_name", ""))
-        project["project_location"] = st.text_input("Project Location / Address", key=proj_loc_key)
+        st.markdown("**Property Address**")
+        project["property_name"] = st.text_input("Name", value=project.get("property_name", ""))
+        project["property_address_line1"] = st.text_input("Address", key=prop_addr_key)
+        project["property_address_line2"] = st.text_input("Apt / Unit / Suite", value=project.get("property_address_line2", ""))
+        project["property_address_city_state_zip"] = st.text_input("City, State, ZIP", key=prop_csz_key)
         project["proposal_date"] = st.text_input("Proposal Date (optional)", value=project.get("proposal_date", ""))
 
         st.markdown("**Client / Entity (Tokens)**")
         client["client_name"] = st.text_input("Client Name", value=client.get("client_name", ""))
         client["client_contact_name"] = st.text_input("Client Contact Name", value=client.get("client_contact_name", ""))
         client["entity_name"] = st.text_input("Client Legal Entity (Sunbiz)", value=client.get("entity_name", ""))
-        client["entity_address"] = st.text_area("Entity Address", value=client.get("entity_address", ""), height=90)
+        st.markdown("**Entity Address**")
+        client["entity_address_name"] = st.text_input("Name", value=client.get("entity_address_name", ""))
+        client["entity_address_line1"] = st.text_input("Address", value=client.get("entity_address_line1", ""))
+        client["entity_address_line2"] = st.text_input("Apt / Unit / Suite", value=client.get("entity_address_line2", ""))
+        client["entity_address_city_state_zip"] = st.text_input("City, State, ZIP", value=client.get("entity_address_city_state_zip", ""))
 
 def render_tab2():
     st.subheader("Project Understanding")
@@ -1110,16 +1134,20 @@ def render_tab3():
 
                 with col_cost:
                     if is_selected:
+                        computed_cost = hrs_value * rate_value if hrs_value and rate_value else None
                         cost_text = st.text_input(
                             "Cost",
-                            value=str(prev_cost) if isinstance(prev_cost, (int, float)) and prev_cost else "",
+                            value=str(prev_cost) if isinstance(prev_cost, (int, float)) and prev_cost else (str(computed_cost) if computed_cost else ""),
                             placeholder=str(default_cost),
                             key=f"cost310_{svc_key}",
                             disabled=not is_selected,
                             label_visibility="collapsed",
                         )
                         cleaned = re.sub(r"[^\d.]", "", str(cost_text or "")).strip()
-                        cost_value = int(float(cleaned)) if cleaned else 0
+                        if cleaned:
+                            cost_value = int(float(cleaned))
+                        else:
+                            cost_value = int(computed_cost) if computed_cost else 0
                     else:
                         cost_value = 0
                         st.write("-")
