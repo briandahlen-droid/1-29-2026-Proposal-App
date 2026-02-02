@@ -123,6 +123,7 @@ input[type="number"] {
 }
 .tab3-scope .svc-name-cell span {
     line-height: 1.2;
+    transform: translateY(6px);
 }
 .additional-services .svc-label {
     margin-top: 10px;
