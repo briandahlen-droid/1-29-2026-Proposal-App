@@ -241,6 +241,18 @@ div[data-baseweb="checkbox"] div[role="checkbox"]::after {
     background: #edf2f9 !important;
 }
 
+/* Total proposal cost badge */
+.total-proposal-badge {
+    background: #f1f5fb;
+    border: 2px solid var(--navy);
+    color: var(--navy);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-weight: 700;
+    text-align: right;
+    box-shadow: 0 6px 14px rgba(11,31,58,0.12);
+}
+
 /* Buttons */
 button[kind="primary"], button, .stButton>button {
     border: 2px solid var(--navy) !important;
@@ -643,6 +655,28 @@ def init_proposal_state() -> None:
                 "retainer_amount": 0,
             },
         }
+
+# -----------------------------------------------------------------------------
+# Totals
+# -----------------------------------------------------------------------------
+def compute_total_proposal_cost() -> int:
+    scope = st.session_state.proposal.get("scope", {})
+    permits = st.session_state.proposal.get("permits", {})
+    selected_tasks = scope.get("selected_tasks", {})
+
+    total = 0
+    for task_num, task in selected_tasks.items():
+        total += int(task.get("fee", 0) or 0)
+        if task_num == "310":
+            svc_total = task.get("services_total_cost")
+            if svc_total is None:
+                services = task.get("services", {}) or {}
+                svc_total = sum(int(s.get("cost", 0) or 0) for s in services.values())
+            total += int(svc_total or 0)
+
+    addl = permits.get("included_additional_services_with_fees", {}) or {}
+    total += sum(int(v or 0) for v in addl.values())
+    return total
 
 # -----------------------------------------------------------------------------
 # Tab 3/4/5 data (from New-Proposal-App)
@@ -1157,20 +1191,16 @@ def render_tab3():
 
                 with col_cost:
                     if is_selected:
-                        computed_cost = hrs_value * rate_value if hrs_value and rate_value else None
-                        cost_text = st.text_input(
+                        computed_cost = hrs_value * rate_value if hrs_value and rate_value else 0
+                        st.text_input(
                             "Cost",
-                            value=str(prev_cost) if isinstance(prev_cost, (int, float)) and prev_cost else (str(computed_cost) if computed_cost else ""),
+                            value=str(int(computed_cost)) if computed_cost else "",
                             placeholder=str(default_cost),
                             key=f"cost310_{svc_key}",
-                            disabled=not is_selected,
+                            disabled=True,
                             label_visibility="collapsed",
                         )
-                        cleaned = re.sub(r"[^\d.]", "", str(cost_text or "")).strip()
-                        if cleaned:
-                            cost_value = int(float(cleaned))
-                        else:
-                            cost_value = int(computed_cost) if computed_cost else 0
+                        cost_value = int(computed_cost) if computed_cost else 0
                     else:
                         cost_value = 0
                         st.write("-")
@@ -1536,6 +1566,14 @@ def render_tab5():
 # -----------------------------------------------------------------------------
 def main():
     init_proposal_state()
+
+    total_cost = compute_total_proposal_cost()
+    _, total_col = st.columns([5, 2])
+    with total_col:
+        st.markdown(
+            f"<div class='total-proposal-badge'>Total Proposal Cost: ${total_cost:,}</div>",
+            unsafe_allow_html=True,
+        )
 
     tabs = st.tabs(["Project Info", "Project Understanding", "Scope of Services", "Permitting & Summary", "Invoice & Billing"])
 
