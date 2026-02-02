@@ -961,19 +961,13 @@ def render_tab2():
 
     if parts:
         paragraph = ". ".join(parts).strip() + "."
-        st.text_area(
-            "Project Understanding (auto-generated)",
-            value=paragraph,
-            height=110,
-            disabled=True,
-        )
     else:
-        st.text_area(
-            "Project Understanding (auto-generated)",
-            value="Enter project details in Tab 1 and the short description above to generate this paragraph.",
-            height=110,
-            disabled=True,
-        )
+        paragraph = "Enter project details in Tab 1 and the short description above to generate this paragraph."
+    proj["project_understanding"] = st.text_area(
+        "Project Understanding (auto-generated)",
+        value=proj.get("project_understanding", paragraph),
+        height=110,
+    )
 
     # Simple preview of what will be inserted
     st.divider()
@@ -1026,7 +1020,6 @@ def render_tab3():
                 value=f"{existing.get('fee', ''):,}" if existing.get("fee") is not None else "",
                 placeholder=f"{task['amount']:,}",
                 key=f"fee_{task_num}",
-                disabled=not task_selected,
                 label_visibility="collapsed",
             )
 
@@ -1223,7 +1216,6 @@ def render_tab4():
                 value=f"{prev_fee:,}" if isinstance(prev_fee, (int, float)) else (prev_fee or ""),
                 placeholder=f"{default_fee:,}",
                 key=f"addl_fee_{key}",
-                disabled=not is_checked_left,
                 label_visibility="collapsed",
             )
 
@@ -1253,7 +1245,6 @@ def render_tab4():
                     value=f"{prev_fee:,}" if isinstance(prev_fee, (int, float)) else (prev_fee or ""),
                     placeholder=f"{default_fee:,}",
                     key=f"addl_fee_{key}",
-                    disabled=not is_checked_right,
                     label_visibility="collapsed",
                 )
 
@@ -1332,7 +1323,6 @@ def render_tab5():
         retainer_text = st.text_input(
             "Retainer Amount ($)",
             value=str(invoice.get("retainer_amount", 0)),
-            disabled=not invoice.get("use_retainer", False),
         )
         cleaned = re.sub(r"[^\d.]", "", str(retainer_text or "")).strip()
         invoice["retainer_amount"] = int(float(cleaned)) if cleaned else 0
