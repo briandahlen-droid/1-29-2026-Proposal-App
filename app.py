@@ -930,10 +930,18 @@ def render_tab2():
     )
 
     st.markdown("### Project Assumptions (check all that apply)")
+    city_name = expand_city_name(intake.get("city", "") or "")
+    county_name = intake.get("county", "") or ""
+    if city_name and "unincorporated" in city_name.lower():
+        jurisdiction = f"{county_name} County".strip()
+    else:
+        jurisdiction = city_name or f"{county_name} County".strip()
+    if not jurisdiction:
+        jurisdiction = "jurisdiction"
     assumptions = [
         ("assump_one_phase", "The project will be designed, permitted, and constructed in one phase."),
         ("assump_waivers_addsvc", "If waivers are required, that will be considered an additional service."),
-        ("assump_water_sewer_cosp", "Water and Sewer will be served by City of St. Petersburg. It is assumed existing infrastructure is adequate. Lift station not required; can be added if required."),
+        ("assump_water_sewer_cosp", f"Water and Sewer will be served by {jurisdiction}. It is assumed existing infrastructure is adequate. Lift station not required; can be added if required."),
         ("assump_no_offsite", "Offsite roadway improvements or utility extensions not within the site area will be considered a separate scope."),
         ("assump_no_platting", "It is assumed that platting is not required; platting assistance can be provided as a separate scope."),
         ("assump_no_traffic", "It is assumed that no traffic analysis is required; if needed it can be provided as an additional service."),
@@ -965,8 +973,8 @@ def render_tab2():
     county = intake.get("county", "")
     land_use = intake.get("land_use", "")
     acres = intake.get("site_area_acres", "")
-    zoning = intake.get("zoning", "")
-    flu = intake.get("future_land_use", "")
+    zoning = (intake.get("zoning", "") or "").strip()
+    flu = (intake.get("future_land_use", "") or "").strip()
 
     loc_bits = []
     if address:
@@ -1179,6 +1187,9 @@ def render_tab3():
             total_hrs = int(float(cleaned)) if cleaned else 0
 
             selected_tasks["310"]["services"] = service_data
+            selected_tasks["310"]["services_total_cost"] = sum(
+                svc.get("cost", 0) for svc in service_data.values()
+            )
             selected_tasks["310"]["total_hours"] = total_hrs
             selected_tasks["310"]["hours"] = {
                 "shop_drawing": service_data["shop_drawings"]["hours"],
@@ -1219,11 +1230,18 @@ def render_tab4():
         permit_ahj = st.checkbox(f"{ahj_name}", value=permit_flags.get("permit_ahj", "ahj" in default_permits), key="permit_ahj")
         permit_sewer = st.checkbox("Sewer Provider", value=permit_flags.get("permit_sewer", "sewer" in default_permits), key="permit_sewer")
         permit_water = st.checkbox("Water Provider", value=permit_flags.get("permit_water", "water" in default_permits), key="permit_water")
+        permit_site_plan_review = st.checkbox("Site Plan / Development Review", value=permit_flags.get("permit_site_plan_review", False), key="permit_site_plan_review")
+        permit_site_eng_grading = st.checkbox("Site Engineering, Grading & Drainage", value=permit_flags.get("permit_site_eng_grading", False), key="permit_site_eng_grading")
+        permit_row_utilization = st.checkbox("Right-of-Way Utilization Permit", value=permit_flags.get("permit_row_utilization", False), key="permit_row_utilization")
+        permit_zoning_clearance = st.checkbox("Zoning Clearance", value=permit_flags.get("permit_zoning_clearance", False), key="permit_zoning_clearance")
 
     with col_permit2:
         permit_wmd_erp = st.checkbox(f"{wmd_name} ERP", value=permit_flags.get("permit_wmd_erp", "wmd_erp" in default_permits), key="permit_wmd_erp")
         permit_fdep = st.checkbox("FDEP Potable Water/Wastewater", value=permit_flags.get("permit_fdep", False), key="permit_fdep")
         permit_fdot_drainage = st.checkbox("FDOT Drainage Connection", value=permit_flags.get("permit_fdot_drainage", False), key="permit_fdot_drainage")
+        permit_floodplain = st.checkbox("Floodplain / Construction in Flood Zone", value=permit_flags.get("permit_floodplain", False), key="permit_floodplain")
+        permit_utilities_conn = st.checkbox("Utilities Connection Request", value=permit_flags.get("permit_utilities_conn", False), key="permit_utilities_conn")
+        permit_reclaimed_water = st.checkbox("Reclaimed Water Connection + Inspection", value=permit_flags.get("permit_reclaimed_water", False), key="permit_reclaimed_water")
 
     with col_permit3:
         permit_fdot_driveway = st.checkbox("FDOT Driveway Connection", value=permit_flags.get("permit_fdot_driveway", False), key="permit_fdot_driveway")
@@ -1243,6 +1261,13 @@ def render_tab4():
         "permit_fdot_utility": permit_fdot_utility,
         "permit_fdot_general_use": permit_fdot_general_use,
         "permit_fdot_construction": permit_fdot_construction,
+        "permit_site_plan_review": permit_site_plan_review,
+        "permit_site_eng_grading": permit_site_eng_grading,
+        "permit_row_utilization": permit_row_utilization,
+        "permit_zoning_clearance": permit_zoning_clearance,
+        "permit_floodplain": permit_floodplain,
+        "permit_utilities_conn": permit_utilities_conn,
+        "permit_reclaimed_water": permit_reclaimed_water,
         "permit_fema": permit_fema,
     })
 
@@ -1323,6 +1348,14 @@ def render_tab4():
     permits["excluded_additional_services"] = excluded_additional_services
 
     st.markdown("---")
+    addl_total = sum(included_additional_services_with_fees.values()) if included_additional_services_with_fees else 0
+    st.text_input(
+        "Additional Services Total",
+        value=f"{addl_total:,}" if addl_total else "",
+        placeholder="0",
+        disabled=True,
+    )
+    st.markdown("---")
     st.subheader("Selected Tasks Summary")
     if selected_tasks or included_additional_services_with_fees:
         total_fee = 0
@@ -1331,6 +1364,11 @@ def render_tab4():
             task = selected_tasks[task_num]
             st.write(f"- Task {task_num}: {task['name']} - **${task['fee']:,}**")
             total_fee += task["fee"]
+            if task_num == "310":
+                svc_total = task.get("services_total_cost", 0)
+                if svc_total:
+                    st.write(f"  - Construction Phase Services (detail): **${svc_total:,}**")
+                    total_fee += svc_total
 
         if included_additional_services_with_fees:
             st.markdown("**Additional Services Included:**")
@@ -1427,12 +1465,26 @@ def render_tab5():
         permit_list.append("Sewer Provider")
     if permit_flags.get("permit_water"):
         permit_list.append("Water Provider")
+    if permit_flags.get("permit_site_plan_review"):
+        permit_list.append("Site Plan / Development Review")
+    if permit_flags.get("permit_site_eng_grading"):
+        permit_list.append("Site Engineering, Grading & Drainage")
+    if permit_flags.get("permit_row_utilization"):
+        permit_list.append("Right-of-Way Utilization Permit")
+    if permit_flags.get("permit_zoning_clearance"):
+        permit_list.append("Zoning Clearance")
     if permit_flags.get("permit_wmd_erp"):
         permit_list.append(f"{wmd_name} ERP")
     if permit_flags.get("permit_fdep"):
         permit_list.append("FDEP Potable Water/Wastewater")
     if permit_flags.get("permit_fdot_drainage"):
         permit_list.append("FDOT Drainage Connection")
+    if permit_flags.get("permit_floodplain"):
+        permit_list.append("Floodplain / Construction in Flood Zone")
+    if permit_flags.get("permit_utilities_conn"):
+        permit_list.append("Utilities Connection Request")
+    if permit_flags.get("permit_reclaimed_water"):
+        permit_list.append("Reclaimed Water Connection + Inspection")
     if permit_flags.get("permit_fdot_driveway"):
         permit_list.append("FDOT Driveway Connection")
     if permit_flags.get("permit_fdot_utility"):
