@@ -19,7 +19,7 @@ import requests
 from bs4 import BeautifulSoup
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
-from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
+from urllib.parse import urlparse, parse_qs, urlencode, urlunparse, quote
 from typing import Dict, Any, Optional, List
 
 # -----------------------------------------------------------------------------
@@ -433,7 +433,7 @@ def _build_map_url_with_address(map_url: Optional[str], address: str, city: str,
     if "find" in query:
         return map_url
     query["find"] = [search]
-    new_query = urlencode(query, doseq=True)
+    new_query = urlencode(query, doseq=True, quote_via=quote)
     return urlunparse(parsed._replace(query=new_query))
 
 def expand_city_name(city_abbr: str) -> str:
@@ -839,6 +839,8 @@ def render_tab1():
         button_label = f"Open {city} Zoning and Land Use Map" if city else "Open Zoning and Land Use Map"
         if map_url:
             st.link_button(button_label, map_url, use_container_width=True)
+            if city.strip().lower() == "pinellas park":
+                st.caption("Pinellas Park map opens with a confirmation prompt—check the box to continue.")
         else:
             st.button(button_label, use_container_width=True, disabled=True)
             st.info("No city map link found for this municipality.")

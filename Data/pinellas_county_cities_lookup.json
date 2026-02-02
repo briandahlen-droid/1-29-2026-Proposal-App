@@ -5,7 +5,15 @@
   },
   "Pinellas Park": {
     "type": "city_app",
-    "gis_viewer_app": "https://pinellaspark.maps.arcgis.com/apps/webappviewer/index.html?id=52e93e146f0a4a16b5d2f19a49d8d8ae"
+    "gis_viewer_app": "https://pinellas-park.maps.arcgis.com/apps/webappviewer/index.html?id=0e17a532289848c4b7fcc2de3c993771"
+  },
+  "Largo": {
+    "type": "city_app",
+    "zoning_flu_app": "https://cityoflargo.maps.arcgis.com/apps/InformationLookup/index.html?appid=e40ac8ab4ba24ddd9c213003ba326332"
+  },
+  "Madeira Beach": {
+    "type": "city_app",
+    "zoning_flu_app": "https://madeirabeachfl.gov/community-development-documents/madeira-beach-zoning-and-future-land-use-interactive-map/"
   },
   "Safety Harbor": {
     "type": "city_app",
