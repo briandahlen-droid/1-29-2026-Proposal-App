@@ -350,6 +350,7 @@ PINELLAS_CITY_MAP = {
     'LA': 'Largo',
     'PINELLAS PARK': 'Pinellas Park',
     'PP': 'Pinellas Park',
+    'PPW': 'Pinellas Park',
     'DUNEDIN': 'Dunedin',
     'TARPON SPRINGS': 'Tarpon Springs',
     'TS': 'Tarpon Springs',
@@ -887,7 +888,7 @@ def render_tab1():
         if prop_csz_key not in st.session_state:
             st.session_state[prop_csz_key] = project.get("property_address_city_state_zip", "")
         if intake.get("city") or intake.get("zip"):
-            city = intake.get("city", "")
+            city = expand_city_name(intake.get("city", "")) if intake.get("city") else ""
             zip_code = intake.get("zip", "")
             csz = f"{city}, FL {zip_code}".strip().replace("  ", " ").strip(", ")
             if csz and (not st.session_state[prop_csz_key] or st.session_state[prop_csz_key] == st.session_state.get("last_intake_csz", "")):
@@ -898,9 +899,9 @@ def render_tab1():
         st.markdown("**Project (Tokens)**")
         project["project_name"] = st.text_input("Project Name", value=project.get("project_name", ""))
         st.markdown("**Property Address**")
-        project["property_name"] = st.text_input("Name", value=project.get("property_name", ""))
+        project["property_name"] = st.text_input("Name", value=project.get("property_name", ""), key="property_name")
         project["property_address_line1"] = st.text_input("Address", key=prop_addr_key)
-        project["property_address_line2"] = st.text_input("Apt / Unit / Suite", value=project.get("property_address_line2", ""))
+        project["property_address_line2"] = st.text_input("Apt / Unit / Suite", value=project.get("property_address_line2", ""), key="property_address_line2")
         project["property_address_city_state_zip"] = st.text_input("City, State, ZIP", key=prop_csz_key)
         project["proposal_date"] = st.text_input("Proposal Date (optional)", value=project.get("proposal_date", ""))
 
@@ -909,10 +910,10 @@ def render_tab1():
         client["client_contact_name"] = st.text_input("Client Contact Name", value=client.get("client_contact_name", ""))
         client["entity_name"] = st.text_input("Client Legal Entity (Sunbiz)", value=client.get("entity_name", ""))
         st.markdown("**Entity Address**")
-        client["entity_address_name"] = st.text_input("Name", value=client.get("entity_address_name", ""))
-        client["entity_address_line1"] = st.text_input("Address", value=client.get("entity_address_line1", ""))
-        client["entity_address_line2"] = st.text_input("Apt / Unit / Suite", value=client.get("entity_address_line2", ""))
-        client["entity_address_city_state_zip"] = st.text_input("City, State, ZIP", value=client.get("entity_address_city_state_zip", ""))
+        client["entity_address_name"] = st.text_input("Name", value=client.get("entity_address_name", ""), key="entity_address_name")
+        client["entity_address_line1"] = st.text_input("Address", value=client.get("entity_address_line1", ""), key="entity_address_line1")
+        client["entity_address_line2"] = st.text_input("Apt / Unit / Suite", value=client.get("entity_address_line2", ""), key="entity_address_line2")
+        client["entity_address_city_state_zip"] = st.text_input("City, State, ZIP", value=client.get("entity_address_city_state_zip", ""), key="entity_address_city_state_zip")
 
 def render_tab2():
     st.subheader("Project Understanding")
