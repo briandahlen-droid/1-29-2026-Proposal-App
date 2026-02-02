@@ -545,7 +545,11 @@ def scrape_pinellas_property(parcel_id: str) -> Dict[str, Any]:
             soup = BeautifulSoup(html, "html.parser")
             txt = soup.get_text(" ", strip=True)
 
-            m = re.search(r"Land Area:\s*≅\s*([\d,]+)\s*sf\s*\|\s*≅\s*([\d.]+)\s*acres", txt)
+            m = re.search(
+                r"Land Area:\s*.*?([\d,]+)\s*sf\s*\|\s*.*?([\d.]+)\s*acres",
+                txt,
+                flags=re.IGNORECASE,
+            )
             if m:
                 sqft = int(m.group(1).replace(",", ""))
                 acres = float(m.group(2))
