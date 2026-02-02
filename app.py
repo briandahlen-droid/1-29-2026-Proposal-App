@@ -19,6 +19,7 @@ import requests
 from bs4 import BeautifulSoup
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
+from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
 from typing import Dict, Any, Optional, List
 
 # -----------------------------------------------------------------------------
@@ -408,6 +409,28 @@ def _get_city_map_url(city_name: str) -> Optional[str]:
         if meta.get(k):
             return meta.get(k)
     return None
+
+def _build_map_url_with_address(map_url: Optional[str], address: str, city: str) -> Optional[str]:
+    if not map_url or not address:
+        return map_url
+    if not any(token in map_url.lower() for token in ("arcgis.com/apps", "webappviewer", "informationlookup")):
+        return map_url
+
+    search = address.strip()
+    if city:
+        city_lower = city.strip().lower()
+        if city_lower and city_lower not in search.lower():
+            search = f"{search}, {city}, FL"
+        else:
+            search = f"{search}, FL"
+
+    parsed = urlparse(map_url)
+    query = parse_qs(parsed.query)
+    if "find" in query:
+        return map_url
+    query["find"] = [search]
+    new_query = urlencode(query, doseq=True)
+    return urlunparse(parsed._replace(query=new_query))
 
 def expand_city_name(city_abbr: str) -> str:
     if not city_abbr:
@@ -803,6 +826,7 @@ def render_tab1():
         intake["county"] = county_input
         city = expand_city_name(intake.get("city", "") or "")
         map_url = _get_city_map_url(city)
+        map_url = _build_map_url_with_address(map_url, intake.get("address", "") or "", city)
         button_label = f"Open {city} Zoning and Land Use Map" if city else "Open Zoning and Land Use Map"
         if map_url:
             st.link_button(button_label, map_url, use_container_width=True)
