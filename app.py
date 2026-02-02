@@ -410,7 +410,7 @@ def _get_city_map_url(city_name: str) -> Optional[str]:
             return meta.get(k)
     return None
 
-def _build_map_url_with_address(map_url: Optional[str], address: str, city: str) -> Optional[str]:
+def _build_map_url_with_address(map_url: Optional[str], address: str, city: str, zip_code: str) -> Optional[str]:
     if not map_url or not address:
         return map_url
     if not any(token in map_url.lower() for token in ("arcgis.com/apps", "webappviewer", "informationlookup")):
@@ -423,6 +423,10 @@ def _build_map_url_with_address(map_url: Optional[str], address: str, city: str)
             search = f"{search}, {city}, FL"
         else:
             search = f"{search}, FL"
+    if zip_code:
+        zip_clean = zip_code.strip()
+        if zip_clean and zip_clean not in search:
+            search = f"{search} {zip_clean}"
 
     parsed = urlparse(map_url)
     query = parse_qs(parsed.query)
@@ -826,7 +830,12 @@ def render_tab1():
         intake["county"] = county_input
         city = expand_city_name(intake.get("city", "") or "")
         map_url = _get_city_map_url(city)
-        map_url = _build_map_url_with_address(map_url, intake.get("address", "") or "", city)
+        map_url = _build_map_url_with_address(
+            map_url,
+            intake.get("address", "") or "",
+            city,
+            intake.get("zip", "") or "",
+        )
         button_label = f"Open {city} Zoning and Land Use Map" if city else "Open Zoning and Land Use Map"
         if map_url:
             st.link_button(button_label, map_url, use_container_width=True)
