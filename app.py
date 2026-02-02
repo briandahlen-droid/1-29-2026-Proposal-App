@@ -1015,9 +1015,10 @@ def render_tab3():
                 )
 
         with col_fee:
+            existing_fee = existing.get("fee")
             fee_text = st.text_input(
                 "Fee ($)",
-                value=f"{existing.get('fee', ''):,}" if existing.get("fee") is not None else "",
+                value=f"{existing_fee:,}" if isinstance(existing_fee, (int, float)) and existing_fee else "",
                 placeholder=f"{task['amount']:,}",
                 key=f"fee_{task_num}",
                 label_visibility="collapsed",
@@ -1049,8 +1050,13 @@ def render_tab3():
                 st.markdown("**Cost ($)**")
 
             service_data = {}
+            existing_services = selected_tasks.get("310", {}).get("services", {})
             for svc_key, svc_name, default_hrs, default_rate, default_cost in TASK_310_SERVICES:
                 col_chk, col_nm, col_hrs, col_rate, col_cost = st.columns([0.5, 3, 1.5, 1.5, 1.5])
+                prev_service = existing_services.get(svc_key, {})
+                prev_hours = prev_service.get("hours")
+                prev_rate = prev_service.get("rate")
+                prev_cost = prev_service.get("cost")
 
                 with col_chk:
                     is_selected = st.checkbox(
@@ -1070,7 +1076,8 @@ def render_tab3():
                     if default_hrs > 0 or svc_key in ["inspection_tv", "record_drawings"]:
                         hrs_text = st.text_input(
                             "Hrs",
-                            value=str(default_hrs),
+                            value=str(prev_hours) if isinstance(prev_hours, (int, float)) and prev_hours else "",
+                            placeholder=str(default_hrs),
                             key=f"hrs310_{svc_key}",
                             disabled=not is_selected,
                             label_visibility="collapsed",
@@ -1085,7 +1092,8 @@ def render_tab3():
                     if default_rate > 0 or svc_key in ["inspection_tv", "record_drawings"]:
                         rate_text = st.text_input(
                             "Rate",
-                            value=str(default_rate),
+                            value=str(prev_rate) if isinstance(prev_rate, (int, float)) and prev_rate else "",
+                            placeholder=str(default_rate),
                             key=f"rate310_{svc_key}",
                             disabled=not is_selected,
                             label_visibility="collapsed",
@@ -1100,7 +1108,8 @@ def render_tab3():
                     if is_selected:
                         cost_text = st.text_input(
                             "Cost",
-                            value=str(default_cost),
+                            value=str(prev_cost) if isinstance(prev_cost, (int, float)) and prev_cost else "",
+                            placeholder=str(default_cost),
                             key=f"cost310_{svc_key}",
                             disabled=not is_selected,
                             label_visibility="collapsed",
@@ -1213,7 +1222,7 @@ def render_tab4():
             prev_fee = permits.get("included_additional_services_with_fees", {}).get(service_name)
             fee_text = st.text_input(
                 "Fee ($)",
-                value=f"{prev_fee:,}" if isinstance(prev_fee, (int, float)) else (prev_fee or ""),
+                value=f"{prev_fee:,}" if isinstance(prev_fee, (int, float)) and prev_fee else "",
                 placeholder=f"{default_fee:,}",
                 key=f"addl_fee_{key}",
                 label_visibility="collapsed",
@@ -1242,7 +1251,7 @@ def render_tab4():
                 prev_fee = permits.get("included_additional_services_with_fees", {}).get(service_name)
                 fee_text = st.text_input(
                     "Fee ($)",
-                    value=f"{prev_fee:,}" if isinstance(prev_fee, (int, float)) else (prev_fee or ""),
+                    value=f"{prev_fee:,}" if isinstance(prev_fee, (int, float)) and prev_fee else "",
                     placeholder=f"{default_fee:,}",
                     key=f"addl_fee_{key}",
                     label_visibility="collapsed",
@@ -1322,7 +1331,8 @@ def render_tab5():
         )
         retainer_text = st.text_input(
             "Retainer Amount ($)",
-            value=str(invoice.get("retainer_amount", 0)),
+            value=str(invoice.get("retainer_amount")) if invoice.get("retainer_amount") else "",
+            placeholder="0",
         )
         cleaned = re.sub(r"[^\d.]", "", str(retainer_text or "")).strip()
         invoice["retainer_amount"] = int(float(cleaned)) if cleaned else 0
