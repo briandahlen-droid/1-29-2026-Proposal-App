@@ -992,6 +992,13 @@ def render_tab2():
         paragraph = ". ".join(parts).strip() + "."
     else:
         paragraph = "Enter project details in Tab 1 and the short description above to generate this paragraph."
+
+    current_text = proj.get("project_understanding", "")
+    last_auto = proj.get("project_understanding_auto", "")
+    if not current_text or current_text == last_auto:
+        proj["project_understanding"] = paragraph
+        proj["project_understanding_auto"] = paragraph
+
     proj["project_understanding"] = st.text_area(
         "Project Understanding (auto-generated)",
         value=proj.get("project_understanding", paragraph),
@@ -1119,10 +1126,11 @@ def render_tab3():
 
                 with col_rate:
                     if default_rate > 0 or svc_key in ["inspection_tv", "record_drawings"]:
+                        fallback_rate = default_rate if default_rate else 165
                         rate_text = st.text_input(
                             "Rate",
-                            value=str(prev_rate) if isinstance(prev_rate, (int, float)) and prev_rate else "",
-                            placeholder=str(default_rate),
+                            value=str(prev_rate) if isinstance(prev_rate, (int, float)) and prev_rate else str(fallback_rate),
+                            placeholder=str(fallback_rate),
                             key=f"rate310_{svc_key}",
                             disabled=not is_selected,
                             label_visibility="collapsed",
@@ -1213,6 +1221,10 @@ def render_tab4():
     with col_permit3:
         permit_fdot_driveway = st.checkbox("FDOT Driveway Connection", value=permit_flags.get("permit_fdot_driveway", False), key="permit_fdot_driveway")
         permit_fdot_utility = st.checkbox("FDOT Utility Connection", value=permit_flags.get("permit_fdot_utility", False), key="permit_fdot_utility")
+        permit_fdot_general_use = st.checkbox("FDOT General Use Permit", value=permit_flags.get("permit_fdot_general_use", False), key="permit_fdot_general_use")
+        permit_fdot_construction = st.checkbox("FDOT Construction Agreement", value=permit_flags.get("permit_fdot_construction", False), key="permit_fdot_construction")
+        permit_fdot_landscape = st.checkbox("FDOT Landscape Permit", value=permit_flags.get("permit_fdot_landscape", False), key="permit_fdot_landscape")
+        permit_fdot_signage = st.checkbox("FDOT Signage Permit", value=permit_flags.get("permit_fdot_signage", False), key="permit_fdot_signage")
         permit_fema = st.checkbox("FEMA", value=permit_flags.get("permit_fema", False), key="permit_fema")
 
     permit_flags.update({
@@ -1224,6 +1236,10 @@ def render_tab4():
         "permit_fdot_drainage": permit_fdot_drainage,
         "permit_fdot_driveway": permit_fdot_driveway,
         "permit_fdot_utility": permit_fdot_utility,
+        "permit_fdot_general_use": permit_fdot_general_use,
+        "permit_fdot_construction": permit_fdot_construction,
+        "permit_fdot_landscape": permit_fdot_landscape,
+        "permit_fdot_signage": permit_fdot_signage,
         "permit_fema": permit_fema,
     })
 
@@ -1418,6 +1434,14 @@ def render_tab5():
         permit_list.append("FDOT Driveway Connection")
     if permit_flags.get("permit_fdot_utility"):
         permit_list.append("FDOT Utility Connection")
+    if permit_flags.get("permit_fdot_general_use"):
+        permit_list.append("FDOT General Use Permit")
+    if permit_flags.get("permit_fdot_construction"):
+        permit_list.append("FDOT Construction Agreement")
+    if permit_flags.get("permit_fdot_landscape"):
+        permit_list.append("FDOT Landscape Permit")
+    if permit_flags.get("permit_fdot_signage"):
+        permit_list.append("FDOT Signage Permit")
     if permit_flags.get("permit_fema"):
         permit_list.append("FEMA")
 
