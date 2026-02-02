@@ -64,9 +64,13 @@ label, .stMarkdown, .stText, p, span, div {
 }
 
 /* Force readable input text (including disabled) */
-input[type="text"], input[type="number"], textarea, input::placeholder, textarea::placeholder {
+input[type="text"], input[type="number"], textarea {
     color: var(--ink) !important;
     -webkit-text-fill-color: var(--ink) !important;
+}
+input::placeholder, textarea::placeholder {
+    color: #8a96a8 !important;
+    -webkit-text-fill-color: #8a96a8 !important;
 }
 
 /* Inputs: text, number, textarea */
@@ -852,15 +856,15 @@ def render_tab1():
             st.info("No city map link found for this municipality.")
 
         st.markdown("**Lookup Summary (Auto-fills tokens)**")
-        st.text_input("County", value=intake.get("county", ""), disabled=True)
-        st.text_input("City", value=intake.get("city", ""), disabled=True)
-        st.text_input("Address", value=intake.get("address", ""), disabled=True)
-        st.text_input("Owner", value=intake.get("owner", ""), disabled=True)
-        st.text_input("Land Use", value=intake.get("land_use", ""), disabled=True)
+        intake["county"] = st.text_input("County", value=intake.get("county", ""))
+        intake["city"] = st.text_input("City", value=intake.get("city", ""))
+        intake["address"] = st.text_input("Address", value=intake.get("address", ""))
+        intake["owner"] = st.text_input("Owner", value=intake.get("owner", ""))
+        intake["land_use"] = st.text_input("Land Use", value=intake.get("land_use", ""))
         intake["zoning"] = st.text_input("Zoning (full)", value=intake.get("zoning", ""))
         intake["future_land_use"] = st.text_input("Future Land Use (full)", value=intake.get("future_land_use", ""))
-        st.text_input("Site Area (acres)", value=intake.get("site_area_acres", ""), disabled=True)
-        st.text_input("Site Area (sf)", value=intake.get("site_area_sqft", ""), disabled=True)
+        intake["site_area_acres"] = st.text_input("Site Area (acres)", value=intake.get("site_area_acres", ""))
+        intake["site_area_sqft"] = st.text_input("Site Area (sf)", value=intake.get("site_area_sqft", ""))
 
     with right:
         project = st.session_state.proposal["project"]
