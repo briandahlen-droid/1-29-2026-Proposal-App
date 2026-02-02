@@ -1127,7 +1127,10 @@ def render_tab3():
                             label_visibility="collapsed",
                         )
                         cleaned = re.sub(r"[^\d.]", "", str(hrs_text or "")).strip()
-                        hrs_value = int(float(cleaned)) if cleaned else 0
+                        if cleaned:
+                            hrs_value = int(float(cleaned))
+                        else:
+                            hrs_value = int(default_hrs) if default_hrs else 0
                     else:
                         hrs_value = 0
                         st.write("-")
@@ -1144,7 +1147,10 @@ def render_tab3():
                             label_visibility="collapsed",
                         )
                         cleaned = re.sub(r"[^\d.]", "", str(rate_text or "")).strip()
-                        rate_value = int(float(cleaned)) if cleaned else 0
+                        if cleaned:
+                            rate_value = int(float(cleaned))
+                        else:
+                            rate_value = int(fallback_rate) if fallback_rate else 0
                     else:
                         rate_value = 0
                         st.write("-")
