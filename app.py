@@ -538,15 +538,15 @@ def scrape_pinellas_property(parcel_id: str) -> Dict[str, Any]:
                 strap = normalized_parcel.replace("-", "")
 
             detail_url = (
-                f"https://www.pcpao.gov/property-detailsx"
-                f"s={strap}&input={normalized_parcel}&search_option=parcel_number"
+                f"https://www.pcpao.gov/property-details"
+                f"?s={strap}&input={normalized_parcel}&search_option=parcel_number"
             )
             html = session.get(detail_url, timeout=30).text
             soup = BeautifulSoup(html, "html.parser")
             txt = soup.get_text(" ", strip=True)
 
             m = re.search(
-                r"Land Area:\s*.*?([\d,]+)\s*sf\s*\|\s*.*?([\d.]+)\s*acres",
+                r"Land Area:\s*[^\d]*([\d,]+)\s*sf\s*\|\s*[^\d]*([\d.]+)\s*acres",
                 txt,
                 flags=re.IGNORECASE,
             )
