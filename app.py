@@ -1213,10 +1213,13 @@ def render_tab3():
                         cleaned = re.sub(r"[^\d.]", "", str(hrs_text or "")).strip()
                         if cleaned:
                             hrs_value = int(float(cleaned))
+                            hrs_has_value = True
                         else:
-                            hrs_value = int(default_hrs) if default_hrs else 0
+                            hrs_value = 0
+                            hrs_has_value = False
                     else:
                         hrs_value = 0
+                        hrs_has_value = False
                         st.markdown('<div class="svc-cell-empty"><span>-</span></div>', unsafe_allow_html=True)
 
                     if default_rate > 0 or svc_key in ["inspection_tv", "record_drawings"]:
@@ -1239,7 +1242,7 @@ def render_tab3():
                         st.markdown('<div class="svc-cell-empty"><span>-</span></div>', unsafe_allow_html=True)
 
                     if is_selected:
-                        computed_cost = hrs_value * rate_value if hrs_value and rate_value else 0
+                        computed_cost = hrs_value * rate_value if hrs_has_value and rate_value else 0
                         st.text_input(
                             "Cost",
                             value=format_currency(computed_cost),
