@@ -119,46 +119,74 @@ input[type="number"] {
 .tab3-scope div[data-baseweb="checkbox"] {
     margin-top: 0;
 }
-.tab3-scope .st-key-cps-header,
-.tab3-scope [class^="st-key-cps-row-"] {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    width: 100%;
+/* Target the actual horizontal block inside the keyed containers */
+.tab3-scope .st-key-cps-header [data-testid="stHorizontalBlock"],
+.tab3-scope [class^="st-key-cps-row-"] [data-testid="stHorizontalBlock"]{
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 16px !important;
+    width: 100% !important;
 }
-.tab3-scope .st-key-cps-header .cps-col-check,
-.tab3-scope [class^="st-key-cps-row-"] .cps-col-check {
-    flex: 0 0 32px;
-    width: 32px;
+
+/* The flex items are Streamlit’s wrapper divs for each element in the row */
+.tab3-scope .st-key-cps-header [data-testid="stHorizontalBlock"] > div,
+.tab3-scope [class^="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div{
+    flex: 0 0 auto !important;
+    min-width: 0 !important;
 }
-.tab3-scope .st-key-cps-header .cps-col-service,
-.tab3-scope [class^="st-key-cps-row-"] .cps-col-service {
-    flex: 1 1 auto;
-    min-width: 0;
+
+/* 1) Checkbox column */
+.tab3-scope .st-key-cps-header [data-testid="stHorizontalBlock"] > div:nth-child(1),
+.tab3-scope [class^="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div:nth-child(1){
+    flex: 0 0 32px !important;
+    width: 32px !important;
+    max-width: 32px !important;
 }
-.tab3-scope .st-key-cps-header .cps-col-fixed,
-.tab3-scope [class^="st-key-cps-row-"] .cps-col-fixed {
-    flex: 0 0 150px;
-    width: 150px;
-    min-width: 150px;
-    max-width: 150px;
+
+/* 2) Service label column (fluid) */
+.tab3-scope .st-key-cps-header [data-testid="stHorizontalBlock"] > div:nth-child(2),
+.tab3-scope [class^="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div:nth-child(2){
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
 }
-.tab3-scope [class^="st-key-cps-row-"] .cps-col-fixed [data-testid="stNumberInput"],
-.tab3-scope [class^="st-key-cps-row-"] .cps-col-fixed [data-testid="stTextInput"] {
+
+/* 3–5) Fixed-width input columns */
+.tab3-scope .st-key-cps-header [data-testid="stHorizontalBlock"] > div:nth-child(3),
+.tab3-scope .st-key-cps-header [data-testid="stHorizontalBlock"] > div:nth-child(4),
+.tab3-scope .st-key-cps-header [data-testid="stHorizontalBlock"] > div:nth-child(5),
+.tab3-scope [class^="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div:nth-child(3),
+.tab3-scope [class^="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div:nth-child(4),
+.tab3-scope [class^="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div:nth-child(5){
+    flex: 0 0 150px !important;
     width: 150px !important;
     min-width: 150px !important;
     max-width: 150px !important;
 }
-.tab3-scope [class^="st-key-cps-row-"] .cps-col-fixed input {
+
+/* Force Streamlit widget wrappers inside fixed columns to respect 150px */
+.tab3-scope [class^="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div:nth-child(3) [data-testid="stNumberInput"],
+.tab3-scope [class^="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div:nth-child(4) [data-testid="stNumberInput"],
+.tab3-scope [class^="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div:nth-child(5) [data-testid="stTextInput"]{
+    width: 150px !important;
+    min-width: 150px !important;
+    max-width: 150px !important;
+}
+
+/* Force actual input element width */
+.tab3-scope [class^="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div:nth-child(3) input,
+.tab3-scope [class^="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div:nth-child(4) input,
+.tab3-scope [class^="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div:nth-child(5) input{
     width: 150px !important;
     min-width: 150px !important;
     max-width: 150px !important;
     box-sizing: border-box !important;
 }
-.tab3-scope [class^="st-key-cps-row-"] .stNumberInput,
-.tab3-scope [class^="st-key-cps-row-"] .stTextInput {
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
+
+/* Optional: remove markdown paragraph margins that can cause vertical jitter */
+.tab3-scope [class^="st-key-cps-row-"] .stMarkdown p,
+.tab3-scope .st-key-cps-header .stMarkdown p{
+    margin: 0 !important;
 }
 .additional-services .svc-label {
     margin-top: 10px;
