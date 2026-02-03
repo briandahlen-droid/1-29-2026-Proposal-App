@@ -1208,20 +1208,16 @@ def render_tab3():
                 prev_hours = existing.get("hours")
                 prev_rate = existing.get("rate")
 
-                row = st.container(horizontal=True, key=f"cps-row-{_slug(svc_key)}")
-                with row:
-                    st.markdown('<div class="cps-col-check">', unsafe_allow_html=True)
+                with st.container(horizontal=True, key=f"cps-row-{_slug(svc_key)}"):
                     is_selected = st.checkbox(
                         "",
                         value=svc_key in ["shop_drawings", "rfi", "oac", "site_visits", "asbuilt", "fdep", "compliance", "wmd"],
                         key=f"svc310_{svc_key}",
                         label_visibility="collapsed",
                     )
-                    st.markdown("</div>", unsafe_allow_html=True)
 
-                    st.markdown(f'<div class="cps-col-service">{svc_name}</div>', unsafe_allow_html=True)
+                    st.markdown(svc_name)
 
-                    st.markdown('<div class="cps-col-fixed">', unsafe_allow_html=True)
                     if default_hrs > 0 or svc_key in ["inspection_tv", "record_drawings"]:
                         hrs_text = st.text_input(
                             "Hrs",
@@ -1249,9 +1245,7 @@ def render_tab3():
                             disabled=True,
                             label_visibility="collapsed",
                         )
-                    st.markdown("</div>", unsafe_allow_html=True)
 
-                    st.markdown('<div class="cps-col-fixed">', unsafe_allow_html=True)
                     if default_rate > 0 or svc_key in ["inspection_tv", "record_drawings"]:
                         fallback_rate = default_rate if default_rate else 165
                         rate_text = st.text_input(
@@ -1277,9 +1271,7 @@ def render_tab3():
                             disabled=True,
                             label_visibility="collapsed",
                         )
-                    st.markdown("</div>", unsafe_allow_html=True)
 
-                    st.markdown('<div class="cps-col-fixed">', unsafe_allow_html=True)
                     if is_selected:
                         computed_cost = hrs_value * rate_value if hrs_has_value and rate_value else 0
                         st.text_input(
@@ -1301,7 +1293,6 @@ def render_tab3():
                             disabled=True,
                             label_visibility="collapsed",
                         )
-                    st.markdown("</div>", unsafe_allow_html=True)
 
                 return {
                     "included": is_selected,
