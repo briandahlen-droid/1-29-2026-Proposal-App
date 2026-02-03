@@ -120,67 +120,136 @@ input[type="number"] {
     margin-top: 0;
 }
 /* ===== CPS GRID (Tab 3) ===== */
-.st-key-tab3-scope .st-key-cps-header [data-testid="stHorizontalBlock"],
+
+/* Header block (5 items, stable) */
+.st-key-tab3-scope .st-key-cps-header [data-testid="stHorizontalBlock"]{
+  display:flex !important;
+  flex-wrap:nowrap !important;
+  align-items:center !important;
+  justify-content:flex-start !important;
+  gap:12px !important;
+  width:100% !important;
+}
+.st-key-tab3-scope .st-key-cps-header [data-testid="stHorizontalBlock"] > div{
+  flex:0 0 auto !important;
+  min-width:0 !important;
+}
+.st-key-tab3-scope .st-key-cps-header [data-testid="stHorizontalBlock"] > div:nth-child(1){
+  flex:0 0 32px !important;
+  width:32px !important;
+  min-width:32px !important;
+  max-width:32px !important;
+}
+.st-key-tab3-scope .st-key-cps-header [data-testid="stHorizontalBlock"] > div:nth-child(2){
+  flex:0 0 320px !important;
+  width:320px !important;
+  min-width:320px !important;
+  max-width:320px !important;
+  text-align:left !important;
+}
+.st-key-tab3-scope .st-key-cps-header [data-testid="stHorizontalBlock"] > div:nth-child(3),
+.st-key-tab3-scope .st-key-cps-header [data-testid="stHorizontalBlock"] > div:nth-child(4),
+.st-key-tab3-scope .st-key-cps-header [data-testid="stHorizontalBlock"] > div:nth-child(5){
+  flex:0 0 150px !important;
+  width:150px !important;
+  min-width:150px !important;
+  max-width:150px !important;
+}
+.st-key-tab3-scope .st-key-cps-header .stMarkdown p{ margin:0 !important; }
+
+/* Rows: target ONLY cps-row containers */
 .st-key-tab3-scope [class*="st-key-cps-row-"] [data-testid="stHorizontalBlock"]{
-  display: flex !important;
-  flex-wrap: nowrap !important;
-  align-items: center !important;
-  justify-content: flex-start !important;
-  gap: 16px !important;
-  width: 100% !important;
+  display:flex !important;
+  flex-wrap:nowrap !important;
+  align-items:center !important;
+  justify-content:flex-start !important;
+  gap:12px !important;
+  width:100% !important;
 }
-
-/* Direct children should not become 100% width blocks */
-.st-key-tab3-scope .st-key-cps-header [data-testid="stHorizontalBlock"] > div,
 .st-key-tab3-scope [class*="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div{
-  flex: 0 0 auto !important;
-  width: auto !important;
-  min-width: 0 !important;
+  flex:0 0 auto !important;
+  width:auto !important;
+  min-width:0 !important;
 }
 
-/* Checkbox column: size the FLEX ITEM that contains the checkbox widget */
+/* Checkbox column (parent flex item containing checkbox key) */
 .st-key-tab3-scope [class*="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div:has([class*="st-key-svc310_"]){
-  flex: 0 0 32px !important;
-  width: 32px !important;
-  min-width: 32px !important;
-  max-width: 32px !important;
+  flex:0 0 32px !important;
+  width:32px !important;
+  min-width:32px !important;
+  max-width:32px !important;
 }
 
-/* Fixed columns: size the FLEX ITEM that contains hrs/rate/cost widgets */
+/* Fixed columns (parent flex items containing hrs/rate/cost keys) */
 .st-key-tab3-scope [class*="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div:has([class*="st-key-hrs310_"]),
 .st-key-tab3-scope [class*="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div:has([class*="st-key-rate310_"]),
 .st-key-tab3-scope [class*="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div:has([class*="st-key-cost310_"]){
-  flex: 0 0 150px !important;
-  width: 150px !important;
-  min-width: 150px !important;
-  max-width: 150px !important;
+  flex:0 0 150px !important;
+  width:150px !important;
+  min-width:150px !important;
+  max-width:150px !important;
 }
 
-/* Service label: take remaining space */
+/* Service label column fixed */
 .st-key-tab3-scope [class*="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div:has(.stMarkdown){
-  flex: 1 1 auto !important;
-  min-width: 0 !important;
+  flex:0 0 320px !important;
+  width:320px !important;
+  min-width:320px !important;
+  max-width:320px !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+  white-space:nowrap !important;
 }
+.st-key-tab3-scope [class*="st-key-cps-row-"] .stMarkdown p{ margin:0 !important; }
 
-/* Remove markdown margins that cause vertical jitter */
-.st-key-tab3-scope .stMarkdown p{ margin: 0 !important; }
-
-/* Force BaseWeb input wrapper + input element widths */
+/* Force BaseWeb input wrapper + input width */
 .st-key-tab3-scope [class*="st-key-hrs310_"] div[data-baseweb="input"],
 .st-key-tab3-scope [class*="st-key-rate310_"] div[data-baseweb="input"],
 .st-key-tab3-scope [class*="st-key-cost310_"] div[data-baseweb="input"]{
+  width:150px !important;
+  min-width:150px !important;
+  max-width:150px !important;
+}
+.st-key-tab3-scope [class*="st-key-hrs310_"] input,
+.st-key-tab3-scope [class*="st-key-rate310_"] input,
+.st-key-tab3-scope [class*="st-key-cost310_"] input{
+  width:150px !important;
+  min-width:150px !important;
+  max-width:150px !important;
+  box-sizing:border-box !important;
+}
+
+/* ===== CPS FINAL TIGHTEN (append below existing CPS CSS) ===== */
+
+/* Remove extra vertical spacing Streamlit adds around widgets inside CPS rows */
+.st-key-tab3-scope [class*="st-key-cps-row-"] .stCheckbox,
+.st-key-tab3-scope [class*="st-key-cps-row-"] .stTextInput,
+.st-key-tab3-scope [class*="st-key-cps-row-"] .stNumberInput{
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* Center the checkbox within its 32px column */
+.st-key-tab3-scope [class*="st-key-cps-row-"] [class*="st-key-svc310_"]{
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* BaseWeb input containers sometimes enforce min widths; hard clamp them */
+.st-key-tab3-scope [class*="st-key-hrs310_"] [data-baseweb="base-input"],
+.st-key-tab3-scope [class*="st-key-rate310_"] [data-baseweb="base-input"],
+.st-key-tab3-scope [class*="st-key-cost310_"] [data-baseweb="base-input"]{
   width: 150px !important;
   min-width: 150px !important;
   max-width: 150px !important;
 }
 
-.st-key-tab3-scope [class*="st-key-hrs310_"] input,
-.st-key-tab3-scope [class*="st-key-rate310_"] input,
-.st-key-tab3-scope [class*="st-key-cost310_"] input{
-  width: 150px !important;
-  min-width: 150px !important;
-  max-width: 150px !important;
-  box-sizing: border-box !important;
+/* Ensure each flex item is vertically centered */
+.st-key-tab3-scope [class*="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div{
+  align-self: center !important;
 }
 .additional-services .svc-label {
     margin-top: 10px;
