@@ -195,7 +195,7 @@ input[type="number"] {
 }
 
 /* Service label column fixed */
-.st-key-tab3-scope [class*="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div:has(.stMarkdown){
+.st-key-tab3-scope [class*="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div:has(.stMarkdown):not(:has([class*="st-key-hrs310_"])):not(:has([class*="st-key-rate310_"])):not(:has([class*="st-key-cost310_"])):not(:has([class*="st-key-svc310_"])){
   flex:0 0 320px !important;
   width:320px !important;
   min-width:320px !important;
@@ -289,7 +289,7 @@ input[type="number"] {
   justify-content: flex-start !important;
   text-align: left !important;
 }
-.st-key-tab3-scope [class*="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div:has(.stMarkdown){
+.st-key-tab3-scope [class*="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div:has(.stMarkdown):not(:has([class*="st-key-hrs310_"])):not(:has([class*="st-key-rate310_"])):not(:has([class*="st-key-cost310_"])):not(:has([class*="st-key-svc310_"])){
   justify-content: flex-start !important;
   text-align: left !important;
 }
