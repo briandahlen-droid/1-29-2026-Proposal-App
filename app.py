@@ -152,7 +152,7 @@ input[type="number"] {
 .tab3-scope [class*="st-key-svc_header"],
 .tab3-scope [class*="st-key-svcrow_"] {
     display: grid;
-    grid-template-columns: 36px minmax(240px, 1fr) repeat(3, 220px);
+    grid-template-columns: 36px minmax(240px, 1fr) repeat(3, 150px);
     column-gap: 14px;
     align-items: center;
     justify-items: stretch;
