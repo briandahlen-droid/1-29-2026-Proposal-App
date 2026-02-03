@@ -119,67 +119,46 @@ input[type="number"] {
 .tab3-scope div[data-baseweb="checkbox"] {
     margin-top: 0;
 }
-.tab3-scope .svc-name-cell {
+.tab3-scope .st-key-cps-header,
+.tab3-scope [class^="st-key-cps-row-"] {
     display: flex;
     align-items: center;
-    height: 46px;
-    padding-left: 12px;
-    margin: 0;
+    gap: 16px;
+    width: 100%;
 }
-.tab3-scope .svc-name-cell span {
-    line-height: 1;
+.tab3-scope .st-key-cps-header .cps-col-check,
+.tab3-scope [class^="st-key-cps-row-"] .cps-col-check {
+    flex: 0 0 32px;
+    width: 32px;
 }
-.tab3-scope .svc-cell-empty {
-    display: flex;
-    align-items: center;
-    height: 46px;
-    padding-left: 12px;
-    margin: 0;
+.tab3-scope .st-key-cps-header .cps-col-service,
+.tab3-scope [class^="st-key-cps-row-"] .cps-col-service {
+    flex: 1 1 auto;
+    min-width: 0;
 }
-.tab3-scope .svc-cell-empty span {
-    line-height: 1;
-}
-.tab3-scope .svc-header-cell {
-    display: flex;
-    align-items: center;
-    height: 46px;
-    margin: 0;
-}
-.tab3-scope .svc-header-cell p,
-.tab3-scope .svc-name-cell p {
-    margin: 0 !important;
-}
-.tab3-scope [class*="st-key-svc_header"] > div[data-testid="stHorizontalBlock"],
-.tab3-scope [class*="st-key-svcrow_"] > div[data-testid="stHorizontalBlock"] {
-    display: grid;
-    grid-template-columns: 36px minmax(260px, 1fr) repeat(3, 150px);
-    column-gap: 14px;
-    align-items: center;
-    justify-items: stretch;
-}
-.tab3-scope [class*="st-key-svc_header"] > div[data-testid="stHorizontalBlock"] > div,
-.tab3-scope [class*="st-key-svcrow_"] > div[data-testid="stHorizontalBlock"] > div {
-    margin: 0 !important;
-    width: 100% !important;
-}
-.tab3-scope [class*="st-key-svcrow_"] div[data-baseweb="input"],
-.tab3-scope [class*="st-key-svcrow_"] div[data-baseweb="input"] > div {
-    width: 100% !important;
+.tab3-scope .st-key-cps-header .cps-col-fixed,
+.tab3-scope [class^="st-key-cps-row-"] .cps-col-fixed {
+    flex: 0 0 150px;
+    width: 150px;
+    min-width: 150px;
     max-width: 150px;
 }
-.tab3-scope [class*="st-key-svc_header"] .svc-header-cell {
-    justify-content: center;
-    text-align: center;
+.tab3-scope [class^="st-key-cps-row-"] .cps-col-fixed [data-testid="stNumberInput"],
+.tab3-scope [class^="st-key-cps-row-"] .cps-col-fixed [data-testid="stTextInput"] {
+    width: 150px !important;
+    min-width: 150px !important;
+    max-width: 150px !important;
 }
-.tab3-scope [class*="st-key-svc_header"] .svc-header-cell:first-child,
-.tab3-scope [class*="st-key-svc_header"] .svc-header-cell:nth-child(2) {
-    text-align: left;
-    justify-content: flex-start;
+.tab3-scope [class^="st-key-cps-row-"] .cps-col-fixed input {
+    width: 150px !important;
+    min-width: 150px !important;
+    max-width: 150px !important;
+    box-sizing: border-box !important;
 }
-.tab3-scope [class*="st-key-svc_header"] > div[data-testid="stHorizontalBlock"] > div:nth-child(3),
-.tab3-scope [class*="st-key-svc_header"] > div[data-testid="stHorizontalBlock"] > div:nth-child(4),
-.tab3-scope [class*="st-key-svc_header"] > div[data-testid="stHorizontalBlock"] > div:nth-child(5) {
-    justify-self: center;
+.tab3-scope [class^="st-key-cps-row-"] .stNumberInput,
+.tab3-scope [class^="st-key-cps-row-"] .stTextInput {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
 }
 .additional-services .svc-label {
     margin-top: 10px;
@@ -528,6 +507,9 @@ def strip_dor_code(land_use_text: str) -> str:
         if len(parts) > 1:
             return parts[1].strip()
     return t
+
+def _slug(s: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "-", s.lower()).strip("-")
 
 def format_currency(value: Optional[float]) -> str:
     if value is None or value == "":
@@ -1176,36 +1158,42 @@ def render_tab3():
             st.markdown("**Construction Phase Services:**")
             st.caption("Select services, enter hours/count, rate, and cost")
 
-            header = st.container(horizontal=True, key="svc_header")
+            header = st.container(horizontal=True, key="cps-header")
             with header:
-                st.markdown('<div class="svc-header-cell">&nbsp;</div>', unsafe_allow_html=True)
-                st.markdown('<div class="svc-header-cell"><strong>Service</strong></div>', unsafe_allow_html=True)
-                st.markdown('<div class="svc-header-cell"><strong>Hrs/Count</strong></div>', unsafe_allow_html=True)
-                st.markdown('<div class="svc-header-cell"><strong>$/hr</strong></div>', unsafe_allow_html=True)
-                st.markdown('<div class="svc-header-cell"><strong>Cost</strong></div>', unsafe_allow_html=True)
+                st.markdown('<div class="cps-col-check"></div>', unsafe_allow_html=True)
+                st.markdown('<div class="cps-col-service"><b>Service</b></div>', unsafe_allow_html=True)
+                st.markdown('<div class="cps-col-fixed"><b>Hrs/Count</b></div>', unsafe_allow_html=True)
+                st.markdown('<div class="cps-col-fixed"><b>$/hr</b></div>', unsafe_allow_html=True)
+                st.markdown('<div class="cps-col-fixed"><b>Cost</b></div>', unsafe_allow_html=True)
 
             service_data = {}
             existing_services = selected_tasks.get("310", {}).get("services", {})
-            for svc_key, svc_name, default_hrs, default_rate, default_cost in TASK_310_SERVICES:
-                row = st.container(horizontal=True, key=f"svcrow_{svc_key}")
-                prev_service = existing_services.get(svc_key, {})
-                prev_hours = prev_service.get("hours")
-                prev_rate = prev_service.get("rate")
-                prev_cost = prev_service.get("cost")
 
+            def render_service_row(
+                svc_key: str,
+                svc_name: str,
+                default_hrs: int,
+                default_rate: int,
+                default_cost: int,
+                existing: Dict[str, Any],
+            ) -> Dict[str, Any]:
+                prev_hours = existing.get("hours")
+                prev_rate = existing.get("rate")
+
+                row = st.container(horizontal=True, key=f"cps-row-{_slug(svc_key)}")
                 with row:
+                    st.markdown('<div class="cps-col-check">', unsafe_allow_html=True)
                     is_selected = st.checkbox(
                         "",
                         value=svc_key in ["shop_drawings", "rfi", "oac", "site_visits", "asbuilt", "fdep", "compliance", "wmd"],
                         key=f"svc310_{svc_key}",
                         label_visibility="collapsed",
                     )
+                    st.markdown("</div>", unsafe_allow_html=True)
 
-                    st.markdown(
-                        f'<div class="svc-name-cell"><span>{svc_name}</span></div>',
-                        unsafe_allow_html=True,
-                    )
+                    st.markdown(f'<div class="cps-col-service">{svc_name}</div>', unsafe_allow_html=True)
 
+                    st.markdown('<div class="cps-col-fixed">', unsafe_allow_html=True)
                     if default_hrs > 0 or svc_key in ["inspection_tv", "record_drawings"]:
                         hrs_text = st.text_input(
                             "Hrs",
@@ -1233,7 +1221,9 @@ def render_tab3():
                             disabled=True,
                             label_visibility="collapsed",
                         )
+                    st.markdown("</div>", unsafe_allow_html=True)
 
+                    st.markdown('<div class="cps-col-fixed">', unsafe_allow_html=True)
                     if default_rate > 0 or svc_key in ["inspection_tv", "record_drawings"]:
                         fallback_rate = default_rate if default_rate else 165
                         rate_text = st.text_input(
@@ -1259,7 +1249,9 @@ def render_tab3():
                             disabled=True,
                             label_visibility="collapsed",
                         )
+                    st.markdown("</div>", unsafe_allow_html=True)
 
+                    st.markdown('<div class="cps-col-fixed">', unsafe_allow_html=True)
                     if is_selected:
                         computed_cost = hrs_value * rate_value if hrs_has_value and rate_value else 0
                         st.text_input(
@@ -1281,14 +1273,26 @@ def render_tab3():
                             disabled=True,
                             label_visibility="collapsed",
                         )
+                    st.markdown("</div>", unsafe_allow_html=True)
 
-                service_data[svc_key] = {
+                return {
                     "included": is_selected,
                     "name": svc_name,
                     "hours": hrs_value if is_selected else 0,
                     "rate": rate_value if is_selected else 0,
                     "cost": cost_value if is_selected else 0,
                 }
+
+            for svc_key, svc_name, default_hrs, default_rate, default_cost in TASK_310_SERVICES:
+                prev_service = existing_services.get(svc_key, {})
+                service_data[svc_key] = render_service_row(
+                    svc_key,
+                    svc_name,
+                    default_hrs,
+                    default_rate,
+                    default_cost,
+                    prev_service,
+                )
 
             st.markdown("---")
             total_hrs_text = st.text_input(
