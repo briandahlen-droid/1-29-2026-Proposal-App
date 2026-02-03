@@ -120,7 +120,7 @@ input[type="number"] {
     margin-top: 0;
 }
 /* Row container: make sure the actual horizontal block is flex */
-.tab3-scope [class^="st-key-cps-row-"] [data-testid="stHorizontalBlock"]{
+[class^="st-key-cps-row-"] [data-testid="stHorizontalBlock"]{
   display: flex !important;
   align-items: center !important;
   justify-content: flex-start !important;
@@ -129,13 +129,13 @@ input[type="number"] {
 }
 
 /* Default: prevent random flex-grow on child wrappers */
-.tab3-scope [class^="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div{
+[class^="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div{
   flex: 0 0 auto !important;
   min-width: 0 !important;
 }
 
 /* 1) Checkbox wrapper (key prefix svc310_) */
-.tab3-scope [class^="st-key-cps-row-"] [class^="st-key-svc310_"]{
+[class^="st-key-cps-row-"] [class^="st-key-svc310_"]{
   flex: 0 0 32px !important;
   width: 32px !important;
   min-width: 32px !important;
@@ -143,28 +143,37 @@ input[type="number"] {
 }
 
 /* 3/4/5) Fixed input wrappers (key prefixes) */
-.tab3-scope [class^="st-key-cps-row-"] [class^="st-key-hrs310_"],
-.tab3-scope [class^="st-key-cps-row-"] [class^="st-key-rate310_"],
-.tab3-scope [class^="st-key-cps-row-"] [class^="st-key-cost310_"]{
+[class^="st-key-cps-row-"] [class^="st-key-hrs310_"],
+[class^="st-key-cps-row-"] [class^="st-key-rate310_"],
+[class^="st-key-cps-row-"] [class^="st-key-cost310_"]{
   flex: 0 0 150px !important;
   width: 150px !important;
   min-width: 150px !important;
   max-width: 150px !important;
 }
 
+/* Force BaseWeb input wrapper widths */
+[class^="st-key-cps-row-"] [class^="st-key-hrs310_"] div[data-baseweb="input"],
+[class^="st-key-cps-row-"] [class^="st-key-rate310_"] div[data-baseweb="input"],
+[class^="st-key-cps-row-"] [class^="st-key-cost310_"] div[data-baseweb="input"]{
+  width: 150px !important;
+  min-width: 150px !important;
+  max-width: 150px !important;
+}
+
 /* Force the widget subcontainers to obey 150px */
-.tab3-scope [class^="st-key-cps-row-"] [class^="st-key-hrs310_"] [data-testid="stTextInput"],
-.tab3-scope [class^="st-key-cps-row-"] [class^="st-key-rate310_"] [data-testid="stTextInput"],
-.tab3-scope [class^="st-key-cps-row-"] [class^="st-key-cost310_"] [data-testid="stTextInput"]{
+[class^="st-key-cps-row-"] [class^="st-key-hrs310_"] [data-testid="stTextInput"],
+[class^="st-key-cps-row-"] [class^="st-key-rate310_"] [data-testid="stTextInput"],
+[class^="st-key-cps-row-"] [class^="st-key-cost310_"] [data-testid="stTextInput"]{
   width: 150px !important;
   min-width: 150px !important;
   max-width: 150px !important;
 }
 
 /* Force actual <input> width */
-.tab3-scope [class^="st-key-cps-row-"] [class^="st-key-hrs310_"] input,
-.tab3-scope [class^="st-key-cps-row-"] [class^="st-key-rate310_"] input,
-.tab3-scope [class^="st-key-cps-row-"] [class^="st-key-cost310_"] input{
+[class^="st-key-cps-row-"] [class^="st-key-hrs310_"] input,
+[class^="st-key-cps-row-"] [class^="st-key-rate310_"] input,
+[class^="st-key-cps-row-"] [class^="st-key-cost310_"] input{
   width: 150px !important;
   min-width: 150px !important;
   max-width: 150px !important;
@@ -174,10 +183,10 @@ input[type="number"] {
 /* 2) Make the service label be the flexible column:
    in your row, it's the ONLY markdown block not matching st-key-* above.
    Remove markdown vertical margins to stop vertical drift. */
-.tab3-scope [class^="st-key-cps-row-"] .stMarkdown p{
+[class^="st-key-cps-row-"] .stMarkdown p{
   margin: 0 !important;
 }
-.tab3-scope [class^="st-key-cps-row-"] .stMarkdown{
+[class^="st-key-cps-row-"] .stMarkdown{
   flex: 1 1 auto !important;
   min-width: 0 !important;
 }
