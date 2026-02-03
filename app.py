@@ -129,6 +129,53 @@ input[type="number"] {
 .tab3-scope .svc-name-cell span {
     line-height: 1;
 }
+.tab3-scope .svc-cell-empty {
+    display: flex;
+    align-items: center;
+    height: 46px;
+    padding-left: 12px;
+    margin: 0;
+}
+.tab3-scope .svc-cell-empty span {
+    line-height: 1;
+}
+.tab3-scope .svc-header-cell {
+    display: flex;
+    align-items: center;
+    height: 46px;
+    margin: 0;
+}
+.tab3-scope .svc-header-cell p,
+.tab3-scope .svc-name-cell p {
+    margin: 0 !important;
+}
+.tab3-scope [class*="st-key-svc_header"],
+.tab3-scope [class*="st-key-svcrow_"] {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+.tab3-scope [class*="st-key-svc_header"] > div,
+.tab3-scope [class*="st-key-svcrow_"] > div {
+    margin: 0 !important;
+}
+.tab3-scope [class*="st-key-svc_header"] > div:nth-child(1),
+.tab3-scope [class*="st-key-svcrow_"] > div:nth-child(1) {
+    flex: 0 0 36px;
+}
+.tab3-scope [class*="st-key-svc_header"] > div:nth-child(2),
+.tab3-scope [class*="st-key-svcrow_"] > div:nth-child(2) {
+    flex: 1 1 0;
+    min-width: 240px;
+}
+.tab3-scope [class*="st-key-svc_header"] > div:nth-child(3),
+.tab3-scope [class*="st-key-svcrow_"] > div:nth-child(3),
+.tab3-scope [class*="st-key-svc_header"] > div:nth-child(4),
+.tab3-scope [class*="st-key-svcrow_"] > div:nth-child(4),
+.tab3-scope [class*="st-key-svc_header"] > div:nth-child(5),
+.tab3-scope [class*="st-key-svcrow_"] > div:nth-child(5) {
+    flex: 0 0 180px;
+}
 .additional-services .svc-label {
     margin-top: 10px;
     line-height: 1.2;
@@ -476,6 +523,14 @@ def strip_dor_code(land_use_text: str) -> str:
         if len(parts) > 1:
             return parts[1].strip()
     return t
+
+def format_currency(value: Optional[float]) -> str:
+    if value is None or value == "":
+        return ""
+    try:
+        return f"${float(value):,.2f}"
+    except (TypeError, ValueError):
+        return ""
 
 @st.cache_resource
 def get_resilient_session():
@@ -1095,8 +1150,8 @@ def render_tab3():
             existing_fee = existing.get("fee")
             fee_text = st.text_input(
                 "Fee ($)",
-                value=f"{existing_fee:,}" if isinstance(existing_fee, (int, float)) and existing_fee else "",
-                placeholder=f"{task['amount']:,}",
+                value=format_currency(existing_fee) if isinstance(existing_fee, (int, float)) and existing_fee is not None else "",
+                placeholder=format_currency(task["amount"]),
                 key=f"fee_{task_num}",
                 label_visibility="collapsed",
             )
@@ -1116,26 +1171,24 @@ def render_tab3():
             st.markdown("**Construction Phase Services:**")
             st.caption("Select services, enter hours/count, rate, and cost")
 
-            col_h1, col_h2, col_h3, col_h4, col_h5 = st.columns([0.5, 3, 1.5, 1.5, 1.5])
-            with col_h2:
-                st.markdown("**Service**")
-            with col_h3:
-                st.markdown("**Hrs/Count**")
-            with col_h4:
-                st.markdown("**$/hr**")
-            with col_h5:
-                st.markdown("**Cost ($)**")
+            header = st.container(horizontal=True, key="svc_header")
+            with header:
+                st.markdown('<div class="svc-header-cell">&nbsp;</div>', unsafe_allow_html=True)
+                st.markdown('<div class="svc-header-cell"><strong>Service</strong></div>', unsafe_allow_html=True)
+                st.markdown('<div class="svc-header-cell"><strong>Hrs/Count</strong></div>', unsafe_allow_html=True)
+                st.markdown('<div class="svc-header-cell"><strong>$/hr</strong></div>', unsafe_allow_html=True)
+                st.markdown('<div class="svc-header-cell"><strong>Cost</strong></div>', unsafe_allow_html=True)
 
             service_data = {}
             existing_services = selected_tasks.get("310", {}).get("services", {})
             for svc_key, svc_name, default_hrs, default_rate, default_cost in TASK_310_SERVICES:
-                col_chk, col_nm, col_hrs, col_rate, col_cost = st.columns([0.5, 3, 1.5, 1.5, 1.5])
+                row = st.container(horizontal=True, key=f"svcrow_{svc_key}")
                 prev_service = existing_services.get(svc_key, {})
                 prev_hours = prev_service.get("hours")
                 prev_rate = prev_service.get("rate")
                 prev_cost = prev_service.get("cost")
 
-                with col_chk:
+                with row:
                     is_selected = st.checkbox(
                         "",
                         value=svc_key in ["shop_drawings", "rfi", "oac", "site_visits", "asbuilt", "fdep", "compliance", "wmd"],
@@ -1143,13 +1196,11 @@ def render_tab3():
                         label_visibility="collapsed",
                     )
 
-                with col_nm:
                     st.markdown(
                         f'<div class="svc-name-cell"><span>{svc_name}</span></div>',
                         unsafe_allow_html=True,
                     )
 
-                with col_hrs:
                     if default_hrs > 0 or svc_key in ["inspection_tv", "record_drawings"]:
                         hrs_text = st.text_input(
                             "Hrs",
@@ -1166,15 +1217,14 @@ def render_tab3():
                             hrs_value = int(default_hrs) if default_hrs else 0
                     else:
                         hrs_value = 0
-                        st.write("-")
+                        st.markdown('<div class="svc-cell-empty"><span>-</span></div>', unsafe_allow_html=True)
 
-                with col_rate:
                     if default_rate > 0 or svc_key in ["inspection_tv", "record_drawings"]:
                         fallback_rate = default_rate if default_rate else 165
                         rate_text = st.text_input(
                             "Rate",
-                            value=str(prev_rate) if isinstance(prev_rate, (int, float)) and prev_rate else str(fallback_rate),
-                            placeholder=str(fallback_rate),
+                            value=format_currency(prev_rate) if isinstance(prev_rate, (int, float)) and prev_rate else format_currency(fallback_rate),
+                            placeholder=format_currency(fallback_rate),
                             key=f"rate310_{svc_key}",
                             disabled=not is_selected,
                             label_visibility="collapsed",
@@ -1186,15 +1236,14 @@ def render_tab3():
                             rate_value = int(fallback_rate) if fallback_rate else 0
                     else:
                         rate_value = 0
-                        st.write("-")
+                        st.markdown('<div class="svc-cell-empty"><span>-</span></div>', unsafe_allow_html=True)
 
-                with col_cost:
                     if is_selected:
                         computed_cost = hrs_value * rate_value if hrs_value and rate_value else 0
                         st.text_input(
                             "Cost",
-                            value=str(int(computed_cost)) if computed_cost else "",
-                            placeholder=str(default_cost),
+                            value=format_currency(computed_cost),
+                            placeholder=format_currency(default_cost),
                             key=f"cost310_{svc_key}",
                             disabled=True,
                             label_visibility="collapsed",
@@ -1202,7 +1251,7 @@ def render_tab3():
                         cost_value = int(computed_cost) if computed_cost else 0
                     else:
                         cost_value = 0
-                        st.write("-")
+                        st.markdown('<div class="svc-cell-empty"><span>$0.00</span></div>', unsafe_allow_html=True)
 
                 service_data[svc_key] = {
                     "included": is_selected,
@@ -1334,8 +1383,8 @@ def render_tab4():
             prev_fee = permits.get("included_additional_services_with_fees", {}).get(service_name)
             fee_text = st.text_input(
                 "Fee ($)",
-                value=f"{prev_fee:,}" if isinstance(prev_fee, (int, float)) and prev_fee else "",
-                placeholder=f"{default_fee:,}",
+                value=format_currency(prev_fee) if isinstance(prev_fee, (int, float)) and prev_fee is not None else "",
+                placeholder=format_currency(default_fee),
                 key=f"addl_fee_{key}",
                 label_visibility="collapsed",
             )
@@ -1363,8 +1412,8 @@ def render_tab4():
                 prev_fee = permits.get("included_additional_services_with_fees", {}).get(service_name)
                 fee_text = st.text_input(
                     "Fee ($)",
-                    value=f"{prev_fee:,}" if isinstance(prev_fee, (int, float)) and prev_fee else "",
-                    placeholder=f"{default_fee:,}",
+                    value=format_currency(prev_fee) if isinstance(prev_fee, (int, float)) and prev_fee is not None else "",
+                    placeholder=format_currency(default_fee),
                     key=f"addl_fee_{key}",
                     label_visibility="collapsed",
                 )
@@ -1386,8 +1435,8 @@ def render_tab4():
     addl_total = sum(included_additional_services_with_fees.values()) if included_additional_services_with_fees else 0
     st.text_input(
         "Additional Services Total",
-        value=f"{addl_total:,}" if addl_total else "",
-        placeholder="0",
+        value=format_currency(addl_total) if addl_total is not None else "",
+        placeholder=format_currency(0),
         disabled=True,
     )
     st.markdown("---")
@@ -1397,22 +1446,22 @@ def render_tab4():
 
         for task_num in sorted(selected_tasks.keys()):
             task = selected_tasks[task_num]
-            st.write(f"- Task {task_num}: {task['name']} - **${task['fee']:,}**")
+            st.write(f"- Task {task_num}: {task['name']} - **{format_currency(task['fee'])}**")
             total_fee += task["fee"]
             if task_num == "310":
                 svc_total = task.get("services_total_cost", 0)
                 if svc_total:
-                    st.write(f"  - Construction Phase Services (detail): **${svc_total:,}**")
+                    st.write(f"  - Construction Phase Services (detail): **{format_currency(svc_total)}**")
                     total_fee += svc_total
 
         if included_additional_services_with_fees:
             st.markdown("**Additional Services Included:**")
             for service_name, service_fee in included_additional_services_with_fees.items():
-                st.write(f"- {service_name} - **${service_fee:,}**")
+                st.write(f"- {service_name} - **{format_currency(service_fee)}**")
                 total_fee += service_fee
 
         st.markdown("---")
-        st.markdown(f"### **Total Fee: ${total_fee:,}**")
+        st.markdown(f"### **Total Fee: {format_currency(total_fee)}**")
     else:
         st.info("Select at least one task in the Scope of Services tab")
 
@@ -1456,8 +1505,8 @@ def render_tab5():
         )
         retainer_text = st.text_input(
             "Retainer Amount ($)",
-            value=str(invoice.get("retainer_amount")) if invoice.get("retainer_amount") else "",
-            placeholder="0",
+            value=format_currency(invoice.get("retainer_amount")) if invoice.get("retainer_amount") is not None else "",
+            placeholder=format_currency(0),
         )
         cleaned = re.sub(r"[^\d.]", "", str(retainer_text or "")).strip()
         invoice["retainer_amount"] = int(float(cleaned)) if cleaned else 0
@@ -1470,7 +1519,7 @@ def render_tab5():
         st.markdown("## Scope of Services (selected)")
         for task_num in sorted(selected_tasks.keys()):
             task = selected_tasks[task_num]
-            st.markdown(f"### Task {task_num}: {task['name']} - ${task['fee']:,}")
+            st.markdown(f"### Task {task_num}: {task['name']} - {format_currency(task['fee'])}")
             descs = TASK_DESCRIPTIONS.get(task_num, [])
             if task_num == "310":
                 hours = task.get("hours", {})
@@ -1542,7 +1591,7 @@ def render_tab5():
     if included:
         st.markdown("## Additional Services Included")
         for svc, fee in included.items():
-            st.write(f"- {svc} - ${fee:,}")
+            st.write(f"- {svc} - {format_currency(fee)}")
 
     if excluded:
         st.markdown("## Additional Services (Not Included)")
@@ -1555,7 +1604,7 @@ def render_tab5():
         st.write(f"CC Email: {invoice.get('invoice_cc_email')}")
     st.write(f"Signer: {invoice.get('kh_signer_name', '')} - {invoice.get('kh_signer_title', '')}")
     if invoice.get("use_retainer"):
-        st.write(f"Retainer: ${invoice.get('retainer_amount', 0):,}")
+        st.write(f"Retainer: {format_currency(invoice.get('retainer_amount', 0))}")
     else:
         st.write("Retainer: Not required")
 
@@ -1570,7 +1619,7 @@ def main():
     _, total_col = st.columns([5, 2])
     with total_col:
         st.markdown(
-            f"<div class='total-proposal-badge'>Total Proposal Cost: ${total_cost:,}</div>",
+            f"<div class='total-proposal-badge'>Total Proposal Cost: {format_currency(total_cost)}</div>",
             unsafe_allow_html=True,
         )
 
