@@ -149,22 +149,23 @@ input[type="number"] {
 .tab3-scope .svc-name-cell p {
     margin: 0 !important;
 }
-.tab3-scope [class*="st-key-svc_header"],
-.tab3-scope [class*="st-key-svcrow_"] {
+.tab3-scope [class*="st-key-svc_header"] > div[data-testid="stHorizontalBlock"],
+.tab3-scope [class*="st-key-svcrow_"] > div[data-testid="stHorizontalBlock"] {
     display: grid;
-    grid-template-columns: 36px minmax(240px, 1fr) repeat(3, 150px);
+    grid-template-columns: 36px minmax(260px, 1fr) repeat(3, 150px);
     column-gap: 14px;
     align-items: center;
     justify-items: stretch;
 }
-.tab3-scope [class*="st-key-svc_header"] > div,
-.tab3-scope [class*="st-key-svcrow_"] > div {
+.tab3-scope [class*="st-key-svc_header"] > div[data-testid="stHorizontalBlock"] > div,
+.tab3-scope [class*="st-key-svcrow_"] > div[data-testid="stHorizontalBlock"] > div {
     margin: 0 !important;
     width: 100% !important;
 }
 .tab3-scope [class*="st-key-svcrow_"] div[data-baseweb="input"],
 .tab3-scope [class*="st-key-svcrow_"] div[data-baseweb="input"] > div {
     width: 100% !important;
+    max-width: 150px;
 }
 .tab3-scope [class*="st-key-svc_header"] .svc-header-cell {
     justify-content: center;
@@ -174,6 +175,11 @@ input[type="number"] {
 .tab3-scope [class*="st-key-svc_header"] .svc-header-cell:nth-child(2) {
     text-align: left;
     justify-content: flex-start;
+}
+.tab3-scope [class*="st-key-svc_header"] > div[data-testid="stHorizontalBlock"] > div:nth-child(3),
+.tab3-scope [class*="st-key-svc_header"] > div[data-testid="stHorizontalBlock"] > div:nth-child(4),
+.tab3-scope [class*="st-key-svc_header"] > div[data-testid="stHorizontalBlock"] > div:nth-child(5) {
+    justify-self: center;
 }
 .additional-services .svc-label {
     margin-top: 10px;
