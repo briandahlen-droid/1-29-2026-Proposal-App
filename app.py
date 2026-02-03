@@ -293,6 +293,19 @@ input[type="number"] {
   justify-content: flex-start !important;
   text-align: left !important;
 }
+
+/* ===== CPS: ALIGN COST COLUMN ===== */
+.st-key-tab3-scope .st-key-cps-header [data-testid="stHorizontalBlock"] > div:nth-child(5){
+  text-align: center !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+.st-key-tab3-scope [class*="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div:has([class*="st-key-cost310_"]){
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
 .additional-services .svc-label {
     margin-top: 10px;
     line-height: 1.2;
