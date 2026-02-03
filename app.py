@@ -155,10 +155,15 @@ input[type="number"] {
     grid-template-columns: 36px minmax(240px, 1fr) repeat(3, 220px);
     column-gap: 14px;
     align-items: center;
+    justify-items: stretch;
 }
 .tab3-scope [class*="st-key-svc_header"] > div,
 .tab3-scope [class*="st-key-svcrow_"] > div {
     margin: 0 !important;
+    width: 100% !important;
+}
+.tab3-scope [class*="st-key-svcrow_"] div[data-baseweb="input"],
+.tab3-scope [class*="st-key-svcrow_"] div[data-baseweb="input"] > div {
     width: 100% !important;
 }
 .tab3-scope [class*="st-key-svc_header"] .svc-header-cell {
@@ -1214,7 +1219,14 @@ def render_tab3():
                     else:
                         hrs_value = 0
                         hrs_has_value = False
-                        st.markdown('<div class="svc-cell-empty"><span>-</span></div>', unsafe_allow_html=True)
+                        st.text_input(
+                            "Hrs",
+                            value="",
+                            placeholder="-",
+                            key=f"hrs310_{svc_key}_na",
+                            disabled=True,
+                            label_visibility="collapsed",
+                        )
 
                     if default_rate > 0 or svc_key in ["inspection_tv", "record_drawings"]:
                         fallback_rate = default_rate if default_rate else 165
@@ -1233,7 +1245,14 @@ def render_tab3():
                             rate_value = int(fallback_rate) if fallback_rate else 0
                     else:
                         rate_value = 0
-                        st.markdown('<div class="svc-cell-empty"><span>-</span></div>', unsafe_allow_html=True)
+                        st.text_input(
+                            "Rate",
+                            value="",
+                            placeholder="-",
+                            key=f"rate310_{svc_key}_na",
+                            disabled=True,
+                            label_visibility="collapsed",
+                        )
 
                     if is_selected:
                         computed_cost = hrs_value * rate_value if hrs_has_value and rate_value else 0
@@ -1248,7 +1267,14 @@ def render_tab3():
                         cost_value = int(computed_cost) if computed_cost else 0
                     else:
                         cost_value = 0
-                        st.markdown('<div class="svc-cell-empty"><span>$0.00</span></div>', unsafe_allow_html=True)
+                        st.text_input(
+                            "Cost",
+                            value=format_currency(0),
+                            placeholder=format_currency(0),
+                            key=f"cost310_{svc_key}_na",
+                            disabled=True,
+                            label_visibility="collapsed",
+                        )
 
                 service_data[svc_key] = {
                     "included": is_selected,
