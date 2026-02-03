@@ -112,15 +112,15 @@ input[type="number"] {
     display: inline-block;
     white-space: normal;
 }
-.tab3-scope .task-label {
+.st-key-tab3-scope .task-label {
     margin-top: 10px;
     line-height: 1.2;
 }
-.tab3-scope div[data-baseweb="checkbox"] {
+.st-key-tab3-scope div[data-baseweb="checkbox"] {
     margin-top: 0;
 }
 /* Row container: make sure the actual horizontal block is flex */
-[class^="st-key-cps-row-"] [data-testid="stHorizontalBlock"]{
+.st-key-tab3-scope [class^="st-key-cps-row-"] [data-testid="stHorizontalBlock"]{
   display: flex !important;
   align-items: center !important;
   justify-content: flex-start !important;
@@ -129,13 +129,13 @@ input[type="number"] {
 }
 
 /* Default: prevent random flex-grow on child wrappers */
-[class^="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div{
+.st-key-tab3-scope [class^="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div{
   flex: 0 0 auto !important;
   min-width: 0 !important;
 }
 
 /* 1) Checkbox wrapper (key prefix svc310_) */
-[class^="st-key-cps-row-"] [class^="st-key-svc310_"]{
+.st-key-tab3-scope [class^="st-key-cps-row-"] [class^="st-key-svc310_"]{
   flex: 0 0 32px !important;
   width: 32px !important;
   min-width: 32px !important;
@@ -143,9 +143,9 @@ input[type="number"] {
 }
 
 /* 3/4/5) Fixed input wrappers (key prefixes) */
-[class^="st-key-cps-row-"] [class^="st-key-hrs310_"],
-[class^="st-key-cps-row-"] [class^="st-key-rate310_"],
-[class^="st-key-cps-row-"] [class^="st-key-cost310_"]{
+.st-key-tab3-scope [class^="st-key-cps-row-"] [class^="st-key-hrs310_"],
+.st-key-tab3-scope [class^="st-key-cps-row-"] [class^="st-key-rate310_"],
+.st-key-tab3-scope [class^="st-key-cps-row-"] [class^="st-key-cost310_"]{
   flex: 0 0 150px !important;
   width: 150px !important;
   min-width: 150px !important;
@@ -153,27 +153,27 @@ input[type="number"] {
 }
 
 /* Force BaseWeb input wrapper widths */
-[class^="st-key-cps-row-"] [class^="st-key-hrs310_"] div[data-baseweb="input"],
-[class^="st-key-cps-row-"] [class^="st-key-rate310_"] div[data-baseweb="input"],
-[class^="st-key-cps-row-"] [class^="st-key-cost310_"] div[data-baseweb="input"]{
+.st-key-tab3-scope [class^="st-key-cps-row-"] [class^="st-key-hrs310_"] div[data-baseweb="input"],
+.st-key-tab3-scope [class^="st-key-cps-row-"] [class^="st-key-rate310_"] div[data-baseweb="input"],
+.st-key-tab3-scope [class^="st-key-cps-row-"] [class^="st-key-cost310_"] div[data-baseweb="input"]{
   width: 150px !important;
   min-width: 150px !important;
   max-width: 150px !important;
 }
 
 /* Force the widget subcontainers to obey 150px */
-[class^="st-key-cps-row-"] [class^="st-key-hrs310_"] [data-testid="stTextInput"],
-[class^="st-key-cps-row-"] [class^="st-key-rate310_"] [data-testid="stTextInput"],
-[class^="st-key-cps-row-"] [class^="st-key-cost310_"] [data-testid="stTextInput"]{
+.st-key-tab3-scope [class^="st-key-cps-row-"] [class^="st-key-hrs310_"] [data-testid="stTextInput"],
+.st-key-tab3-scope [class^="st-key-cps-row-"] [class^="st-key-rate310_"] [data-testid="stTextInput"],
+.st-key-tab3-scope [class^="st-key-cps-row-"] [class^="st-key-cost310_"] [data-testid="stTextInput"]{
   width: 150px !important;
   min-width: 150px !important;
   max-width: 150px !important;
 }
 
 /* Force actual <input> width */
-[class^="st-key-cps-row-"] [class^="st-key-hrs310_"] input,
-[class^="st-key-cps-row-"] [class^="st-key-rate310_"] input,
-[class^="st-key-cps-row-"] [class^="st-key-cost310_"] input{
+.st-key-tab3-scope [class^="st-key-cps-row-"] [class^="st-key-hrs310_"] input,
+.st-key-tab3-scope [class^="st-key-cps-row-"] [class^="st-key-rate310_"] input,
+.st-key-tab3-scope [class^="st-key-cps-row-"] [class^="st-key-cost310_"] input{
   width: 150px !important;
   min-width: 150px !important;
   max-width: 150px !important;
@@ -183,10 +183,10 @@ input[type="number"] {
 /* 2) Make the service label be the flexible column:
    in your row, it's the ONLY markdown block not matching st-key-* above.
    Remove markdown vertical margins to stop vertical drift. */
-[class^="st-key-cps-row-"] .stMarkdown p{
+.st-key-tab3-scope [class^="st-key-cps-row-"] .stMarkdown p{
   margin: 0 !important;
 }
-[class^="st-key-cps-row-"] .stMarkdown{
+.st-key-tab3-scope [class^="st-key-cps-row-"] .stMarkdown{
   flex: 1 1 auto !important;
   min-width: 0 !important;
 }
@@ -194,7 +194,7 @@ input[type="number"] {
     margin-top: 10px;
     line-height: 1.2;
 }
-.tab3-scope div[data-baseweb="input"] {
+.st-key-tab3-scope div[data-baseweb="input"] {
     margin-top: 0;
 }
 .additional-services div[data-baseweb="checkbox"] {
@@ -1136,208 +1136,207 @@ def render_tab3():
     scope = st.session_state.proposal["scope"]
     selected_tasks = scope.setdefault("selected_tasks", {})
 
-    st.markdown('<div class="tab3-scope">', unsafe_allow_html=True)
-    for task_num in sorted(DEFAULT_FEES.keys()):
-        task = DEFAULT_FEES[task_num]
-        existing = selected_tasks.get(task_num, {})
+    with st.container(key="tab3-scope"):
+        for task_num in sorted(DEFAULT_FEES.keys()):
+            task = DEFAULT_FEES[task_num]
+            existing = selected_tasks.get(task_num, {})
 
-        col_check, col_name, col_fee = st.columns([0.5, 3, 2])
+            col_check, col_name, col_fee = st.columns([0.5, 3, 2])
 
-        with col_check:
-            task_selected = st.checkbox(
-                f"{task_num}",
-                value=bool(existing) or task_num == "310",
-                key=f"check_{task_num}",
-                label_visibility="collapsed",
-            )
-
-        with col_name:
-            if task_num == "310":
-                st.markdown(
-                    f'<div class="task-label" style="display:inline-block; transform: translateY(8px);"><strong>Task {task_num}: {task["name"]}</strong> <em>(uncheck if not needed)</em></div>',
-                    unsafe_allow_html=True,
-                )
-            else:
-                st.markdown(
-                    f'<div class="task-label" style="display:inline-block; transform: translateY(8px);"><strong>Task {task_num}: {task["name"]}</strong></div>',
-                    unsafe_allow_html=True,
+            with col_check:
+                task_selected = st.checkbox(
+                    f"{task_num}",
+                    value=bool(existing) or task_num == "310",
+                    key=f"check_{task_num}",
+                    label_visibility="collapsed",
                 )
 
-        with col_fee:
-            existing_fee = existing.get("fee")
-            fee_text = st.text_input(
-                "Fee ($)",
-                value=format_currency(existing_fee) if isinstance(existing_fee, (int, float)) and existing_fee is not None else "",
-                placeholder=format_currency(task["amount"]),
-                key=f"fee_{task_num}",
-                label_visibility="collapsed",
-            )
-
-        
-        if task_selected:
-            cleaned = re.sub(r"[^\d.]", "", str(fee_text or "")).strip()
-            final_fee = int(float(cleaned)) if cleaned else task["amount"]
-            selected_tasks[task_num] = {
-                "name": task["name"],
-                "fee": final_fee,
-            }
-        else:
-            selected_tasks.pop(task_num, None)
-
-        if task_selected and task_num == "310":
-            st.markdown("**Construction Phase Services:**")
-            st.caption("Select services, enter hours/count, rate, and cost")
-
-            header = st.container(horizontal=True, key="cps-header")
-            with header:
-                st.markdown('<div class="cps-col-check"></div>', unsafe_allow_html=True)
-                st.markdown('<div class="cps-col-service"><b>Service</b></div>', unsafe_allow_html=True)
-                st.markdown('<div class="cps-col-fixed"><b>Hrs/Count</b></div>', unsafe_allow_html=True)
-                st.markdown('<div class="cps-col-fixed"><b>$/hr</b></div>', unsafe_allow_html=True)
-                st.markdown('<div class="cps-col-fixed"><b>Cost</b></div>', unsafe_allow_html=True)
-
-            service_data = {}
-            existing_services = selected_tasks.get("310", {}).get("services", {})
-
-            def render_service_row(
-                svc_key: str,
-                svc_name: str,
-                default_hrs: int,
-                default_rate: int,
-                default_cost: int,
-                existing: Dict[str, Any],
-            ) -> Dict[str, Any]:
-                prev_hours = existing.get("hours")
-                prev_rate = existing.get("rate")
-
-                with st.container(horizontal=True, key=f"cps-row-{_slug(svc_key)}"):
-                    is_selected = st.checkbox(
-                        "",
-                        value=svc_key in ["shop_drawings", "rfi", "oac", "site_visits", "asbuilt", "fdep", "compliance", "wmd"],
-                        key=f"svc310_{svc_key}",
-                        label_visibility="collapsed",
+            with col_name:
+                if task_num == "310":
+                    st.markdown(
+                        f'<div class="task-label" style="display:inline-block; transform: translateY(8px);"><strong>Task {task_num}: {task["name"]}</strong> <em>(uncheck if not needed)</em></div>',
+                        unsafe_allow_html=True,
+                    )
+                else:
+                    st.markdown(
+                        f'<div class="task-label" style="display:inline-block; transform: translateY(8px);"><strong>Task {task_num}: {task["name"]}</strong></div>',
+                        unsafe_allow_html=True,
                     )
 
-                    st.markdown(svc_name)
+            with col_fee:
+                existing_fee = existing.get("fee")
+                fee_text = st.text_input(
+                    "Fee ($)",
+                    value=format_currency(existing_fee) if isinstance(existing_fee, (int, float)) and existing_fee is not None else "",
+                    placeholder=format_currency(task["amount"]),
+                    key=f"fee_{task_num}",
+                    label_visibility="collapsed",
+                )
 
-                    if default_hrs > 0 or svc_key in ["inspection_tv", "record_drawings"]:
-                        hrs_text = st.text_input(
-                            "Hrs",
-                            value=str(prev_hours) if isinstance(prev_hours, (int, float)) and prev_hours else "",
-                            placeholder=str(default_hrs),
-                            key=f"hrs310_{svc_key}",
-                            disabled=not is_selected,
+        
+            if task_selected:
+                cleaned = re.sub(r"[^\d.]", "", str(fee_text or "")).strip()
+                final_fee = int(float(cleaned)) if cleaned else task["amount"]
+                selected_tasks[task_num] = {
+                    "name": task["name"],
+                    "fee": final_fee,
+                }
+            else:
+                selected_tasks.pop(task_num, None)
+
+            if task_selected and task_num == "310":
+                st.markdown("**Construction Phase Services:**")
+                st.caption("Select services, enter hours/count, rate, and cost")
+
+                header = st.container(horizontal=True, key="cps-header")
+                with header:
+                    st.markdown('<div class="cps-col-check"></div>', unsafe_allow_html=True)
+                    st.markdown('<div class="cps-col-service"><b>Service</b></div>', unsafe_allow_html=True)
+                    st.markdown('<div class="cps-col-fixed"><b>Hrs/Count</b></div>', unsafe_allow_html=True)
+                    st.markdown('<div class="cps-col-fixed"><b>$/hr</b></div>', unsafe_allow_html=True)
+                    st.markdown('<div class="cps-col-fixed"><b>Cost</b></div>', unsafe_allow_html=True)
+
+                service_data = {}
+                existing_services = selected_tasks.get("310", {}).get("services", {})
+
+                def render_service_row(
+                    svc_key: str,
+                    svc_name: str,
+                    default_hrs: int,
+                    default_rate: int,
+                    default_cost: int,
+                    existing: Dict[str, Any],
+                ) -> Dict[str, Any]:
+                    prev_hours = existing.get("hours")
+                    prev_rate = existing.get("rate")
+
+                    with st.container(horizontal=True, key=f"cps-row-{_slug(svc_key)}"):
+                        is_selected = st.checkbox(
+                            "",
+                            value=svc_key in ["shop_drawings", "rfi", "oac", "site_visits", "asbuilt", "fdep", "compliance", "wmd"],
+                            key=f"svc310_{svc_key}",
                             label_visibility="collapsed",
                         )
-                        cleaned = re.sub(r"[^\d.]", "", str(hrs_text or "")).strip()
-                        if cleaned:
-                            hrs_value = int(float(cleaned))
-                            hrs_has_value = True
+
+                        st.markdown(svc_name)
+
+                        if default_hrs > 0 or svc_key in ["inspection_tv", "record_drawings"]:
+                            hrs_text = st.text_input(
+                                "Hrs",
+                                value=str(prev_hours) if isinstance(prev_hours, (int, float)) and prev_hours else "",
+                                placeholder=str(default_hrs),
+                                key=f"hrs310_{svc_key}",
+                                disabled=not is_selected,
+                                label_visibility="collapsed",
+                            )
+                            cleaned = re.sub(r"[^\d.]", "", str(hrs_text or "")).strip()
+                            if cleaned:
+                                hrs_value = int(float(cleaned))
+                                hrs_has_value = True
+                            else:
+                                hrs_value = 0
+                                hrs_has_value = False
                         else:
                             hrs_value = 0
                             hrs_has_value = False
-                    else:
-                        hrs_value = 0
-                        hrs_has_value = False
-                        st.text_input(
-                            "Hrs",
-                            value="",
-                            placeholder="-",
-                            key=f"hrs310_{svc_key}_na",
-                            disabled=True,
-                            label_visibility="collapsed",
-                        )
+                            st.text_input(
+                                "Hrs",
+                                value="",
+                                placeholder="-",
+                                key=f"hrs310_{svc_key}_na",
+                                disabled=True,
+                                label_visibility="collapsed",
+                            )
 
-                    if default_rate > 0 or svc_key in ["inspection_tv", "record_drawings"]:
-                        fallback_rate = default_rate if default_rate else 165
-                        rate_text = st.text_input(
-                            "Rate",
-                            value=format_currency(prev_rate) if isinstance(prev_rate, (int, float)) and prev_rate else format_currency(fallback_rate),
-                            placeholder=format_currency(fallback_rate),
-                            key=f"rate310_{svc_key}",
-                            disabled=not is_selected,
-                            label_visibility="collapsed",
-                        )
-                        cleaned = re.sub(r"[^\d.]", "", str(rate_text or "")).strip()
-                        if cleaned:
-                            rate_value = int(float(cleaned))
+                        if default_rate > 0 or svc_key in ["inspection_tv", "record_drawings"]:
+                            fallback_rate = default_rate if default_rate else 165
+                            rate_text = st.text_input(
+                                "Rate",
+                                value=format_currency(prev_rate) if isinstance(prev_rate, (int, float)) and prev_rate else format_currency(fallback_rate),
+                                placeholder=format_currency(fallback_rate),
+                                key=f"rate310_{svc_key}",
+                                disabled=not is_selected,
+                                label_visibility="collapsed",
+                            )
+                            cleaned = re.sub(r"[^\d.]", "", str(rate_text or "")).strip()
+                            if cleaned:
+                                rate_value = int(float(cleaned))
+                            else:
+                                rate_value = int(fallback_rate) if fallback_rate else 0
                         else:
-                            rate_value = int(fallback_rate) if fallback_rate else 0
-                    else:
-                        rate_value = 0
-                        st.text_input(
-                            "Rate",
-                            value="",
-                            placeholder="-",
-                            key=f"rate310_{svc_key}_na",
-                            disabled=True,
-                            label_visibility="collapsed",
-                        )
+                            rate_value = 0
+                            st.text_input(
+                                "Rate",
+                                value="",
+                                placeholder="-",
+                                key=f"rate310_{svc_key}_na",
+                                disabled=True,
+                                label_visibility="collapsed",
+                            )
 
-                    if is_selected:
-                        computed_cost = hrs_value * rate_value if hrs_has_value and rate_value else 0
-                        st.text_input(
-                            "Cost",
-                            value=format_currency(computed_cost),
-                            placeholder=format_currency(default_cost),
-                            key=f"cost310_{svc_key}",
-                            disabled=True,
-                            label_visibility="collapsed",
-                        )
-                        cost_value = int(computed_cost) if computed_cost else 0
-                    else:
-                        cost_value = 0
-                        st.text_input(
-                            "Cost",
-                            value=format_currency(0),
-                            placeholder=format_currency(0),
-                            key=f"cost310_{svc_key}_na",
-                            disabled=True,
-                            label_visibility="collapsed",
-                        )
+                        if is_selected:
+                            computed_cost = hrs_value * rate_value if hrs_has_value and rate_value else 0
+                            st.text_input(
+                                "Cost",
+                                value=format_currency(computed_cost),
+                                placeholder=format_currency(default_cost),
+                                key=f"cost310_{svc_key}",
+                                disabled=True,
+                                label_visibility="collapsed",
+                            )
+                            cost_value = int(computed_cost) if computed_cost else 0
+                        else:
+                            cost_value = 0
+                            st.text_input(
+                                "Cost",
+                                value=format_currency(0),
+                                placeholder=format_currency(0),
+                                key=f"cost310_{svc_key}_na",
+                                disabled=True,
+                                label_visibility="collapsed",
+                            )
 
-                return {
-                    "included": is_selected,
-                    "name": svc_name,
-                    "hours": hrs_value if is_selected else 0,
-                    "rate": rate_value if is_selected else 0,
-                    "cost": cost_value if is_selected else 0,
-                }
+                    return {
+                        "included": is_selected,
+                        "name": svc_name,
+                        "hours": hrs_value if is_selected else 0,
+                        "rate": rate_value if is_selected else 0,
+                        "cost": cost_value if is_selected else 0,
+                    }
 
-            for svc_key, svc_name, default_hrs, default_rate, default_cost in TASK_310_SERVICES:
-                prev_service = existing_services.get(svc_key, {})
-                service_data[svc_key] = render_service_row(
-                    svc_key,
-                    svc_name,
-                    default_hrs,
-                    default_rate,
-                    default_cost,
-                    prev_service,
+                for svc_key, svc_name, default_hrs, default_rate, default_cost in TASK_310_SERVICES:
+                    prev_service = existing_services.get(svc_key, {})
+                    service_data[svc_key] = render_service_row(
+                        svc_key,
+                        svc_name,
+                        default_hrs,
+                        default_rate,
+                        default_cost,
+                        prev_service,
+                    )
+
+                st.markdown("---")
+                total_hrs_text = st.text_input(
+                    "**Total Task 310 Hours**",
+                    value=str(selected_tasks.get("310", {}).get("total_hours", 180)),
+                    key="total_construction_hours",
                 )
+                cleaned = re.sub(r"[^\d.]", "", str(total_hrs_text or "")).strip()
+                total_hrs = int(float(cleaned)) if cleaned else 0
 
-            st.markdown("---")
-            total_hrs_text = st.text_input(
-                "**Total Task 310 Hours**",
-                value=str(selected_tasks.get("310", {}).get("total_hours", 180)),
-                key="total_construction_hours",
-            )
-            cleaned = re.sub(r"[^\d.]", "", str(total_hrs_text or "")).strip()
-            total_hrs = int(float(cleaned)) if cleaned else 0
-
-            selected_tasks["310"]["services"] = service_data
-            selected_tasks["310"]["services_total_cost"] = sum(
-                svc.get("cost", 0) for svc in service_data.values()
-            )
-            selected_tasks["310"]["total_hours"] = total_hrs
-            selected_tasks["310"]["hours"] = {
-                "shop_drawing": service_data["shop_drawings"]["hours"],
-                "rfi": service_data["rfi"]["hours"],
-                "oac_meetings": service_data["oac"]["hours"],
-                "site_visits": service_data["site_visits"]["hours"],
-                "record_drawing": service_data["record_drawings"]["hours"],
-                "total": total_hrs,
-            }
-    st.markdown("</div>", unsafe_allow_html=True)
+                selected_tasks["310"]["services"] = service_data
+                selected_tasks["310"]["services_total_cost"] = sum(
+                    svc.get("cost", 0) for svc in service_data.values()
+                )
+                selected_tasks["310"]["total_hours"] = total_hrs
+                selected_tasks["310"]["hours"] = {
+                    "shop_drawing": service_data["shop_drawings"]["hours"],
+                    "rfi": service_data["rfi"]["hours"],
+                    "oac_meetings": service_data["oac"]["hours"],
+                    "site_visits": service_data["site_visits"]["hours"],
+                    "record_drawing": service_data["record_drawings"]["hours"],
+                    "total": total_hrs,
+                }
 
 
 def render_tab4():
