@@ -1179,14 +1179,13 @@ def render_tab3():
             if task_selected and task_num == "310":
                 st.markdown("**Construction Phase Services:**")
                 st.caption("Select services, enter hours/count, rate, and cost")
-
                 header = st.container(horizontal=True, key="cps-header")
                 with header:
-                    st.markdown('<div class="cps-col-check"></div>', unsafe_allow_html=True)
-                    st.markdown('<div class="cps-col-service"><b>Service</b></div>', unsafe_allow_html=True)
-                    st.markdown('<div class="cps-col-fixed"><b>Hrs/Count</b></div>', unsafe_allow_html=True)
-                    st.markdown('<div class="cps-col-fixed"><b>$/hr</b></div>', unsafe_allow_html=True)
-                    st.markdown('<div class="cps-col-fixed"><b>Cost</b></div>', unsafe_allow_html=True)
+                    st.markdown("")
+                    st.markdown("**Service**")
+                    st.markdown("**Hrs/Count**")
+                    st.markdown("**$/hr**")
+                    st.markdown("**Cost**")
 
                 service_data = {}
                 existing_services = selected_tasks.get("310", {}).get("services", {})
