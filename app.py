@@ -128,7 +128,9 @@ input[type="number"] {
   align-items:center !important;
   justify-content:flex-start !important;
   gap:12px !important;
-  width:100% !important;
+  width:fit-content !important;
+  margin-left:auto !important;
+  margin-right:auto !important;
 }
 .st-key-tab3-scope .st-key-cps-header [data-testid="stHorizontalBlock"] > div{
   flex:0 0 auto !important;
@@ -164,7 +166,9 @@ input[type="number"] {
   align-items:center !important;
   justify-content:flex-start !important;
   gap:12px !important;
-  width:100% !important;
+  width:fit-content !important;
+  margin-left:auto !important;
+  margin-right:auto !important;
 }
 .st-key-tab3-scope [class*="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div{
   flex:0 0 auto !important;
