@@ -151,30 +151,24 @@ input[type="number"] {
 }
 .tab3-scope [class*="st-key-svc_header"],
 .tab3-scope [class*="st-key-svcrow_"] {
-    display: flex;
+    display: grid;
+    grid-template-columns: 36px minmax(240px, 1fr) repeat(3, 220px);
+    column-gap: 14px;
     align-items: center;
-    gap: 14px;
 }
 .tab3-scope [class*="st-key-svc_header"] > div,
 .tab3-scope [class*="st-key-svcrow_"] > div {
     margin: 0 !important;
+    width: 100% !important;
 }
-.tab3-scope [class*="st-key-svc_header"] > div:nth-child(1),
-.tab3-scope [class*="st-key-svcrow_"] > div:nth-child(1) {
-    flex: 0 0 36px;
+.tab3-scope [class*="st-key-svc_header"] .svc-header-cell {
+    justify-content: center;
+    text-align: center;
 }
-.tab3-scope [class*="st-key-svc_header"] > div:nth-child(2),
-.tab3-scope [class*="st-key-svcrow_"] > div:nth-child(2) {
-    flex: 1 1 0;
-    min-width: 240px;
-}
-.tab3-scope [class*="st-key-svc_header"] > div:nth-child(3),
-.tab3-scope [class*="st-key-svcrow_"] > div:nth-child(3),
-.tab3-scope [class*="st-key-svc_header"] > div:nth-child(4),
-.tab3-scope [class*="st-key-svcrow_"] > div:nth-child(4),
-.tab3-scope [class*="st-key-svc_header"] > div:nth-child(5),
-.tab3-scope [class*="st-key-svcrow_"] > div:nth-child(5) {
-    flex: 0 0 180px;
+.tab3-scope [class*="st-key-svc_header"] .svc-header-cell:first-child,
+.tab3-scope [class*="st-key-svc_header"] .svc-header-cell:nth-child(2) {
+    text-align: left;
+    justify-content: flex-start;
 }
 .additional-services .svc-label {
     margin-top: 10px;
