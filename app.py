@@ -119,77 +119,62 @@ input[type="number"] {
 .st-key-tab3-scope div[data-baseweb="checkbox"] {
     margin-top: 0;
 }
-/* Row container: make sure the actual horizontal block is flex */
-.st-key-tab3-scope [class^="st-key-cps-row-"] [data-testid="stHorizontalBlock"]{
-  display: flex !important;
-  align-items: center !important;
-  justify-content: flex-start !important;
-  gap: 16px !important;
-  width: 100% !important;
+/* Tab 3 scope */
+.st-key-tab3-scope [data-testid="stHorizontalBlock"]{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-start !important;
+  gap:16px !important;
+  width:100% !important;
 }
 
-/* Default: prevent random flex-grow on child wrappers */
-.st-key-tab3-scope [class^="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div{
-  flex: 0 0 auto !important;
-  min-width: 0 !important;
+/* Default: don't let children auto-grow unpredictably */
+.st-key-tab3-scope [data-testid="stHorizontalBlock"] > div{
+  min-width:0 !important;
 }
 
-/* 1) Checkbox wrapper (key prefix svc310_) */
-.st-key-tab3-scope [class^="st-key-cps-row-"] [class^="st-key-svc310_"]{
-  flex: 0 0 32px !important;
-  width: 32px !important;
-  min-width: 32px !important;
-  max-width: 32px !important;
+/* Checkbox flex item: the parent that CONTAINS the widget with key prefix svc310_ */
+.st-key-tab3-scope [data-testid="stHorizontalBlock"] > div:has([class^="st-key-svc310_"]){
+  flex:0 0 32px !important;
+  width:32px !important;
+  max-width:32px !important;
 }
 
-/* 3/4/5) Fixed input wrappers (key prefixes) */
-.st-key-tab3-scope [class^="st-key-cps-row-"] [class^="st-key-hrs310_"],
-.st-key-tab3-scope [class^="st-key-cps-row-"] [class^="st-key-rate310_"],
-.st-key-tab3-scope [class^="st-key-cps-row-"] [class^="st-key-cost310_"]{
-  flex: 0 0 150px !important;
-  width: 150px !important;
-  min-width: 150px !important;
-  max-width: 150px !important;
+/* Hrs/Rate/Cost flex items: parents that CONTAIN those keyed widgets */
+.st-key-tab3-scope [data-testid="stHorizontalBlock"] > div:has([class^="st-key-hrs310_"]),
+.st-key-tab3-scope [data-testid="stHorizontalBlock"] > div:has([class^="st-key-rate310_"]),
+.st-key-tab3-scope [data-testid="stHorizontalBlock"] > div:has([class^="st-key-cost310_"]){
+  flex:0 0 150px !important;
+  width:150px !important;
+  min-width:150px !important;
+  max-width:150px !important;
 }
 
-/* Force BaseWeb input wrapper widths */
-.st-key-tab3-scope [class^="st-key-cps-row-"] [class^="st-key-hrs310_"] div[data-baseweb="input"],
-.st-key-tab3-scope [class^="st-key-cps-row-"] [class^="st-key-rate310_"] div[data-baseweb="input"],
-.st-key-tab3-scope [class^="st-key-cps-row-"] [class^="st-key-cost310_"] div[data-baseweb="input"]{
-  width: 150px !important;
-  min-width: 150px !important;
-  max-width: 150px !important;
+/* Service label flex item: parent that contains markdown */
+.st-key-tab3-scope [data-testid="stHorizontalBlock"] > div:has(.stMarkdown){
+  flex:1 1 auto !important;
+  min-width:0 !important;
 }
 
-/* Force the widget subcontainers to obey 150px */
-.st-key-tab3-scope [class^="st-key-cps-row-"] [class^="st-key-hrs310_"] [data-testid="stTextInput"],
-.st-key-tab3-scope [class^="st-key-cps-row-"] [class^="st-key-rate310_"] [data-testid="stTextInput"],
-.st-key-tab3-scope [class^="st-key-cps-row-"] [class^="st-key-cost310_"] [data-testid="stTextInput"]{
-  width: 150px !important;
-  min-width: 150px !important;
-  max-width: 150px !important;
+/* Force BaseWeb input wrapper + input width */
+.st-key-tab3-scope [class^="st-key-hrs310_"] div[data-baseweb="input"],
+.st-key-tab3-scope [class^="st-key-rate310_"] div[data-baseweb="input"],
+.st-key-tab3-scope [class^="st-key-cost310_"] div[data-baseweb="input"]{
+  width:150px !important;
+  min-width:150px !important;
+  max-width:150px !important;
+}
+.st-key-tab3-scope [class^="st-key-hrs310_"] input,
+.st-key-tab3-scope [class^="st-key-rate310_"] input,
+.st-key-tab3-scope [class^="st-key-cost310_"] input{
+  width:150px !important;
+  min-width:150px !important;
+  max-width:150px !important;
+  box-sizing:border-box !important;
 }
 
-/* Force actual <input> width */
-.st-key-tab3-scope [class^="st-key-cps-row-"] [class^="st-key-hrs310_"] input,
-.st-key-tab3-scope [class^="st-key-cps-row-"] [class^="st-key-rate310_"] input,
-.st-key-tab3-scope [class^="st-key-cps-row-"] [class^="st-key-cost310_"] input{
-  width: 150px !important;
-  min-width: 150px !important;
-  max-width: 150px !important;
-  box-sizing: border-box !important;
-}
-
-/* 2) Make the service label be the flexible column:
-   in your row, it's the ONLY markdown block not matching st-key-* above.
-   Remove markdown vertical margins to stop vertical drift. */
-.st-key-tab3-scope [class^="st-key-cps-row-"] .stMarkdown p{
-  margin: 0 !important;
-}
-.st-key-tab3-scope [class^="st-key-cps-row-"] .stMarkdown{
-  flex: 1 1 auto !important;
-  min-width: 0 !important;
-}
+/* Remove markdown paragraph margins to keep vertical alignment tight */
+.st-key-tab3-scope .stMarkdown p{ margin:0 !important; }
 .additional-services .svc-label {
     margin-top: 10px;
     line-height: 1.2;
