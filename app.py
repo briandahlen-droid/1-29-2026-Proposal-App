@@ -119,74 +119,67 @@ input[type="number"] {
 .tab3-scope div[data-baseweb="checkbox"] {
     margin-top: 0;
 }
-/* Target the actual horizontal block inside the keyed containers */
-.tab3-scope .st-key-cps-header [data-testid="stHorizontalBlock"],
+/* Row container: make sure the actual horizontal block is flex */
 .tab3-scope [class^="st-key-cps-row-"] [data-testid="stHorizontalBlock"]{
-    display: flex !important;
-    align-items: center !important;
-    justify-content: flex-start !important;
-    gap: 16px !important;
-    width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 16px !important;
+  width: 100% !important;
 }
 
-/* The flex items are Streamlit’s wrapper divs for each element in the row */
-.tab3-scope .st-key-cps-header [data-testid="stHorizontalBlock"] > div,
+/* Default: prevent random flex-grow on child wrappers */
 .tab3-scope [class^="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div{
-    flex: 0 0 auto !important;
-    min-width: 0 !important;
+  flex: 0 0 auto !important;
+  min-width: 0 !important;
 }
 
-/* 1) Checkbox column */
-.tab3-scope .st-key-cps-header [data-testid="stHorizontalBlock"] > div:nth-child(1),
-.tab3-scope [class^="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div:nth-child(1){
-    flex: 0 0 32px !important;
-    width: 32px !important;
-    max-width: 32px !important;
+/* 1) Checkbox wrapper (key prefix svc310_) */
+.tab3-scope [class^="st-key-cps-row-"] [class^="st-key-svc310_"]{
+  flex: 0 0 32px !important;
+  width: 32px !important;
+  min-width: 32px !important;
+  max-width: 32px !important;
 }
 
-/* 2) Service label column (fluid) */
-.tab3-scope .st-key-cps-header [data-testid="stHorizontalBlock"] > div:nth-child(2),
-.tab3-scope [class^="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div:nth-child(2){
-    flex: 1 1 auto !important;
-    min-width: 0 !important;
+/* 3/4/5) Fixed input wrappers (key prefixes) */
+.tab3-scope [class^="st-key-cps-row-"] [class^="st-key-hrs310_"],
+.tab3-scope [class^="st-key-cps-row-"] [class^="st-key-rate310_"],
+.tab3-scope [class^="st-key-cps-row-"] [class^="st-key-cost310_"]{
+  flex: 0 0 150px !important;
+  width: 150px !important;
+  min-width: 150px !important;
+  max-width: 150px !important;
 }
 
-/* 3–5) Fixed-width input columns */
-.tab3-scope .st-key-cps-header [data-testid="stHorizontalBlock"] > div:nth-child(3),
-.tab3-scope .st-key-cps-header [data-testid="stHorizontalBlock"] > div:nth-child(4),
-.tab3-scope .st-key-cps-header [data-testid="stHorizontalBlock"] > div:nth-child(5),
-.tab3-scope [class^="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div:nth-child(3),
-.tab3-scope [class^="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div:nth-child(4),
-.tab3-scope [class^="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div:nth-child(5){
-    flex: 0 0 150px !important;
-    width: 150px !important;
-    min-width: 150px !important;
-    max-width: 150px !important;
+/* Force the widget subcontainers to obey 150px */
+.tab3-scope [class^="st-key-cps-row-"] [class^="st-key-hrs310_"] [data-testid="stTextInput"],
+.tab3-scope [class^="st-key-cps-row-"] [class^="st-key-rate310_"] [data-testid="stTextInput"],
+.tab3-scope [class^="st-key-cps-row-"] [class^="st-key-cost310_"] [data-testid="stTextInput"]{
+  width: 150px !important;
+  min-width: 150px !important;
+  max-width: 150px !important;
 }
 
-/* Force Streamlit widget wrappers inside fixed columns to respect 150px */
-.tab3-scope [class^="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div:nth-child(3) [data-testid="stNumberInput"],
-.tab3-scope [class^="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div:nth-child(4) [data-testid="stNumberInput"],
-.tab3-scope [class^="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div:nth-child(5) [data-testid="stTextInput"]{
-    width: 150px !important;
-    min-width: 150px !important;
-    max-width: 150px !important;
+/* Force actual <input> width */
+.tab3-scope [class^="st-key-cps-row-"] [class^="st-key-hrs310_"] input,
+.tab3-scope [class^="st-key-cps-row-"] [class^="st-key-rate310_"] input,
+.tab3-scope [class^="st-key-cps-row-"] [class^="st-key-cost310_"] input{
+  width: 150px !important;
+  min-width: 150px !important;
+  max-width: 150px !important;
+  box-sizing: border-box !important;
 }
 
-/* Force actual input element width */
-.tab3-scope [class^="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div:nth-child(3) input,
-.tab3-scope [class^="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div:nth-child(4) input,
-.tab3-scope [class^="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div:nth-child(5) input{
-    width: 150px !important;
-    min-width: 150px !important;
-    max-width: 150px !important;
-    box-sizing: border-box !important;
+/* 2) Make the service label be the flexible column:
+   in your row, it's the ONLY markdown block not matching st-key-* above.
+   Remove markdown vertical margins to stop vertical drift. */
+.tab3-scope [class^="st-key-cps-row-"] .stMarkdown p{
+  margin: 0 !important;
 }
-
-/* Optional: remove markdown paragraph margins that can cause vertical jitter */
-.tab3-scope [class^="st-key-cps-row-"] .stMarkdown p,
-.tab3-scope .st-key-cps-header .stMarkdown p{
-    margin: 0 !important;
+.tab3-scope [class^="st-key-cps-row-"] .stMarkdown{
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
 }
 .additional-services .svc-label {
     margin-top: 10px;
