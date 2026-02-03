@@ -251,6 +251,44 @@ input[type="number"] {
 .st-key-tab3-scope [class*="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div{
   align-self: center !important;
 }
+
+/* ===== CPS: CENTER NUMERIC COLUMNS ===== */
+
+/* Center the HEADER text in columns 3?5 */
+.st-key-tab3-scope .st-key-cps-header [data-testid="stHorizontalBlock"] > div:nth-child(3),
+.st-key-tab3-scope .st-key-cps-header [data-testid="stHorizontalBlock"] > div:nth-child(4),
+.st-key-tab3-scope .st-key-cps-header [data-testid="stHorizontalBlock"] > div:nth-child(5){
+  text-align: center !important;
+  display: flex !important;
+  justify-content: center !important;
+}
+
+/* Center the ROW widgets inside the 150px cells (hrs/rate/cost) */
+.st-key-tab3-scope [class*="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div:has([class*="st-key-hrs310_"]),
+.st-key-tab3-scope [class*="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div:has([class*="st-key-rate310_"]),
+.st-key-tab3-scope [class*="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div:has([class*="st-key-cost310_"]){
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+/* Ensure the input wrapper itself is centered (BaseWeb) */
+.st-key-tab3-scope [class*="st-key-hrs310_"],
+.st-key-tab3-scope [class*="st-key-rate310_"],
+.st-key-tab3-scope [class*="st-key-cost310_"]{
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* Keep Service left-aligned (header + rows) */
+.st-key-tab3-scope .st-key-cps-header [data-testid="stHorizontalBlock"] > div:nth-child(2){
+  justify-content: flex-start !important;
+  text-align: left !important;
+}
+.st-key-tab3-scope [class*="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div:has(.stMarkdown){
+  justify-content: flex-start !important;
+  text-align: left !important;
+}
 .additional-services .svc-label {
     margin-top: 10px;
     line-height: 1.2;
