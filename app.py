@@ -92,6 +92,20 @@ div[data-baseweb="input"] [aria-label="Increment"],
 div[data-baseweb="input"] [aria-label="Decrement"] {
     display: none !important;
 }
+/* More aggressive button hiding */
+div[data-baseweb="input"] button[title="Increment value"],
+div[data-baseweb="input"] button[title="Decrement value"] {
+    display: none !important;
+    visibility: hidden !important;
+}
+/* Hide the button container completely */
+div[data-baseweb="input"] > div > div > div:has(button) {
+    display: none !important;
+}
+/* Target StepperButton specifically */
+button[class*="StepperButton"] {
+    display: none !important;
+}
 div[data-baseweb="input"] > div > div:last-child {
     display: none !important;
 }
@@ -133,10 +147,6 @@ input[type="number"] {
 .additional-services div[data-baseweb="input"] {
     max-width: 260px;
     margin-left: 24px;
-}
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
-    opacity: 1 !important;
 }
 /* BaseWeb input wrapper consistency */
 div[data-baseweb="input"] > div {
@@ -1185,8 +1195,7 @@ def render_tab3():
                             "Service Name",
                             value=svc_name,
                             key=f"cps_service_{svc_key}",
-                            label_visibility="collapsed",
-                            disabled=True
+                            label_visibility="collapsed"
                         )
                     
                     with col_hrs:
@@ -1197,8 +1206,7 @@ def render_tab3():
                             value=int(hrs_val) if hrs_val is not None else 0,
                             step=1,
                             key=f"cps_hrs_{svc_key}",
-                            label_visibility="collapsed",
-                            disabled=not included
+                            label_visibility="collapsed"
                         )
                     
                     with col_rate:
@@ -1210,8 +1218,7 @@ def render_tab3():
                             step=1.0,
                             format="%.2f",
                             key=f"cps_rate_{svc_key}",
-                            label_visibility="collapsed",
-                            disabled=not included
+                            label_visibility="collapsed"
                         )
                     
                     with col_cost:
