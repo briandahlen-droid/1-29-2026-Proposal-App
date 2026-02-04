@@ -1233,8 +1233,6 @@ def render_tab3():
                             label_visibility="collapsed",
                             placeholder="0"
                         )
-                        # Convert to int, default to 0 if invalid
-                        hrs_input = int(hrs_str) if hrs_str and hrs_str.isdigit() else 0
                     
                     with col_rate:
                         rate_val = row_data["rate"]
@@ -1245,11 +1243,17 @@ def render_tab3():
                             label_visibility="collapsed",
                             placeholder="$0.00"
                         )
-                        # Convert to float, default to 0 if invalid
-                        try:
-                            rate_input = float(rate_str.replace('$', '').replace(',', '')) if rate_str else 0.0
-                        except ValueError:
-                            rate_input = 0.0
+                    
+                    # Read CURRENT values from session_state (not return values)
+                    current_hrs_str = st.session_state.get(f"cps_hrs_{svc_key}", "")
+                    current_rate_str = st.session_state.get(f"cps_rate_{svc_key}", "")
+                    
+                    # Convert to numbers
+                    hrs_input = int(current_hrs_str) if current_hrs_str and current_hrs_str.isdigit() else 0
+                    try:
+                        rate_input = float(current_rate_str.replace('$', '').replace(',', '')) if current_rate_str else 0.0
+                    except (ValueError, AttributeError):
+                        rate_input = 0.0
                     
                     with col_cost:
                         cost_num = (hrs_input * rate_input) if included else 0
