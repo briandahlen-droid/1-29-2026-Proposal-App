@@ -1153,6 +1153,10 @@ def render_tab3():
             if task_selected and task_num == "310":
                 st.markdown("**Construction Phase Services:**")
                 st.caption("Select services, enter hours/count, rate, and cost")
+                
+                # DEBUG: Show session state values for first service
+                st.caption(f"DEBUG - Shop Drawing hrs: '{st.session_state.get('cps_hrs_shop_drawings', 'NOT SET')}' rate: '{st.session_state.get('cps_rate_shop_drawings', 'NOT SET')}'")
+                
                 default_included = {"shop_drawings", "rfi", "oac", "site_visits", "asbuilt", "fdep", "compliance", "wmd"}
                 existing_services = selected_tasks.get("310", {}).get("services", {})
                 rows = []
@@ -1226,7 +1230,7 @@ def render_tab3():
                     
                     with col_hrs:
                         hrs_val = row_data["hrs_count"]
-                        hrs_str = st.text_input(
+                        st.text_input(
                             "Hours",
                             value=str(int(hrs_val)) if hrs_val is not None and hrs_val != 0 else "",
                             key=f"cps_hrs_{svc_key}",
@@ -1236,7 +1240,7 @@ def render_tab3():
                     
                     with col_rate:
                         rate_val = row_data["rate"]
-                        rate_str = st.text_input(
+                        st.text_input(
                             "Rate",
                             value=f"{float(rate_val):.2f}" if rate_val is not None and rate_val != 0 else "",
                             key=f"cps_rate_{svc_key}",
@@ -1244,14 +1248,20 @@ def render_tab3():
                             placeholder="$0.00"
                         )
                     
-                    # Read CURRENT values from session_state (not return values)
+                    # Read CURRENT values from session_state
                     current_hrs_str = st.session_state.get(f"cps_hrs_{svc_key}", "")
                     current_rate_str = st.session_state.get(f"cps_rate_{svc_key}", "")
                     
-                    # Convert to numbers
-                    hrs_input = int(current_hrs_str) if current_hrs_str and current_hrs_str.isdigit() else 0
+                    # Convert to numbers - handle decimal points in hours too
                     try:
-                        rate_input = float(current_rate_str.replace('$', '').replace(',', '')) if current_rate_str else 0.0
+                        hrs_input = float(current_hrs_str) if current_hrs_str else 0.0
+                    except ValueError:
+                        hrs_input = 0.0
+                    
+                    try:
+                        # Strip out $ and commas, then convert
+                        clean_rate = current_rate_str.replace('$', '').replace(',', '').strip()
+                        rate_input = float(clean_rate) if clean_rate else 0.0
                     except (ValueError, AttributeError):
                         rate_input = 0.0
                     
@@ -1259,7 +1269,7 @@ def render_tab3():
                         cost_num = (hrs_input * rate_input) if included else 0
                         st.text_input(
                             "Cost",
-                            value=f"${cost_num:,.2f}",
+                            value=f"${cost_num:,.2f}" if cost_num > 0 else "",
                             key=f"cps_cost_{svc_key}",
                             label_visibility="collapsed",
                             disabled=True,
