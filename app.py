@@ -83,10 +83,16 @@ input[type="text"], input[type="number"], textarea {
     box-shadow: none !important;
 }
 /* Number input steppers: hide right-side buttons */
+/* Hide ALL buttons inside number inputs - BaseWeb and native */
 div[data-baseweb="input"] button,
 div[data-baseweb="input"] [data-baseweb="button"],
-div[data-baseweb="input"] [role="button"] {
+div[data-baseweb="input"] [role="button"],
+div[data-baseweb="base-input"] button,
+[data-baseweb="base-input"] button {
     display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    visibility: hidden !important;
 }
 div[data-baseweb="input"] [aria-label="Increment"],
 div[data-baseweb="input"] [aria-label="Decrement"] {
@@ -103,19 +109,27 @@ div[data-baseweb="input"] > div > div > div:has(button) {
     display: none !important;
 }
 /* Target StepperButton specifically */
-button[class*="StepperButton"] {
+button[class*="StepperButton"],
+button[class*="stepper"],
+div[class*="StepperButton"],
+div[class*="InputSteppers"] {
     display: none !important;
+    width: 0 !important;
 }
+/* Hide last-child divs that contain buttons */
 div[data-baseweb="input"] > div > div:last-child {
     display: none !important;
+    width: 0 !important;
 }
 div[data-baseweb="input"] > div > div:last-child > div {
     display: none !important;
 }
+/* Native browser spinners */
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none !important;
     margin: 0 !important;
+    display: none !important;
 }
 input[type="number"] {
     -moz-appearance: textfield !important;
@@ -1206,7 +1220,8 @@ def render_tab3():
                             value=int(hrs_val) if hrs_val is not None else 0,
                             step=1,
                             key=f"cps_hrs_{svc_key}",
-                            label_visibility="collapsed"
+                            label_visibility="collapsed",
+                            placeholder="0"
                         )
                     
                     with col_rate:
@@ -1218,7 +1233,8 @@ def render_tab3():
                             step=1.0,
                             format="%.2f",
                             key=f"cps_rate_{svc_key}",
-                            label_visibility="collapsed"
+                            label_visibility="collapsed",
+                            placeholder="$0.00"
                         )
                     
                     with col_cost:
@@ -1228,7 +1244,8 @@ def render_tab3():
                             value=f"${cost_num:,.2f}",
                             key=f"cps_cost_{svc_key}",
                             label_visibility="collapsed",
-                            disabled=True
+                            disabled=True,
+                            placeholder="$0.00"
                         )
                     
                     service_data[svc_key] = {
