@@ -94,6 +94,14 @@ div[data-baseweb="base-input"] button,
     height: 0 !important;
     visibility: hidden !important;
 }
+/* Hide buttons that appear between columns/inputs */
+div[data-testid="column"] button,
+div[data-testid="stHorizontalBlock"] button,
+.stNumberInput button {
+    display: none !important;
+    width: 0 !important;
+    visibility: hidden !important;
+}
 div[data-baseweb="input"] [aria-label="Increment"],
 div[data-baseweb="input"] [aria-label="Decrement"] {
     display: none !important;
@@ -133,6 +141,10 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 input[type="number"] {
     -moz-appearance: textfield !important;
+}
+/* NUCLEAR OPTION: Hide all buttons in row containers */
+[data-testid="stHorizontalBlock"] button[kind="secondary"] {
+    display: none !important;
 }
 
 /* Additional Services: wrap long labels tighter */
@@ -1214,28 +1226,30 @@ def render_tab3():
                     
                     with col_hrs:
                         hrs_val = row_data["hrs_count"]
-                        hrs_input = st.number_input(
+                        hrs_str = st.text_input(
                             "Hours",
-                            min_value=0,
-                            value=int(hrs_val) if hrs_val is not None else 0,
-                            step=1,
+                            value=str(int(hrs_val)) if hrs_val is not None and hrs_val != 0 else "",
                             key=f"cps_hrs_{svc_key}",
                             label_visibility="collapsed",
                             placeholder="0"
                         )
+                        # Convert to int, default to 0 if invalid
+                        hrs_input = int(hrs_str) if hrs_str and hrs_str.isdigit() else 0
                     
                     with col_rate:
                         rate_val = row_data["rate"]
-                        rate_input = st.number_input(
+                        rate_str = st.text_input(
                             "Rate",
-                            min_value=0.0,
-                            value=float(rate_val) if rate_val is not None else 0.0,
-                            step=1.0,
-                            format="%.2f",
+                            value=f"{float(rate_val):.2f}" if rate_val is not None and rate_val != 0 else "",
                             key=f"cps_rate_{svc_key}",
                             label_visibility="collapsed",
                             placeholder="$0.00"
                         )
+                        # Convert to float, default to 0 if invalid
+                        try:
+                            rate_input = float(rate_str.replace('$', '').replace(',', '')) if rate_str else 0.0
+                        except ValueError:
+                            rate_input = 0.0
                     
                     with col_cost:
                         cost_num = (hrs_input * rate_input) if included else 0
