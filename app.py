@@ -16,6 +16,7 @@ import re
 import json
 import pathlib
 import requests
+import pandas as pd
 from bs4 import BeautifulSoup
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
@@ -118,193 +119,6 @@ input[type="number"] {
 }
 .st-key-tab3-scope div[data-baseweb="checkbox"] {
     margin-top: 0;
-}
-/* ===== CPS GRID (Tab 3) ===== */
-
-/* Header block (5 items, stable) */
-.st-key-tab3-scope .st-key-cps-header [data-testid="stHorizontalBlock"]{
-  display:flex !important;
-  flex-wrap:nowrap !important;
-  align-items:center !important;
-  justify-content:flex-start !important;
-  gap:12px !important;
-  width:fit-content !important;
-  margin-left:auto !important;
-  margin-right:auto !important;
-}
-.st-key-tab3-scope .st-key-cps-header [data-testid="stHorizontalBlock"] > div{
-  flex:0 0 auto !important;
-  min-width:0 !important;
-}
-.st-key-tab3-scope .st-key-cps-header [data-testid="stHorizontalBlock"] > div:nth-child(1){
-  flex:0 0 32px !important;
-  width:32px !important;
-  min-width:32px !important;
-  max-width:32px !important;
-}
-.st-key-tab3-scope .st-key-cps-header [data-testid="stHorizontalBlock"] > div:nth-child(2){
-  flex:0 0 320px !important;
-  width:320px !important;
-  min-width:320px !important;
-  max-width:320px !important;
-  text-align:left !important;
-}
-.st-key-tab3-scope .st-key-cps-header [data-testid="stHorizontalBlock"] > div:nth-child(3),
-.st-key-tab3-scope .st-key-cps-header [data-testid="stHorizontalBlock"] > div:nth-child(4),
-.st-key-tab3-scope .st-key-cps-header [data-testid="stHorizontalBlock"] > div:nth-child(5){
-  flex:0 0 150px !important;
-  width:150px !important;
-  min-width:150px !important;
-  max-width:150px !important;
-}
-.st-key-tab3-scope .st-key-cps-header .stMarkdown p{ margin:0 !important; }
-
-/* Rows: target ONLY cps-row containers */
-.st-key-tab3-scope [class*="st-key-cps-row-"] [data-testid="stHorizontalBlock"]{
-  display:flex !important;
-  flex-wrap:nowrap !important;
-  align-items:center !important;
-  justify-content:flex-start !important;
-  gap:12px !important;
-  width:fit-content !important;
-  margin-left:auto !important;
-  margin-right:auto !important;
-}
-.st-key-tab3-scope [class*="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div{
-  flex:0 0 auto !important;
-  width:auto !important;
-  min-width:0 !important;
-}
-
-/* Checkbox column (parent flex item containing checkbox key) */
-.st-key-tab3-scope [class*="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div:has([class*="st-key-svc310_"]){
-  flex:0 0 32px !important;
-  width:32px !important;
-  min-width:32px !important;
-  max-width:32px !important;
-}
-
-/* Fixed columns (parent flex items containing hrs/rate/cost keys) */
-.st-key-tab3-scope [class*="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div:has([class*="st-key-hrs310_"]),
-.st-key-tab3-scope [class*="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div:has([class*="st-key-rate310_"]),
-.st-key-tab3-scope [class*="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div:has([class*="st-key-cost310_"]){
-  flex:0 0 150px !important;
-  width:150px !important;
-  min-width:150px !important;
-  max-width:150px !important;
-}
-
-/* Service label column fixed */
-.st-key-tab3-scope [class*="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div:has(.stMarkdown):not(:has([class*="st-key-hrs310_"])):not(:has([class*="st-key-rate310_"])):not(:has([class*="st-key-cost310_"])):not(:has([class*="st-key-svc310_"])){
-  flex:0 0 320px !important;
-  width:320px !important;
-  min-width:320px !important;
-  max-width:320px !important;
-  overflow:hidden !important;
-  text-overflow:ellipsis !important;
-  white-space:nowrap !important;
-}
-.st-key-tab3-scope [class*="st-key-cps-row-"] .stMarkdown p{ margin:0 !important; }
-
-/* Force BaseWeb input wrapper + input width */
-.st-key-tab3-scope [class*="st-key-hrs310_"] div[data-baseweb="input"],
-.st-key-tab3-scope [class*="st-key-rate310_"] div[data-baseweb="input"],
-.st-key-tab3-scope [class*="st-key-cost310_"] div[data-baseweb="input"]{
-  width:150px !important;
-  min-width:150px !important;
-  max-width:150px !important;
-}
-.st-key-tab3-scope [class*="st-key-hrs310_"] input,
-.st-key-tab3-scope [class*="st-key-rate310_"] input,
-.st-key-tab3-scope [class*="st-key-cost310_"] input{
-  width:150px !important;
-  min-width:150px !important;
-  max-width:150px !important;
-  box-sizing:border-box !important;
-}
-
-/* ===== CPS FINAL TIGHTEN (append below existing CPS CSS) ===== */
-
-/* Remove extra vertical spacing Streamlit adds around widgets inside CPS rows */
-.st-key-tab3-scope [class*="st-key-cps-row-"] .stCheckbox,
-.st-key-tab3-scope [class*="st-key-cps-row-"] .stTextInput,
-.st-key-tab3-scope [class*="st-key-cps-row-"] .stNumberInput{
-  margin-top: 0 !important;
-  margin-bottom: 0 !important;
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-}
-
-/* Center the checkbox within its 32px column */
-.st-key-tab3-scope [class*="st-key-cps-row-"] [class*="st-key-svc310_"]{
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-}
-
-/* BaseWeb input containers sometimes enforce min widths; hard clamp them */
-.st-key-tab3-scope [class*="st-key-hrs310_"] [data-baseweb="base-input"],
-.st-key-tab3-scope [class*="st-key-rate310_"] [data-baseweb="base-input"],
-.st-key-tab3-scope [class*="st-key-cost310_"] [data-baseweb="base-input"]{
-  width: 150px !important;
-  min-width: 150px !important;
-  max-width: 150px !important;
-}
-
-/* Ensure each flex item is vertically centered */
-.st-key-tab3-scope [class*="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div{
-  align-self: center !important;
-}
-
-/* ===== CPS: CENTER NUMERIC COLUMNS ===== */
-
-/* Center the HEADER text in columns 3?5 */
-.st-key-tab3-scope .st-key-cps-header [data-testid="stHorizontalBlock"] > div:nth-child(3),
-.st-key-tab3-scope .st-key-cps-header [data-testid="stHorizontalBlock"] > div:nth-child(4),
-.st-key-tab3-scope .st-key-cps-header [data-testid="stHorizontalBlock"] > div:nth-child(5){
-  text-align: center !important;
-  display: flex !important;
-  justify-content: center !important;
-}
-
-/* Center the ROW widgets inside the 150px cells (hrs/rate/cost) */
-.st-key-tab3-scope [class*="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div:has([class*="st-key-hrs310_"]),
-.st-key-tab3-scope [class*="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div:has([class*="st-key-rate310_"]),
-.st-key-tab3-scope [class*="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div:has([class*="st-key-cost310_"]){
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
-}
-
-/* Ensure the input wrapper itself is centered (BaseWeb) */
-.st-key-tab3-scope [class*="st-key-hrs310_"],
-.st-key-tab3-scope [class*="st-key-rate310_"],
-.st-key-tab3-scope [class*="st-key-cost310_"]{
-  margin-left: auto !important;
-  margin-right: auto !important;
-}
-
-/* Keep Service left-aligned (header + rows) */
-.st-key-tab3-scope .st-key-cps-header [data-testid="stHorizontalBlock"] > div:nth-child(2){
-  justify-content: flex-start !important;
-  text-align: left !important;
-}
-.st-key-tab3-scope [class*="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div:has(.stMarkdown):not(:has([class*="st-key-hrs310_"])):not(:has([class*="st-key-rate310_"])):not(:has([class*="st-key-cost310_"])):not(:has([class*="st-key-svc310_"])){
-  justify-content: flex-start !important;
-  text-align: left !important;
-}
-
-/* ===== CPS: ALIGN COST COLUMN ===== */
-.st-key-tab3-scope .st-key-cps-header [data-testid="stHorizontalBlock"] > div:nth-child(5){
-  text-align: center !important;
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
-}
-.st-key-tab3-scope [class*="st-key-cps-row-"] [data-testid="stHorizontalBlock"] > div:has([class*="st-key-cost310_"]){
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
 }
 .additional-services .svc-label {
     margin-top: 10px;
@@ -1303,132 +1117,124 @@ def render_tab3():
             if task_selected and task_num == "310":
                 st.markdown("**Construction Phase Services:**")
                 st.caption("Select services, enter hours/count, rate, and cost")
-                header = st.container(horizontal=True, key="cps-header")
-                with header:
-                    st.markdown("")
-                    st.markdown("**Service**")
-                    st.markdown("**Hrs/Count**")
-                    st.markdown("**$/hr**")
-                    st.markdown("**Cost**")
-
-                service_data = {}
+                default_included = {"shop_drawings", "rfi", "oac", "site_visits", "asbuilt", "fdep", "compliance", "wmd"}
                 existing_services = selected_tasks.get("310", {}).get("services", {})
-
-                def render_service_row(
-                    svc_key: str,
-                    svc_name: str,
-                    default_hrs: int,
-                    default_rate: int,
-                    default_cost: int,
-                    existing: Dict[str, Any],
-                ) -> Dict[str, Any]:
-                    prev_hours = existing.get("hours")
-                    prev_rate = existing.get("rate")
-
-                    with st.container(horizontal=True, key=f"cps-row-{_slug(svc_key)}"):
-                        is_selected = st.checkbox(
-                            "",
-                            value=svc_key in ["shop_drawings", "rfi", "oac", "site_visits", "asbuilt", "fdep", "compliance", "wmd"],
-                            key=f"svc310_{svc_key}",
-                            label_visibility="collapsed",
-                        )
-
-                        st.markdown(svc_name)
-
-                        if default_hrs > 0 or svc_key in ["inspection_tv", "record_drawings"]:
-                            hrs_text = st.text_input(
-                                "Hrs",
-                                value=str(prev_hours) if isinstance(prev_hours, (int, float)) and prev_hours else "",
-                                placeholder=str(default_hrs),
-                                key=f"hrs310_{svc_key}",
-                                disabled=not is_selected,
-                                label_visibility="collapsed",
-                            )
-                            cleaned = re.sub(r"[^\d.]", "", str(hrs_text or "")).strip()
-                            if cleaned:
-                                hrs_value = int(float(cleaned))
-                                hrs_has_value = True
-                            else:
-                                hrs_value = 0
-                                hrs_has_value = False
-                        else:
-                            hrs_value = 0
-                            hrs_has_value = False
-                            st.text_input(
-                                "Hrs",
-                                value="",
-                                placeholder="-",
-                                key=f"hrs310_{svc_key}_na",
-                                disabled=True,
-                                label_visibility="collapsed",
-                            )
-
-                        if default_rate > 0 or svc_key in ["inspection_tv", "record_drawings"]:
-                            fallback_rate = default_rate if default_rate else 165
-                            rate_text = st.text_input(
-                                "Rate",
-                                value=format_currency(prev_rate) if isinstance(prev_rate, (int, float)) and prev_rate else format_currency(fallback_rate),
-                                placeholder=format_currency(fallback_rate),
-                                key=f"rate310_{svc_key}",
-                                disabled=not is_selected,
-                                label_visibility="collapsed",
-                            )
-                            cleaned = re.sub(r"[^\d.]", "", str(rate_text or "")).strip()
-                            if cleaned:
-                                rate_value = int(float(cleaned))
-                            else:
-                                rate_value = int(fallback_rate) if fallback_rate else 0
-                        else:
-                            rate_value = 0
-                            st.text_input(
-                                "Rate",
-                                value="",
-                                placeholder="-",
-                                key=f"rate310_{svc_key}_na",
-                                disabled=True,
-                                label_visibility="collapsed",
-                            )
-
-                        if is_selected:
-                            computed_cost = hrs_value * rate_value if hrs_has_value and rate_value else 0
-                            st.text_input(
-                                "Cost",
-                                value=format_currency(computed_cost),
-                                placeholder=format_currency(default_cost),
-                                key=f"cost310_{svc_key}",
-                                disabled=True,
-                                label_visibility="collapsed",
-                            )
-                            cost_value = int(computed_cost) if computed_cost else 0
-                        else:
-                            cost_value = 0
-                            st.text_input(
-                                "Cost",
-                                value=format_currency(0),
-                                placeholder=format_currency(0),
-                                key=f"cost310_{svc_key}_na",
-                                disabled=True,
-                                label_visibility="collapsed",
-                            )
-
-                    return {
-                        "included": is_selected,
-                        "name": svc_name,
-                        "hours": hrs_value if is_selected else 0,
-                        "rate": rate_value if is_selected else 0,
-                        "cost": cost_value if is_selected else 0,
-                    }
-
+                rows = []
+                svc_keys = []
                 for svc_key, svc_name, default_hrs, default_rate, default_cost in TASK_310_SERVICES:
-                    prev_service = existing_services.get(svc_key, {})
-                    service_data[svc_key] = render_service_row(
-                        svc_key,
-                        svc_name,
-                        default_hrs,
-                        default_rate,
-                        default_cost,
-                        prev_service,
-                    )
+                    svc_keys.append(svc_key)
+                    existing = existing_services.get(svc_key, {})
+                    included = existing.get("included")
+                    if included is None:
+                        included = svc_key in default_included
+                    prev_hours = existing.get("hours")
+                    hrs_allowed = default_hrs > 0 or svc_key in ["inspection_tv", "record_drawings"]
+                    if isinstance(prev_hours, (int, float)):
+                        hrs_value = prev_hours
+                    else:
+                        hrs_value = None if hrs_allowed else None
+                    prev_rate = existing.get("rate")
+                    rate_allowed = default_rate > 0 or svc_key in ["inspection_tv", "record_drawings"]
+                    if isinstance(prev_rate, (int, float)):
+                        rate_value = prev_rate
+                    else:
+                        if rate_allowed and included:
+                            rate_value = default_rate if default_rate > 0 else 165
+                        else:
+                            rate_value = None
+                    cost_value = (hrs_value or 0) * (rate_value or 0) if included else 0
+                    rows.append({
+                        "included": bool(included),
+                        "service": svc_name,
+                        "hrs_count": hrs_value,
+                        "rate": rate_value,
+                        "cost": cost_value,
+                    })
+                # Manual column layout for perfect alignment
+                # Header row with fixed column widths
+                col_check, col_service, col_hrs, col_rate, col_cost = st.columns([0.6, 2.5, 1, 1, 1])
+                with col_check:
+                    st.markdown("**Select**")
+                with col_service:
+                    st.markdown("**Service**")
+                with col_hrs:
+                    st.markdown("**Hrs/Count**")
+                with col_rate:
+                    st.markdown("**$/hr**")
+                with col_cost:
+                    st.markdown("**Cost**")
+                
+                service_data = {}
+                for idx, row_data in enumerate(rows):
+                    svc_key = svc_keys[idx]
+                    svc_name = row_data["service"]
+                    
+                    # Create row with same column widths
+                    col_check, col_service, col_hrs, col_rate, col_cost = st.columns([0.6, 2.5, 1, 1, 1])
+                    
+                    with col_check:
+                        included = st.checkbox(
+                            "Include",
+                            value=row_data["included"],
+                            key=f"cps_check_{svc_key}",
+                            label_visibility="collapsed"
+                        )
+                    
+                    with col_service:
+                        st.text_input(
+                            "Service Name",
+                            value=svc_name,
+                            key=f"cps_service_{svc_key}",
+                            label_visibility="collapsed",
+                            disabled=True
+                        )
+                    
+                    with col_hrs:
+                        hrs_val = row_data["hrs_count"]
+                        hrs_input = st.number_input(
+                            "Hours",
+                            min_value=0,
+                            value=int(hrs_val) if hrs_val is not None else 0,
+                            step=1,
+                            key=f"cps_hrs_{svc_key}",
+                            label_visibility="collapsed",
+                            disabled=not included
+                        )
+                    
+                    with col_rate:
+                        rate_val = row_data["rate"]
+                        rate_input = st.number_input(
+                            "Rate",
+                            min_value=0.0,
+                            value=float(rate_val) if rate_val is not None else 0.0,
+                            step=1.0,
+                            format="%.2f",
+                            key=f"cps_rate_{svc_key}",
+                            label_visibility="collapsed",
+                            disabled=not included
+                        )
+                    
+                    with col_cost:
+                        cost_num = (hrs_input * rate_input) if included else 0
+                        st.text_input(
+                            "Cost",
+                            value=f"${cost_num:,.2f}",
+                            key=f"cps_cost_{svc_key}",
+                            label_visibility="collapsed",
+                            disabled=True
+                        )
+                    
+                    service_data[svc_key] = {
+                        "included": included,
+                        "name": svc_name,
+                        "hours": hrs_input if included else 0,
+                        "rate": rate_input if included else 0,
+                        "cost": int(cost_num) if cost_num else 0,
+                    }
+                selected_tasks["310"]["services"] = service_data
+                selected_tasks["310"]["services_total_cost"] = sum(
+                    svc.get("cost", 0) for svc in service_data.values()
+                )
 
                 st.markdown("---")
                 total_hrs_text = st.text_input(
