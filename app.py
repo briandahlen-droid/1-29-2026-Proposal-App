@@ -1270,6 +1270,7 @@ def render_tab3():
                         st.text_input(
                             "Cost",
                             value=cost_display,
+                            key=f"cps_cost_{svc_key}_{idx}",  # Unique key using both svc_key and idx
                             label_visibility="collapsed",
                             disabled=True,
                             placeholder="$0.00"
