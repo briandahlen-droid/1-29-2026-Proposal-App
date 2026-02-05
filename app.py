@@ -1158,25 +1158,6 @@ def render_tab3():
                 st.caption(f"DEBUG - Shop Drawing hrs: '{st.session_state.get('cps_hrs_shop_drawings', 'NOT SET')}' rate: '{st.session_state.get('cps_rate_shop_drawings', 'NOT SET')}'")
                 
                 default_included = {"shop_drawings", "rfi", "oac", "site_visits", "asbuilt", "fdep", "compliance", "wmd"}
-                
-                # First, update row data with current session state values
-                for idx, row_data in enumerate(rows):
-                    svc_key = svc_keys[idx]
-                    # Update row_data with session_state values from PREVIOUS render
-                    hrs_from_state = st.session_state.get(f"cps_hrs_{svc_key}", "")
-                    rate_from_state = st.session_state.get(f"cps_rate_{svc_key}", "")
-                    
-                    try:
-                        row_data["hrs_count"] = float(hrs_from_state) if hrs_from_state else row_data.get("hrs_count", 0)
-                    except ValueError:
-                        pass
-                    
-                    try:
-                        clean_rate = rate_from_state.replace('$', '').replace(',', '').strip()
-                        row_data["rate"] = float(clean_rate) if clean_rate else row_data.get("rate", 0)
-                    except (ValueError, AttributeError):
-                        pass
-                
                 existing_services = selected_tasks.get("310", {}).get("services", {})
                 rows = []
                 svc_keys = []
@@ -1228,23 +1209,24 @@ def render_tab3():
                     svc_key = svc_keys[idx]
                     svc_name = row_data["service"]
                     
-                    # Read session state values FIRST for debugging
-                    current_hrs_str = st.session_state.get(f"cps_hrs_{svc_key}", "")
-                    current_rate_str = st.session_state.get(f"cps_rate_{svc_key}", "")
+                    # FIRST: Update row_data from session_state (values from PREVIOUS render)
+                    hrs_from_session = st.session_state.get(f"cps_hrs_{svc_key}", "")
+                    rate_from_session = st.session_state.get(f"cps_rate_{svc_key}", "")
                     
-                    # Convert to numbers
-                    try:
-                        hrs_input = float(current_hrs_str) if current_hrs_str else 0.0
-                    except ValueError:
-                        hrs_input = 0.0
+                    if hrs_from_session:
+                        try:
+                            row_data["hrs_count"] = float(hrs_from_session)
+                        except ValueError:
+                            pass
                     
-                    try:
-                        clean_rate = current_rate_str.replace('$', '').replace(',', '').strip()
-                        rate_input = float(clean_rate) if clean_rate else 0.0
-                    except (ValueError, AttributeError):
-                        rate_input = 0.0
+                    if rate_from_session:
+                        try:
+                            clean = rate_from_session.replace('$', '').replace(',', '').strip()
+                            row_data["rate"] = float(clean) if clean else 0
+                        except (ValueError, AttributeError):
+                            pass
                     
-                    # Create row with same column widths
+                    # SECOND: Create columns and widgets
                     col_check, col_service, col_hrs, col_rate, col_cost = st.columns([0.6, 2.5, 1, 1, 1])
                     
                     with col_check:
@@ -1255,10 +1237,6 @@ def render_tab3():
                             label_visibility="collapsed"
                         )
                     
-                    # DEBUG for first service - show after checkbox
-                    if svc_key == "shop_drawings":
-                        st.caption(f"CALC: hrs={hrs_input} × rate={rate_input} × included={included} = {hrs_input * rate_input if included else 0}")
-                    
                     with col_service:
                         st.text_input(
                             "Service Name",
@@ -1268,27 +1246,35 @@ def render_tab3():
                         )
                     
                     with col_hrs:
-                        hrs_val = row_data["hrs_count"]
+                        hrs_val = row_data.get("hrs_count", 0)
                         st.text_input(
                             "Hours",
-                            value=str(int(hrs_val)) if hrs_val is not None and hrs_val != 0 else "",
+                            value=str(int(hrs_val)) if hrs_val else "",
                             key=f"cps_hrs_{svc_key}",
                             label_visibility="collapsed",
                             placeholder="0"
                         )
                     
                     with col_rate:
-                        rate_val = row_data["rate"]
+                        rate_val = row_data.get("rate", 0)
                         st.text_input(
                             "Rate",
-                            value=f"{float(rate_val):.2f}" if rate_val is not None and rate_val != 0 else "",
+                            value=f"{float(rate_val):.2f}" if rate_val else "",
                             key=f"cps_rate_{svc_key}",
                             label_visibility="collapsed",
                             placeholder="$0.00"
                         )
                     
+                    # THIRD: Calculate and display cost using updated row_data
+                    hrs_input = float(row_data.get("hrs_count", 0) or 0)
+                    rate_input = float(row_data.get("rate", 0) or 0)
+                    cost_num = (hrs_input * rate_input) if included else 0
+                    
+                    # DEBUG
+                    if svc_key == "shop_drawings":
+                        st.caption(f"DEBUG: hrs={hrs_input} × rate={rate_input} × incl={included} = {cost_num}")
+                    
                     with col_cost:
-                        cost_num = (hrs_input * rate_input) if included else 0
                         st.text_input(
                             "Cost",
                             value=f"${cost_num:,.2f}" if cost_num > 0 else "",
@@ -1301,7 +1287,7 @@ def render_tab3():
                     service_data[svc_key] = {
                         "included": included,
                         "name": svc_name,
-                        "hours": hrs_input if included else 0,
+                        "hours": int(hrs_input) if included else 0,
                         "rate": rate_input if included else 0,
                         "cost": int(cost_num) if cost_num else 0,
                     }
