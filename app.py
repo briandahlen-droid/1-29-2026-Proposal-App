@@ -94,9 +94,7 @@ div[data-baseweb="base-input"] button,
     height: 0 !important;
     visibility: hidden !important;
 }
-/* Hide buttons that appear between columns/inputs */
-div[data-testid="column"] button,
-div[data-testid="stHorizontalBlock"] button,
+/* Hide ONLY number input spinner buttons, not all buttons in columns */
 .stNumberInput button {
     display: none !important;
     width: 0 !important;
