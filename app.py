@@ -1264,13 +1264,13 @@ def render_tab3():
                     rate_input = float(row_data.get("rate", 0) or 0)
                     cost_num = (hrs_input * rate_input) if included else 0
                     
-                    cost_display = f"${cost_num:,.2f}" if cost_num > 0 else ""
+                    cost_display = f"${cost_num:,.2f}"
                     
                     with col_cost:
                         st.text_input(
                             "Cost",
                             value=cost_display,
-                            key=f"cps_cost_{svc_key}_{idx}",  # Unique key using both svc_key and idx
+                            key=f"cps_cost_{svc_key}_{idx}",
                             label_visibility="collapsed",
                             disabled=True,
                             placeholder="$0.00"
