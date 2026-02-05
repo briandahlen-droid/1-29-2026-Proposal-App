@@ -1264,15 +1264,12 @@ def render_tab3():
                     rate_input = float(row_data.get("rate", 0) or 0)
                     cost_num = (hrs_input * rate_input) if included else 0
                     
-                    # Force update session_state so the widget displays the new value
                     cost_display = f"${cost_num:,.2f}" if cost_num > 0 else ""
-                    st.session_state[f"cps_cost_{svc_key}"] = cost_display
                     
                     with col_cost:
                         st.text_input(
                             "Cost",
                             value=cost_display,
-                            key=f"cps_cost_{svc_key}",
                             label_visibility="collapsed",
                             disabled=True,
                             placeholder="$0.00"
