@@ -1274,10 +1274,14 @@ def render_tab3():
                     if svc_key == "shop_drawings":
                         st.caption(f"DEBUG: hrs={hrs_input} × rate={rate_input} × incl={included} = {cost_num}")
                     
+                    # Force update session_state so the widget displays the new value
+                    cost_display = f"${cost_num:,.2f}" if cost_num > 0 else ""
+                    st.session_state[f"cps_cost_{svc_key}"] = cost_display
+                    
                     with col_cost:
                         st.text_input(
                             "Cost",
-                            value=f"${cost_num:,.2f}" if cost_num > 0 else "",
+                            value=cost_display,
                             key=f"cps_cost_{svc_key}",
                             label_visibility="collapsed",
                             disabled=True,
